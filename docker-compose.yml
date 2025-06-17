@@ -1,0 +1,15 @@
+services: 
+  rfxcom2mqtt:
+    image: rfxcom2mqtt/rfxcom2mqtt
+    container_name: rfxcom2mqtt
+    build: ./
+    volumes:
+      - ./package/backend/config:/app/data
+    ports:
+      - 8090:3000
+      - 8891:8891
+    #devices:
+    #  - /dev/ttyUSB1:/dev/ttyUSB0
+    environment:
+      - TZ=Europe/Paris
+    restart: unless-stopped

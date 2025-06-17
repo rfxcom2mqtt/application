@@ -6,7 +6,7 @@ This monorepo contains the RFXCOM to MQTT bridge and its frontend application.
 
 ```
 monorepo/
-├── packages/
+├── apps/
 │   ├── backend/       # RFXCOM to MQTT bridge backend
 │   └── frontend/      # React frontend application
 ├── package.json       # Root package.json for monorepo management

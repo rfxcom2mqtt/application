@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "preserveSymlinks": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "allowJs": true,
+    "rootDir": "src",
+    "experimentalDecorators": true,
+    "noImplicitReturns": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "baseUrl": "./src"
+}

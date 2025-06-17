@@ -1,0 +1,54 @@
+loglevel: info
+healthcheck:
+  enabled: false
+  cron: '*/2 * * * *'
+cacheState:
+  enable: true
+  saveInterval: 1
+homeassistant:
+  discovery: true
+  discovery_topic: homeassistant
+  discovery_device: rfxcom2mqtt
+devices:
+  - id: 0x011Bmocked_device2
+    units:
+      - unitCode: 1
+        name: AC_notuse_1
+mqtt:
+  base_topic: rfxcom2mqtt
+  include_device_information: false
+  qos: 0
+  retain: true
+  server: mock
+  username: null
+  password: null
+rfxcom:
+  debug: false
+  receive:
+    - temperaturehumidity1
+    - homeconfort
+    - lighting1
+    - lighting2
+    - lighting3
+    - lighting4
+    - remote
+    - security1
+  usbport: mock
+  transmit:
+    repeat: 4
+    lighting1:
+      - X10
+      - ARC
+      - ELRO
+      - PHILIPS_SBC
+    lighting2:
+      - AC
+      - HOMEEASY_EU
+    lighting3:
+      - KOPPLA
+    lighting4:
+      - PT2262
+frontend:
+  enabled: true
+  host: 0.0.0.0
+  port: 8891

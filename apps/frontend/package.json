@@ -1,0 +1,76 @@
+{
+  "name": "@rfxcom2mqtt/frontend",
+  "version": "0.2.1",
+  "private": false,
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/lab": "^5.0.0-alpha.165",
+    "@mui/material": "^5.15.15",
+    "@mui/styles": "^5.15.15",
+    "@mui/x-data-grid": "^7.3.0",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^15.0.2",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "axios": "^1.6.8",
+    "http-proxy-middleware": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "^5.0.1",
+    "socket.io-client": "^4.7.5",
+    "typescript": "^5.4.5",
+    "web-vitals": "^3.5.2"
+  },
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "react-scripts test",
+    "pretty": "prettier --write \"./src/**/*.{js,jsx,ts,tsx}\"",
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\"",
+    "pretty:check": "prettier --check \"./src/**/*.{js,jsx,ts,tsx}\""
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "compress-create-react-app": "^1.4.5",
+    "eslint": "^9.0.0",
+    "eslint-plugin-react": "^7.34.1",
+    "prettier": "^3.2.5",
+    "vite": "^5.2.0"
+  },
+  "main": "index.js",
+  "description": "RFXCOM to MQTT bridge for RFXtrx433 devices",
+  "keywords": [
+    "rfxcom",
+    "mqtt",
+    "homeassistant",
+    "discovery"
+  ],
+  "author": "sguernion",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/rfxcom2mqtt/application/issues"
+  },
+  "homepage": "."
+}
