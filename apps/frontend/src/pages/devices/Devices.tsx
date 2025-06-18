@@ -1,10 +1,12 @@
 import React from 'react';
 import {
-    Box,
-    Typography,
     Grid,
     Alert,
+    Button,
+    Chip,
+    Stack,
 } from '@mui/material';
+import { Refresh, Add } from '@mui/icons-material';
 
 // Components
 import DeviceCard from '../../components/common/DeviceCard';
@@ -12,6 +14,7 @@ import DeviceListItem from '../../components/common/DeviceListItem';
 import DevicesControls from '../../components/common/DevicesControls';
 import EmptyState from '../../components/common/EmptyState';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
+import PageContainer from '../../components/common/PageContainer';
 
 // Hooks
 import { useDevices } from '../../hooks/useDevices';
@@ -31,22 +34,45 @@ function DevicesPage() {
         uniqueTypes,
     } = useDeviceFilters(devices);
 
+    const pageActions = (
+        <Stack direction="row" spacing={1}>
+            <Button
+                variant="outlined"
+                startIcon={<Refresh />}
+                onClick={refresh}
+                disabled={loading}
+            >
+                Refresh
+            </Button>
+            <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={() => {/* TODO: Add device discovery */}}
+            >
+                Discover Devices
+            </Button>
+        </Stack>
+    );
+
     if (loading) {
-        return <LoadingSkeleton />;
+        return (
+            <PageContainer
+                title="Devices"
+                subtitle="Manage and monitor your connected devices"
+                actions={pageActions}
+                loading={true}
+            >
+                <LoadingSkeleton />
+            </PageContainer>
+        );
     }
 
     return (
-        <Box sx={{ p: 3 }}>
-            {/* Header */}
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-                    Devices
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    Manage and monitor your connected devices
-                </Typography>
-            </Box>
-
+        <PageContainer
+            title="Devices"
+            subtitle="Manage and monitor your connected devices"
+            actions={pageActions}
+        >
             {/* Controls */}
             <DevicesControls
                 searchTerm={searchTerm}
@@ -61,14 +87,36 @@ function DevicesPage() {
                 deviceTypes={uniqueTypes}
             />
 
-            {/* Device Count */}
-            <Box sx={{ mb: 2 }}>
-                <Alert severity="info" sx={{ mb: 2 }}>
+            {/* Device Count & Status */}
+            <Stack direction="row" spacing={2} sx={{ mb: 3, alignItems: 'center' }}>
+                <Alert severity="info" sx={{ flex: 1 }}>
                     Found {filteredDevices.length} device{filteredDevices.length !== 1 ? 's' : ''}
                     {searchTerm && ` matching "${searchTerm}"`}
                     {filterType !== 'all' && ` of type "${filterType}"`}
                 </Alert>
-            </Box>
+                
+                {/* Quick stats */}
+                <Stack direction="row" spacing={1}>
+                    <Chip 
+                        label={`Total: ${devices.length}`} 
+                        color="primary" 
+                        variant="outlined" 
+                        size="small"
+                    />
+                    <Chip 
+                        label={`Online: ${devices.filter(d => d.status === 'online').length}`} 
+                        color="success" 
+                        variant="outlined" 
+                        size="small"
+                    />
+                    <Chip 
+                        label={`Offline: ${devices.filter(d => d.status === 'offline').length}`} 
+                        color="error" 
+                        variant="outlined" 
+                        size="small"
+                    />
+                </Stack>
+            </Stack>
 
             {/* Devices Grid/List */}
             {filteredDevices.length === 0 ? (
@@ -76,6 +124,11 @@ function DevicesPage() {
                     searchTerm={searchTerm}
                     filterType={filterType}
                     onRefresh={refresh}
+                    onClearFilters={() => {
+                        setSearchTerm('');
+                        setFilterType('all');
+                    }}
+                    onDiscoverDevices={() => {/* TODO: Add device discovery */}}
                 />
             ) : viewMode === 'grid' ? (
                 <Grid container spacing={3}>
@@ -86,13 +139,13 @@ function DevicesPage() {
                     ))}
                 </Grid>
             ) : (
-                <Box>
+                <Stack spacing={2}>
                     {filteredDevices.map((device) => (
                         <DeviceListItem key={device.device} device={device} />
                     ))}
-                </Box>
+                </Stack>
             )}
-        </Box>
+        </PageContainer>
     );
 }
 

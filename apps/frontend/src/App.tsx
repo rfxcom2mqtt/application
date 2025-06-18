@@ -4,6 +4,8 @@ import './App.css';
 import Header from './components/Header';
 import config from './utils/config';
 import { Box, CircularProgress, Alert } from '@mui/material';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { ToastProvider } from './components/common/Toast';
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: Error | null }> {
@@ -67,22 +69,26 @@ const NotFoundPage = () => (
  */
 function App() {
     return (
-        <ErrorBoundary>
-            <BrowserRouter basename={config.basePath}>
-                <Header />
-                <Suspense fallback={<LoadingFallback />}>
-                    <Routes>
-                        <Route path="/" element={<ControllerInfoPage />} />
-                        <Route path="/devices" element={<DevicesPage />} />
-                        <Route path="/devices/:id" element={<DevicePage />} />
-                        <Route path="/settings" element={<SettingsPage />} />
-                        <Route path="/logs" element={<JournalsPage />} />
-                        <Route path="/404" element={<NotFoundPage />} />
-                        <Route path="*" element={<Navigate to="/404" replace />} />
-                    </Routes>
-                </Suspense>
-            </BrowserRouter>
-        </ErrorBoundary>
+        <ThemeProvider>
+            <ToastProvider>
+                <ErrorBoundary>
+                    <BrowserRouter basename={config.basePath}>
+                        <Header />
+                        <Suspense fallback={<LoadingFallback />}>
+                            <Routes>
+                                <Route path="/" element={<ControllerInfoPage />} />
+                                <Route path="/devices" element={<DevicesPage />} />
+                                <Route path="/devices/:id" element={<DevicePage />} />
+                                <Route path="/settings" element={<SettingsPage />} />
+                                <Route path="/logs" element={<JournalsPage />} />
+                                <Route path="/404" element={<NotFoundPage />} />
+                                <Route path="*" element={<Navigate to="/404" replace />} />
+                            </Routes>
+                        </Suspense>
+                    </BrowserRouter>
+                </ErrorBoundary>
+            </ToastProvider>
+        </ThemeProvider>
     );
 }
 

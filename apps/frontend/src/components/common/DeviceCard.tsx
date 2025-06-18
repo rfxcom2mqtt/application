@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Card,
     CardContent,
@@ -9,8 +9,23 @@ import {
     Avatar,
     Box,
     Stack,
+    IconButton,
+    Tooltip,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
 } from '@mui/material';
-import { Visibility } from '@mui/icons-material';
+import { 
+    Visibility, 
+    MoreVert, 
+    PowerSettingsNew, 
+    Refresh, 
+    Edit, 
+    Delete,
+    SignalWifi4Bar,
+    SignalWifiOff,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 interface DeviceCardProps {
@@ -43,6 +58,7 @@ const STATUS_COLORS = {
 
 function DeviceCard({ device }: DeviceCardProps) {
     const navigate = useNavigate();
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const getDeviceIcon = (type: string) => {
         return DEVICE_ICONS[type.toLowerCase()] || DEVICE_ICONS.default;
@@ -52,45 +68,84 @@ function DeviceCard({ device }: DeviceCardProps) {
         return STATUS_COLORS[status as keyof typeof STATUS_COLORS] || STATUS_COLORS.unknown;
     };
 
+    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        event.stopPropagation();
+        setMenuAnchor(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setMenuAnchor(null);
+    };
+
+    const handleQuickAction = (action: string) => {
+        handleMenuClose();
+        // TODO: Implement quick actions
+        console.log(`Quick action: ${action} for device ${device.id}`);
+    };
+
     return (
         <Card 
             sx={{ 
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                transition: 'all 0.3s ease',
-                borderRadius: 3,
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer',
+                position: 'relative',
                 '&:hover': {
                     transform: 'translateY(-4px)',
-                    boxShadow: 4,
+                    boxShadow: (theme) => theme.shadows[8],
                 },
-                border: device.status === 'offline' ? '1px solid #f44336' : 'none',
+                border: device.status === 'offline' ? '2px solid' : '1px solid',
+                borderColor: device.status === 'offline' ? 'error.main' : 'divider',
             }}
+            onClick={() => navigate(`/devices/${device.id}`)}
         >
             <CardContent sx={{ flexGrow: 1, pb: 1 }}>
-                {/* Header */}
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
+                {/* Header with Status Indicator */}
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
+                    <Avatar 
+                        sx={{ 
+                            mr: 2, 
+                            bgcolor: device.status === 'online' ? 'success.main' : 
+                                     device.status === 'offline' ? 'error.main' : 'warning.main',
+                            fontSize: '1.2rem',
+                        }}
+                    >
                         {getDeviceIcon(device.type)}
                     </Avatar>
-                    <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h6" component="h2" noWrap>
+                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                        <Typography variant="h6" component="h2" noWrap sx={{ fontWeight: 600 }}>
                             {device.name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" noWrap>
                             {device.id}
                         </Typography>
                     </Box>
-                    <Chip 
-                        label={device.status || 'unknown'} 
-                        color={getStatusColor(device.status || 'unknown')}
-                        size="small"
-                        variant="outlined"
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Tooltip title={`Device is ${device.status || 'unknown'}`}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                {device.status === 'online' ? (
+                                    <SignalWifi4Bar color="success" fontSize="small" />
+                                ) : (
+                                    <SignalWifiOff color="error" fontSize="small" />
+                                )}
+                            </Box>
+                        </Tooltip>
+                        <Tooltip title="More actions">
+                            <IconButton
+                                size="small"
+                                onClick={handleMenuOpen}
+                                sx={{ ml: 0.5 }}
+                            >
+                                <MoreVert fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Box>
 
                 {/* Device Info */}
-                <Stack spacing={1}>
+                <Stack spacing={1.5}>
                     <DeviceInfoRow label="Type" value={device.type} />
                     {device.subtype && (
                         <DeviceInfoRow label="Subtype" value={device.subtype} />
@@ -112,23 +167,75 @@ function DeviceCard({ device }: DeviceCardProps) {
                 </Stack>
 
                 {device.lastSeen && (
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                    <Typography 
+                        variant="caption" 
+                        color="text.secondary" 
+                        sx={{ 
+                            mt: 2, 
+                            display: 'block',
+                            fontStyle: 'italic',
+                        }}
+                    >
                         Last seen: {device.lastSeen}
                     </Typography>
                 )}
             </CardContent>
 
-            <CardActions sx={{ pt: 0, px: 2, pb: 2 }}>
+            <CardActions sx={{ pt: 0, px: 2, pb: 2, gap: 1 }}>
                 <Button
                     variant="contained"
                     startIcon={<Visibility />}
-                    onClick={() => navigate(`/devices/${device.id}`)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/devices/${device.id}`);
+                    }}
                     fullWidth
                     size="small"
                 >
                     View Details
                 </Button>
+                {device.status === 'online' && (
+                    <Tooltip title="Quick toggle">
+                        <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleQuickAction('toggle');
+                            }}
+                        >
+                            <PowerSettingsNew />
+                        </IconButton>
+                    </Tooltip>
+                )}
             </CardActions>
+
+            {/* Context Menu */}
+            <Menu
+                anchorEl={menuAnchor}
+                open={Boolean(menuAnchor)}
+                onClose={handleMenuClose}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <MenuItem onClick={() => handleQuickAction('refresh')}>
+                    <ListItemIcon>
+                        <Refresh fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Refresh</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleQuickAction('edit')}>
+                    <ListItemIcon>
+                        <Edit fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Edit</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleQuickAction('delete')} sx={{ color: 'error.main' }}>
+                    <ListItemIcon>
+                        <Delete fontSize="small" color="error" />
+                    </ListItemIcon>
+                    <ListItemText>Remove</ListItemText>
+                </MenuItem>
+            </Menu>
         </Card>
     );
 }

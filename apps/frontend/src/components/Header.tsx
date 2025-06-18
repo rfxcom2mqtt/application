@@ -10,7 +10,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
+import Badge from '@mui/material/Badge';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import SensorsIcon from '@mui/icons-material/Sensors';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { useTheme as useAppTheme } from '../contexts/ThemeContext';
 
 /**
  * Navigation items configuration
@@ -143,7 +153,9 @@ DesktopNavMenu.displayName = 'DesktopNavMenu';
 const Header = memo(() => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { mode, toggleTheme } = useAppTheme();
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
+    const [searchValue, setSearchValue] = useState('');
 
     // Event handlers with useCallback to prevent unnecessary re-renders
     const handleOpenMobileMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
@@ -159,10 +171,21 @@ const Header = memo(() => {
         handleCloseMobileMenu();
     }, [navigate, handleCloseMobileMenu]);
 
+    const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(event.target.value);
+    }, []);
+
+    const handleSearchSubmit = useCallback((event: React.FormEvent) => {
+        event.preventDefault();
+        if (searchValue.trim()) {
+            navigate(`/devices?search=${encodeURIComponent(searchValue.trim())}`);
+        }
+    }, [navigate, searchValue]);
+
     return (
-        <AppBar position="static">
+        <AppBar position="static" elevation={1}>
             <Container maxWidth="xl">
-                <Toolbar disableGutters>
+                <Toolbar disableGutters sx={{ minHeight: 64 }}>
                     {/* Desktop Logo */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
                         <Logo />
@@ -198,6 +221,81 @@ const Header = memo(() => {
                         onNavigate={handleNavigate} 
                         currentPath={location.pathname}
                     />
+
+                    {/* Search Bar - Desktop only */}
+                    <Box sx={{ display: { xs: 'none', md: 'flex' }, mx: 2 }}>
+                        <form onSubmit={handleSearchSubmit}>
+                            <TextField
+                                size="small"
+                                placeholder="Search devices..."
+                                value={searchValue}
+                                onChange={handleSearchChange}
+                                sx={{
+                                    width: 250,
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                        '& fieldset': {
+                                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'rgba(255, 255, 255, 0.5)',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'rgba(255, 255, 255, 0.8)',
+                                        },
+                                    },
+                                    '& .MuiInputBase-input': {
+                                        color: 'white',
+                                        '&::placeholder': {
+                                            color: 'rgba(255, 255, 255, 0.7)',
+                                            opacity: 1,
+                                        },
+                                    },
+                                }}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </form>
+                    </Box>
+
+                    {/* Action Icons */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {/* Theme Toggle */}
+                        <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
+                            <IconButton
+                                onClick={toggleTheme}
+                                color="inherit"
+                                aria-label="toggle theme"
+                            >
+                                {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+                            </IconButton>
+                        </Tooltip>
+
+                        {/* Notifications */}
+                        <Tooltip title="Notifications">
+                            <IconButton color="inherit" aria-label="notifications">
+                                <Badge badgeContent={0} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
+
+                        {/* Quick Settings */}
+                        <Tooltip title="Settings">
+                            <IconButton
+                                color="inherit"
+                                aria-label="settings"
+                                onClick={() => navigate('/settings')}
+                            >
+                                <SettingsIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Toolbar>
             </Container>
         </AppBar>

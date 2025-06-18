@@ -6,14 +6,15 @@ import {
     Tabs,
     Paper,
     Typography,
-    Container,
     Alert,
-    Snackbar,
     Fab,
     Backdrop,
     CircularProgress,
-    useTheme,
-    alpha
+    useTheme as useMuiTheme,
+    alpha,
+    Stack,
+    Container,
+    Snackbar,
 } from '@mui/material';
 import {
     Router as RouterIcon,
@@ -30,6 +31,8 @@ import MqttSettings from '../../components/settings/MqttSettings';
 import FrontendSettings from '../../components/settings/FrontendSettings';
 import HomeassistantSettings from '../../components/settings/HomeassistantSettings';
 import AdvancedSettings from '../../components/settings/AdvancedSettings';
+import PageContainer from '../../components/common/PageContainer';
+import { useToast } from '../../components/common/Toast';
 import settingsApi from '../../api/SettingsApi';
 
 interface TabPanelProps {
@@ -74,22 +77,14 @@ const tabConfig = [
 ];
 
 function SettingsPage() {
-    const theme = useTheme();
+    const theme = useMuiTheme();
+    const { showSuccess, showError, showInfo } = useToast();
     const [settings, setSettings] = React.useState<Settings>();
     const [originalSettings, setOriginalSettings] = React.useState<Settings>();
     const [tabValue, setTabValue] = React.useState<number>(0);
     const [loading, setLoading] = React.useState<boolean>(true);
     const [saving, setSaving] = React.useState<boolean>(false);
     const [hasChanges, setHasChanges] = React.useState<boolean>(false);
-    const [snackbar, setSnackbar] = React.useState<{
-        open: boolean;
-        message: string;
-        severity: 'success' | 'error' | 'warning' | 'info';
-    }>({
-        open: false,
-        message: '',
-        severity: 'info'
-    });
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -144,11 +139,7 @@ function SettingsPage() {
         if (originalSettings) {
             setSettings({ ...originalSettings });
             setHasChanges(false);
-            setSnackbar({
-                open: true,
-                message: 'Changes discarded',
-                severity: 'info'
-            });
+            showInfo('Changes discarded');
         }
     };
 
@@ -159,18 +150,10 @@ function SettingsPage() {
                 await settingsApi.updateSettings(settings);
                 setOriginalSettings({ ...settings });
                 setHasChanges(false);
-                setSnackbar({
-                    open: true,
-                    message: 'Settings saved successfully',
-                    severity: 'success'
-                });
+                showSuccess('Settings saved successfully');
             } catch (error) {
                 console.error('Failed to save settings:', error);
-                setSnackbar({
-                    open: true,
-                    message: 'Failed to save settings. Please try again.',
-                    severity: 'error'
-                });
+                showError('Failed to save settings. Please try again.');
             } finally {
                 setSaving(false);
             }
@@ -186,18 +169,10 @@ function SettingsPage() {
             setHasChanges(false);
         } catch (error) {
             console.error('Failed to load settings:', error);
-            setSnackbar({
-                open: true,
-                message: 'Failed to load settings. Please refresh the page.',
-                severity: 'error'
-            });
+            showError('Failed to load settings. Please refresh the page.');
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleCloseSnackbar = () => {
-        setSnackbar(prev => ({ ...prev, open: false }));
     };
 
     React.useEffect(() => {
@@ -366,22 +341,6 @@ function SettingsPage() {
                 </Box>
             </Backdrop>
 
-            {/* Snackbar for notifications */}
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            >
-                <Alert 
-                    onClose={handleCloseSnackbar} 
-                    severity={snackbar.severity}
-                    variant="filled"
-                    sx={{ width: '100%' }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
         </Container>
     );
 }
