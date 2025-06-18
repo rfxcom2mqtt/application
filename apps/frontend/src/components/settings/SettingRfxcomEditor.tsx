@@ -1,11 +1,7 @@
 import * as React from 'react';
-
-import FormGroup from '@mui/material/FormGroup';
-import { FormLabel } from '@mui/material';
-import FormHelperText from '@mui/material/FormHelperText';
-import TextField from '@mui/material/TextField';
-import Switch from '@mui/material/Switch';
 import { SettingRfxcom } from '../../models/shared';
+import SettingField from './SettingField';
+import SettingSwitch from './SettingSwitch';
 
 interface RfxcomProps {
     settings: SettingRfxcom;
@@ -13,46 +9,43 @@ interface RfxcomProps {
 }
 
 function SettingRfxcomEditor(props: RfxcomProps) {
-    const rfxcomDebuglabel = { inputProps: { 'aria-label': 'Debug' } };
     const [state, setState] = React.useState<SettingRfxcom>();
 
     React.useEffect(() => {
         setState(props.settings);
-    }, []);
+    }, [props.settings]);
 
     React.useEffect(() => {
         if (state !== undefined) {
             props.handleChange(state);
         }
-    }, [state]);
+    }, [state, props]);
+
+    const updateField = (field: keyof SettingRfxcom, value: string | boolean) => {
+        setState(prevState => prevState ? { ...prevState, [field]: value } : undefined);
+    };
+
+    if (!state) {
+        return null;
+    }
 
     return (
         <>
-            {state !== undefined && (
-                <div>
-                    <FormGroup>
-                        <FormLabel>Port : </FormLabel>
-                        <TextField
-                            id="rfxcom-port"
-                            variant="outlined"
-                            value={state.usbport}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                setState({ ...state, usbport: event.target.value });
-                            }}
-                        />
-                        <FormHelperText>Location of the adapter.</FormHelperText>
-                        <FormLabel>Debug : </FormLabel>
-                        <Switch
-                            {...rfxcomDebuglabel}
-                            checked={state.debug}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                setState({ ...state, debug: event.target.checked });
-                            }}
-                        />
-                        <FormHelperText>Enable rfxcom debug</FormHelperText>
-                    </FormGroup>
-                </div>
-            )}
+            <SettingField
+                id="rfxcom-port"
+                label="Port"
+                value={state.usbport}
+                onChange={(value) => updateField('usbport', value)}
+                helperText="Location of the adapter."
+            />
+            
+            <SettingSwitch
+                id="rfxcom-debug"
+                label="Debug"
+                checked={state.debug}
+                onChange={(checked) => updateField('debug', checked)}
+                helperText="Enable rfxcom debug"
+            />
         </>
     );
 }
