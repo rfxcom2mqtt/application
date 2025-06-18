@@ -13,8 +13,6 @@ import {
     useTheme as useMuiTheme,
     alpha,
     Stack,
-    Container,
-    Snackbar,
 } from '@mui/material';
 import {
     Router as RouterIcon,
@@ -181,27 +179,48 @@ function SettingsPage() {
         getSettings();
     }, []);
 
+    const pageActions = (
+        <Stack direction="row" spacing={1}>
+            <Button
+                variant="outlined"
+                onClick={cancel}
+                disabled={!hasChanges || saving}
+                startIcon={<RefreshIcon />}
+            >
+                {t('settings.actions.reset')}
+            </Button>
+            <Button
+                variant="contained"
+                onClick={save}
+                disabled={!hasChanges || saving}
+                startIcon={<SaveIcon />}
+            >
+                {saving ? t('settings.actions.saving') : t('settings.actions.save')}
+            </Button>
+        </Stack>
+    );
+
     if (loading) {
         return (
-            <Container maxWidth="lg" sx={{ py: 4 }}>
+            <PageContainer
+                title={t('settings.title')}
+                subtitle={t('settings.subtitle')}
+                actions={pageActions}
+                loading={true}
+            >
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                     <CircularProgress size={60} />
                 </Box>
-            </Container>
+            </PageContainer>
         );
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
-                    {t('settings.title')}
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    {t('settings.subtitle')}
-                </Typography>
-            </Box>
-
+        <PageContainer
+            title={t('settings.title')}
+            subtitle={t('settings.subtitle')}
+            actions={pageActions}
+        >
             {settings && (
                 <Paper elevation={2} sx={{ borderRadius: 2, overflow: 'hidden' }}>
                     <Box sx={{ 
@@ -343,7 +362,7 @@ function SettingsPage() {
                 </Box>
             </Backdrop>
 
-        </Container>
+        </PageContainer>
     );
 }
 

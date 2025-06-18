@@ -8,16 +8,16 @@ import {
     CircularProgress, 
     Typography, 
     Paper,
-    Container,
     Fade,
-    useTheme
+    useTheme,
+    Chip
 } from '@mui/material';
 import { 
-    Article as ArticleIcon,
     WifiOff as WifiOffIcon,
     Wifi as WifiIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import PageContainer from '../../components/common/PageContainer';
 
 /**
  * Journals page component for displaying system logs
@@ -90,61 +90,22 @@ function JournalsPage() {
         }
     }, []);
 
+    const connectionStatusActions = (
+        <Chip
+            icon={connecting ? <CircularProgress size={16} /> : socket ? <WifiIcon /> : <WifiOffIcon />}
+            label={connecting ? t('journals.connection.connecting') : socket ? t('journals.connection.connected') : t('journals.connection.disconnected')}
+            color={connecting ? 'default' : socket ? 'success' : 'error'}
+            variant="outlined"
+        />
+    );
+
     return (
-        <Container maxWidth="xl" sx={{ py: 3 }}>
-            {/* Header Section */}
-            <Paper 
-                elevation={0} 
-                sx={{ 
-                    p: 3, 
-                    mb: 3, 
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main}15 0%, ${theme.palette.secondary.main}15 100%)`,
-                    border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: 2
-                }}
-            >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box
-                        sx={{
-                            p: 1.5,
-                            borderRadius: 2,
-                            backgroundColor: theme.palette.primary.main,
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}
-                    >
-                        <ArticleIcon fontSize="large" />
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
-                            {t('journals.title')}
-                        </Typography>
-                        <Typography variant="body1" color="text.secondary">
-                            {t('journals.subtitle')}
-                        </Typography>
-                    </Box>
-                    
-                    {/* Connection Status Indicator */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {connecting ? (
-                            <CircularProgress size={20} />
-                        ) : socket ? (
-                            <WifiIcon color="success" />
-                        ) : (
-                            <WifiOffIcon color="error" />
-                        )}
-                        <Typography 
-                            variant="body2" 
-                            color={connecting ? 'text.secondary' : socket ? 'success.main' : 'error.main'}
-                            fontWeight="medium"
-                        >
-                            {connecting ? t('journals.connection.connecting') : socket ? t('journals.connection.connected') : t('journals.connection.disconnected')}
-                        </Typography>
-                    </Box>
-                </Box>
-            </Paper>
+        <PageContainer
+            title={t('journals.title')}
+            subtitle={t('journals.subtitle')}
+            actions={connectionStatusActions}
+            maxWidth="xl"
+        >
 
             {/* Connection Status Messages */}
             <Fade in={connecting} timeout={300}>
@@ -218,7 +179,7 @@ function JournalsPage() {
                     </Box>
                 </Fade>
             )}
-        </Container>
+        </PageContainer>
     );
 }
 
