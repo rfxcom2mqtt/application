@@ -2,7 +2,21 @@ import React, { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import Messages from './Messages';
 import config from '../../utils/config';
-import { Alert, Box, CircularProgress, Typography } from '@mui/material';
+import { 
+    Alert, 
+    Box, 
+    CircularProgress, 
+    Typography, 
+    Paper,
+    Container,
+    Fade,
+    useTheme
+} from '@mui/material';
+import { 
+    Article as ArticleIcon,
+    WifiOff as WifiOffIcon,
+    Wifi as WifiIcon
+} from '@mui/icons-material';
 
 /**
  * Journals page component for displaying system logs
@@ -12,6 +26,7 @@ function JournalsPage() {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [connectionError, setConnectionError] = useState<string | null>(null);
     const [connecting, setConnecting] = useState<boolean>(true);
+    const theme = useTheme();
 
     useEffect(() => {
         // Create socket connection
@@ -74,34 +89,134 @@ function JournalsPage() {
     }, []);
 
     return (
-        <Box sx={{ padding: 2 }}>
-            <Typography variant="h5" component="h3" gutterBottom>
-                Journals
-            </Typography>
-            
-            {connecting && (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, my: 2 }}>
-                    <CircularProgress size={20} />
-                    <Typography>Connecting to server...</Typography>
+        <Container maxWidth="xl" sx={{ py: 3 }}>
+            {/* Header Section */}
+            <Paper 
+                elevation={0} 
+                sx={{ 
+                    p: 3, 
+                    mb: 3, 
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main}15 0%, ${theme.palette.secondary.main}15 100%)`,
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: 2
+                }}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Box
+                        sx={{
+                            p: 1.5,
+                            borderRadius: 2,
+                            backgroundColor: theme.palette.primary.main,
+                            color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <ArticleIcon fontSize="large" />
+                    </Box>
+                    <Box sx={{ flex: 1 }}>
+                        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+                            System Journals
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                            Real-time system logs and application events
+                        </Typography>
+                    </Box>
+                    
+                    {/* Connection Status Indicator */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {connecting ? (
+                            <CircularProgress size={20} />
+                        ) : socket ? (
+                            <WifiIcon color="success" />
+                        ) : (
+                            <WifiOffIcon color="error" />
+                        )}
+                        <Typography 
+                            variant="body2" 
+                            color={connecting ? 'text.secondary' : socket ? 'success.main' : 'error.main'}
+                            fontWeight="medium"
+                        >
+                            {connecting ? 'Connecting...' : socket ? 'Connected' : 'Disconnected'}
+                        </Typography>
+                    </Box>
                 </Box>
-            )}
+            </Paper>
+
+            {/* Connection Status Messages */}
+            <Fade in={connecting} timeout={300}>
+                <Box sx={{ mb: 2 }}>
+                    {connecting && (
+                        <Alert 
+                            severity="info" 
+                            icon={<CircularProgress size={20} />}
+                            sx={{ 
+                                borderRadius: 2,
+                                '& .MuiAlert-icon': {
+                                    alignItems: 'center'
+                                }
+                            }}
+                        >
+                            <Typography variant="body2">
+                                Establishing connection to server...
+                            </Typography>
+                        </Alert>
+                    )}
+                </Box>
+            </Fade>
             
-            {connectionError && (
-                <Alert severity="error" sx={{ my: 2 }}>
-                    {connectionError}
-                </Alert>
-            )}
+            <Fade in={!!connectionError} timeout={300}>
+                <Box sx={{ mb: 2 }}>
+                    {connectionError && (
+                        <Alert 
+                            severity="error" 
+                            sx={{ borderRadius: 2 }}
+                            onClose={() => setConnectionError(null)}
+                        >
+                            <Typography variant="body2" fontWeight="medium">
+                                Connection Failed
+                            </Typography>
+                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                                {connectionError}
+                            </Typography>
+                        </Alert>
+                    )}
+                </Box>
+            </Fade>
             
+            {/* Main Content */}
             {socket ? (
-                <Box className="logs-container" sx={{ mt: 2 }}>
-                    <Messages socket={socket} />
-                </Box>
+                <Fade in={!!socket} timeout={500}>
+                    <Paper 
+                        elevation={1} 
+                        sx={{ 
+                            borderRadius: 2,
+                            overflow: 'hidden',
+                            border: `1px solid ${theme.palette.divider}`
+                        }}
+                    >
+                        <Messages socket={socket} />
+                    </Paper>
+                </Fade>
             ) : !connecting && (
-                <Alert severity="warning" sx={{ my: 2 }}>
-                    Not connected to server. Please check your network connection and server status.
-                </Alert>
+                <Fade in={!connecting && !socket} timeout={300}>
+                    <Box>
+                        <Alert 
+                            severity="warning" 
+                            sx={{ borderRadius: 2 }}
+                        >
+                            <Typography variant="body2" fontWeight="medium">
+                                No Connection Available
+                            </Typography>
+                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                                Please check your network connection and server status. The page will automatically reconnect when the server becomes available.
+                            </Typography>
+                        </Alert>
+                    </Box>
+                </Fade>
             )}
-        </Box>
+        </Container>
     );
 }
 
