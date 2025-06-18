@@ -4,12 +4,20 @@ services:
     container_name: rfxcom2mqtt
     build: ./
     volumes:
-      - ./package/backend/config:/app/data
+      - ./apps/backend/config:/app/apps/backend/config
+      - ./apps/backend/data:/app/apps/backend/data
     ports:
-      - 8090:3000
-      - 8891:8891
+      - 8070:8891  # Single port for both frontend (/) and backend (/api)
     #devices:
     #  - /dev/ttyUSB1:/dev/ttyUSB0
     environment:
       - TZ=Europe/Paris
+      - NODE_ENV=production
+      - PROFILE=production
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8891/api/bridge/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
