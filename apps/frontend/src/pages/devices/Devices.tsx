@@ -1,150 +1,99 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridToolbar, GridRenderCellParams } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import { KeyValue } from '../../models/shared';
-import { useNavigate } from 'react-router-dom';
-import Stack from '@mui/material/Stack';
+import {
+    Box,
+    Typography,
+    Grid,
+    Alert,
+} from '@mui/material';
 
-import deviceApi from '../../api/DeviceApi';
-import controllerApi from '../../api/ControllerApi';
+// Components
+import DeviceCard from '../../components/common/DeviceCard';
+import DeviceListItem from '../../components/common/DeviceListItem';
+import DevicesControls from '../../components/common/DevicesControls';
+import EmptyState from '../../components/common/EmptyState';
+import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 
-class DeviceRow {
-    id: string = '';
-    unitCode: string = '';
-    type: string = '';
-    device: string = '';
-    subtype: string = '';
-    name: string = '';
-}
+// Hooks
+import { useDevices } from '../../hooks/useDevices';
+import { useDeviceFilters } from '../../hooks/useDeviceFilters';
 
 function DevicesPage() {
-    const navigate = useNavigate();
-    const pageSize = 10;
-    const [devicesState, setDevicesState] = React.useState<{ [s: string | number]: KeyValue }>();
+    // Use custom hooks for data and filtering
+    const { devices, loading, refresh, resetState, resetDevices } = useDevices();
+    const {
+        searchTerm,
+        setSearchTerm,
+        filterType,
+        setFilterType,
+        viewMode,
+        toggleViewMode,
+        filteredDevices,
+        uniqueTypes,
+    } = useDeviceFilters(devices);
 
-    const [rows, setRows] = React.useState<DeviceRow[]>([]);
-
-    React.useEffect(() => {
-        refresh();
-    }, []);
-
-    const refresh = () => {
-        console.log('get devices status');
-        deviceApi.getDevices().then((response) => {
-            setDevicesState(response);
-        });
-    };
-
-    const resetState = () => {
-        controllerApi.sendAction('reset_state').then((response) => {
-            refresh();
-        });
-    };
-
-    const resetDevices = () => {
-        controllerApi.sendAction('reset_devices').then((response) => {
-            refresh();
-        });
-    };
-
-    React.useEffect(() => {
-        const newRow: DeviceRow[] = [];
-        let index = 1;
-        for (const key in devicesState) {
-            const row = new DeviceRow();
-            row.name = devicesState[key]['name'];
-            row.subtype = devicesState[key]['type'];
-            row.type = devicesState[key]['type'];
-            row.subtype = devicesState[key]['subTypeValue'];
-            row.device = devicesState[key]['id'];
-            row.unitCode = devicesState[key]['unitCode'];
-            row.id = '' + index;
-            newRow.push(row);
-            index++;
-        }
-        setRows(newRow);
-    }, [devicesState]);
-
-    const columns: GridColDef[] = [
-        { field: 'id', headerName: 'ID', width: 90 },
-        {
-            field: 'device',
-            headerName: 'Device',
-            width: 300,
-            editable: false,
-            renderCell: (params: GridRenderCellParams<any, string>) => (
-                <Button
-                    key={params.value}
-                    onClick={() => navigate('/devices/' + params.value)}
-                    sx={{ my: 2, display: 'block' }}
-                >
-                    {' '}
-                    {params.value}
-                </Button>
-            ),
-        },
-        {
-            field: 'name',
-            headerName: 'Name',
-            width: 300,
-            editable: false,
-        },
-        {
-            field: 'unitCode',
-            headerName: 'Unit Code',
-            width: 100,
-            editable: false,
-        },
-        {
-            field: 'type',
-            headerName: 'Type',
-            width: 150,
-            editable: false,
-        },
-        {
-            field: 'subtype',
-            headerName: 'Subtype',
-            width: 150,
-            editable: false,
-        },
-    ];
+    if (loading) {
+        return <LoadingSkeleton />;
+    }
 
     return (
-        <Box sx={{ height: 700, width: '100%' }}>
-            {rows.length > 0 && (
-                <DataGrid
-                    autoHeight
-                    rows={rows}
-                    columns={columns}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: pageSize,
-                            },
-                        },
-                    }}
-                    pageSizeOptions={[pageSize]}
-                    disableColumnSelector
-                    disableDensitySelector
-                    disableRowSelectionOnClick
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                        },
-                    }}
+        <Box sx={{ p: 3 }}>
+            {/* Header */}
+            <Box sx={{ mb: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+                    Devices
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                    Manage and monitor your connected devices
+                </Typography>
+            </Box>
+
+            {/* Controls */}
+            <DevicesControls
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                filterType={filterType}
+                onFilterChange={setFilterType}
+                viewMode={viewMode}
+                onViewModeChange={toggleViewMode}
+                onRefresh={refresh}
+                onResetState={resetState}
+                onResetDevices={resetDevices}
+                deviceTypes={uniqueTypes}
+            />
+
+            {/* Device Count */}
+            <Box sx={{ mb: 2 }}>
+                <Alert severity="info" sx={{ mb: 2 }}>
+                    Found {filteredDevices.length} device{filteredDevices.length !== 1 ? 's' : ''}
+                    {searchTerm && ` matching "${searchTerm}"`}
+                    {filterType !== 'all' && ` of type "${filterType}"`}
+                </Alert>
+            </Box>
+
+            {/* Devices Grid/List */}
+            {filteredDevices.length === 0 ? (
+                <EmptyState 
+                    searchTerm={searchTerm}
+                    filterType={filterType}
+                    onRefresh={refresh}
                 />
+            ) : viewMode === 'grid' ? (
+                <Grid container spacing={3}>
+                    {filteredDevices.map((device) => (
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={device.device}>
+                            <DeviceCard device={device} />
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <Box>
+                    {filteredDevices.map((device) => (
+                        <DeviceListItem key={device.device} device={device} />
+                    ))}
+                </Box>
             )}
-            <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                <Button color="info" onClick={resetState}>
-                    Reset state
-                </Button>
-                <Button color="info" onClick={resetDevices}>
-                    Reset devices
-                </Button>
-            </Stack>
         </Box>
     );
 }
+
 export default DevicesPage;

@@ -22,7 +22,12 @@
                 "name": "Linkquality",
                 "description": "Link quality (signal strength)",
                 "property": "rssi",
-                "type": "linkquality"
+                "type": "linkquality",
+                "enabled_by_default": false,
+                "entity_category": "diagnostic",
+                "icon": "mdi:signal",
+                "state_class": "measurement",
+                "unit_of_measurement": "dBm"
             }
         },
         "binarysensors": {},
@@ -621,14 +626,23 @@
                 "name": "Linkquality",
                 "description": "Link quality (signal strength)",
                 "property": "rssi",
-                "type": "linkquality"
+                "type": "linkquality",
+                "enabled_by_default": false,
+                "entity_category": "diagnostic",
+                "icon": "mdi:signal",
+                "state_class": "measurement",
+                "unit_of_measurement": "dBm"
             },
             "0x011Fmocked_security1_battery": {
                 "id": "0x011Fmocked_security1_battery",
                 "name": "Battery",
                 "description": "Remaining battery in %",
                 "property": "batteryLevel",
-                "type": "battery"
+                "type": "battery",
+                "device_class": "battery",
+                "entity_category": "diagnostic",
+                "state_class": "measurement",
+                "unit_of_measurement": "%"
             }
         },
         "binarysensors": {
