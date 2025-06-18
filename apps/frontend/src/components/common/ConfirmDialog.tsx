@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -48,13 +49,17 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText,
+  cancelText,
   severity = 'question',
   loading = false,
 }) => {
+  const { t } = useTranslation();
   const config = severityConfig[severity];
   const IconComponent = config.icon;
+  
+  const defaultConfirmText = confirmText || t('common.confirm');
+  const defaultCancelText = cancelText || t('common.cancel');
 
   const handleConfirm = () => {
     onConfirm();
@@ -104,7 +109,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           disabled={loading}
           sx={{ minWidth: 100 }}
         >
-          {cancelText}
+          {defaultCancelText}
         </Button>
         <Button
           onClick={handleConfirm}
@@ -113,7 +118,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           disabled={loading}
           sx={{ minWidth: 100 }}
         >
-          {loading ? 'Processing...' : confirmText}
+          {loading ? t('confirmDialog.processing') : defaultConfirmText}
         </Button>
       </DialogActions>
     </Dialog>

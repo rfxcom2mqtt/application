@@ -47,13 +47,6 @@ function DevicesPage() {
             >
                 {t('common.refresh')}
             </Button>
-            <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={() => {/* TODO: Add device discovery */}}
-            >
-                {t('devices.discoverDevices')}
-            </Button>
         </Stack>
     );
 

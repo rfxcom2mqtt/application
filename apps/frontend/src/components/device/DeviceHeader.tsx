@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Paper,
     Box,
@@ -46,6 +47,7 @@ const DEVICE_ICONS = {
 
 function DeviceHeader({ device, entityCount, onRename, onRefresh }: DeviceHeaderProps) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const getDeviceIcon = (type?: string) => {
         return DEVICE_ICONS[type?.toLowerCase() as keyof typeof DEVICE_ICONS] || DEVICE_ICONS.default;
@@ -62,7 +64,7 @@ function DeviceHeader({ device, entityCount, onRename, onRefresh }: DeviceHeader
                     sx={{ display: 'flex', alignItems: 'center' }}
                 >
                     <DeviceHub sx={{ mr: 0.5, fontSize: 20 }} />
-                    Devices
+                    {t('navigation.devices')}
                 </Link>
                 <Typography color="text.primary" sx={{ display: 'flex', alignItems: 'center' }}>
                     {device.name}
@@ -78,7 +80,7 @@ function DeviceHeader({ device, entityCount, onRename, onRefresh }: DeviceHeader
                     <Box sx={{ flexGrow: 1 }}>
                         <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'white' }}>
                             {device.name}
-                            <Tooltip title="Rename device">
+                            <Tooltip title={t('device.actions.renameDevice')}>
                                 <IconButton onClick={onRename} sx={{ ml: 1, color: 'white' }}>
                                     <Edit />
                                 </IconButton>
@@ -89,13 +91,13 @@ function DeviceHeader({ device, entityCount, onRename, onRefresh }: DeviceHeader
                         </Typography>
                         <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                             <Chip 
-                                label="Online" 
+                                label={t('common.online')} 
                                 color="success" 
                                 size="small" 
                                 sx={{ bgcolor: 'rgba(76, 175, 80, 0.8)', color: 'white' }}
                             />
                             <Chip 
-                                label={`${entityCount} entities`} 
+                                label={t('deviceHeader.entitiesCount', { count: entityCount })} 
                                 size="small" 
                                 sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
                             />
@@ -107,12 +109,12 @@ function DeviceHeader({ device, entityCount, onRename, onRefresh }: DeviceHeader
                         </Stack>
                     </Box>
                     <Stack spacing={1}>
-                        <Tooltip title="Refresh device data">
+                        <Tooltip title={t('deviceHeader.refreshData')}>
                             <IconButton onClick={onRefresh} sx={{ color: 'white' }}>
                                 <Refresh />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Go back">
+                        <Tooltip title={t('deviceHeader.goBack')}>
                             <IconButton onClick={() => navigate('/devices')} sx={{ color: 'white' }}>
                                 <ArrowBack />
                             </IconButton>

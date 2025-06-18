@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Card,
     CardContent,
@@ -32,6 +33,8 @@ interface DeviceInfoProps {
 }
 
 function DeviceInfo({ device, entityCounts }: DeviceInfoProps) {
+    const { t } = useTranslation();
+    
     return (
         <>
             {/* Device Information */}
@@ -39,14 +42,14 @@ function DeviceInfo({ device, entityCounts }: DeviceInfoProps) {
                 <CardContent>
                     <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
                         <Info sx={{ mr: 1 }} />
-                        Device Information
+                        {t('deviceInfo.title')}
                     </Typography>
                     <Divider sx={{ mb: 2 }} />
                     
                     <List dense>
                         <ListItem>
                             <ListItemText 
-                                primary="Name" 
+                                primary={t('deviceInfo.name')} 
                                 secondary={device.name}
                             />
                         </ListItem>
@@ -54,7 +57,7 @@ function DeviceInfo({ device, entityCounts }: DeviceInfoProps) {
                         {device.name !== device.originalName && device.originalName && (
                             <ListItem>
                                 <ListItemText 
-                                    primary="Original Name" 
+                                    primary={t('deviceInfo.originalName')} 
                                     secondary={device.originalName}
                                 />
                             </ListItem>
@@ -62,36 +65,36 @@ function DeviceInfo({ device, entityCounts }: DeviceInfoProps) {
                         
                         <ListItem>
                             <ListItemText 
-                                primary="RFXCOM ID" 
+                                primary={t('deviceInfo.rfxcomId')} 
                                 secondary={device.id}
                             />
                         </ListItem>
                         
                         <ListItem>
                             <ListItemText 
-                                primary="Manufacturer" 
-                                secondary={device.manufacturer || 'Unknown'}
+                                primary={t('deviceInfo.manufacturer')} 
+                                secondary={device.manufacturer || t('common.unknown')}
                             />
                         </ListItem>
                         
                         <ListItem>
                             <ListItemText 
-                                primary="Type" 
+                                primary={t('deviceInfo.type')} 
                                 secondary={device.type}
                             />
                         </ListItem>
                         
                         <ListItem>
                             <ListItemText 
-                                primary="Subtype" 
-                                secondary={device.subTypeValue || 'N/A'}
+                                primary={t('deviceInfo.subtype')} 
+                                secondary={device.subTypeValue || t('deviceInfo.notApplicable')}
                             />
                         </ListItem>
                         
                         <ListItem>
                             <ListItemText 
-                                primary="Entities" 
-                                secondary={`${entityCounts.total} total entities`}
+                                primary={t('deviceInfo.entities')} 
+                                secondary={t('deviceInfo.totalEntities', { count: entityCounts.total })}
                             />
                         </ListItem>
                     </List>
@@ -102,52 +105,63 @@ function DeviceInfo({ device, entityCounts }: DeviceInfoProps) {
             <Card sx={{ borderRadius: 3 }}>
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        Quick Stats
+                        {t('deviceInfo.quickStats')}
                     </Typography>
                     <Divider sx={{ mb: 2 }} />
                     
                     <Grid container spacing={2}>
-                        {entityCounts.sensors && entityCounts.sensors > 0 && (
+                        {Number(entityCounts.sensors) > 0 && (
                             <Grid item xs={6}>
                                 <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.light', color: 'white', borderRadius: 2 }}>
-                                    <Typography variant="h4">{entityCounts.sensors}</Typography>
-                                    <Typography variant="body2">Sensors</Typography>
+                                    <Typography variant="h4">{Number(entityCounts.sensors)}</Typography>
+                                    <Typography variant="body2">{t('deviceInfo.sensors')}</Typography>
                                 </Paper>
                             </Grid>
                         )}
                         
-                        {entityCounts.switches && entityCounts.switches > 0 && (
+                        {Number(entityCounts.switches) > 0 && (
                             <Grid item xs={6}>
                                 <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'secondary.light', color: 'white', borderRadius: 2 }}>
-                                    <Typography variant="h4">{entityCounts.switches}</Typography>
-                                    <Typography variant="body2">Switches</Typography>
+                                    <Typography variant="h4">{Number(entityCounts.switches)}</Typography>
+                                    <Typography variant="body2">{t('deviceInfo.switches')}</Typography>
                                 </Paper>
                             </Grid>
                         )}
                         
-                        {entityCounts.binarySensors && entityCounts.binarySensors > 0 && (
+                        {Number(entityCounts.binarySensors) > 0 && (
                             <Grid item xs={6}>
                                 <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'success.light', color: 'white', borderRadius: 2 }}>
-                                    <Typography variant="h4">{entityCounts.binarySensors}</Typography>
-                                    <Typography variant="body2">Binary Sensors</Typography>
+                                    <Typography variant="h4">{Number(entityCounts.binarySensors)}</Typography>
+                                    <Typography variant="body2">{t('deviceInfo.binarySensors')}</Typography>
                                 </Paper>
                             </Grid>
                         )}
                         
-                        {entityCounts.covers && entityCounts.covers > 0 && (
+                        {Number(entityCounts.covers) > 0 && (
                             <Grid item xs={6}>
                                 <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'warning.light', color: 'white', borderRadius: 2 }}>
-                                    <Typography variant="h4">{entityCounts.covers}</Typography>
-                                    <Typography variant="body2">Covers</Typography>
+                                    <Typography variant="h4">{Number(entityCounts.covers)}</Typography>
+                                    <Typography variant="body2">{t('deviceInfo.covers')}</Typography>
                                 </Paper>
                             </Grid>
                         )}
 
-                        {entityCounts.selects && entityCounts.selects > 0 && (
+                        {Number(entityCounts.selects) > 0 && (
                             <Grid item xs={6}>
                                 <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'info.light', color: 'white', borderRadius: 2 }}>
-                                    <Typography variant="h4">{entityCounts.selects}</Typography>
-                                    <Typography variant="body2">Selects</Typography>
+                                    <Typography variant="h4">{Number(entityCounts.selects)}</Typography>
+                                    <Typography variant="body2">{t('deviceInfo.selects')}</Typography>
+                                </Paper>
+                            </Grid>
+                        )}
+                        
+                        {/* Show message when no entities are available */}
+                        {Number(entityCounts.total) === 0 && (
+                            <Grid item xs={12}>
+                                <Paper sx={{ p: 3, textAlign: 'center', bgcolor: 'grey.100', borderRadius: 2 }}>
+                                    <Typography variant="body1" color="text.secondary">
+                                        {t('deviceInfo.noEntities')}
+                                    </Typography>
                                 </Paper>
                             </Grid>
                         )}

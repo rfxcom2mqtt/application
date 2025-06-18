@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Card,
     CardContent,
@@ -52,18 +53,19 @@ export function SensorsSection({ sensors, state, onRename }: {
     state: any;
     onRename: (sensor: any) => void;
 }) {
+    const { t } = useTranslation();
     const Sensor = React.lazy(() => import('./Sensor'));
     
     return (
         <EntitySection
-            title="Sensors"
+            title={t('deviceInfo.sensors')}
             icon={<DeviceHub sx={{ mr: 1 }} />}
             count={Object.keys(sensors || {}).length}
         >
             {Object.keys(sensors || {}).map((key) => (
                 <Grid item xs={12} sm={6} key={key}>
                     <Paper sx={{ p: 2, borderRadius: 2 }}>
-                        <React.Suspense fallback={<div>Loading...</div>}>
+                        <React.Suspense fallback={<div>{t('common.loading')}</div>}>
                             <Sensor 
                                 sensor={sensors[key]} 
                                 value={state}
@@ -83,18 +85,19 @@ export function SwitchesSection({ switches, state, onAction, onRename }: {
     onAction: (entity: any, action: string) => void;
     onRename: (entity: any) => void;
 }) {
+    const { t } = useTranslation();
     const SwitchItem = React.lazy(() => import('./Switch'));
     
     return (
         <EntitySection
-            title="Switches"
+            title={t('deviceInfo.switches')}
             icon={<Memory sx={{ mr: 1 }} />}
             count={Object.keys(switches || {}).length}
         >
             {Object.keys(switches || {}).map((key) => (
                 <Grid item xs={12} sm={6} key={key}>
                     <Paper sx={{ p: 2, borderRadius: 2 }}>
-                        <React.Suspense fallback={<div>Loading...</div>}>
+                        <React.Suspense fallback={<div>{t('common.loading')}</div>}>
                             <SwitchItem
                                 item={switches[key]}
                                 value={state}
@@ -113,18 +116,19 @@ export function BinarySensorsSection({ binarySensors, state }: {
     binarySensors: any;
     state: any;
 }) {
+    const { t } = useTranslation();
     const BinarySensor = React.lazy(() => import('./BinarySensor'));
     
     return (
         <EntitySection
-            title="Binary Sensors"
+            title={t('deviceInfo.binarySensors')}
             icon={<SignalWifi4Bar sx={{ mr: 1 }} />}
             count={Object.keys(binarySensors || {}).length}
         >
             {Object.keys(binarySensors || {}).map((key) => (
                 <Grid item xs={12} sm={6} key={key}>
                     <Paper sx={{ p: 2, borderRadius: 2 }}>
-                        <React.Suspense fallback={<div>Loading...</div>}>
+                        <React.Suspense fallback={<div>{t('common.loading')}</div>}>
                             <BinarySensor
                                 item={binarySensors[key]}
                                 value={state}
@@ -142,18 +146,19 @@ export function CoversSection({ covers, state }: {
     covers: any;
     state: any;
 }) {
+    const { t } = useTranslation();
     const Cover = React.lazy(() => import('./Cover'));
     
     return (
         <EntitySection
-            title="Covers"
+            title={t('deviceInfo.covers')}
             icon={<Router sx={{ mr: 1 }} />}
             count={Object.keys(covers || {}).length}
         >
             {Object.keys(covers || {}).map((key) => (
                 <Grid item xs={12} sm={6} key={key}>
                     <Paper sx={{ p: 2, borderRadius: 2 }}>
-                        <React.Suspense fallback={<div>Loading...</div>}>
+                        <React.Suspense fallback={<div>{t('common.loading')}</div>}>
                             <Cover
                                 item={covers[key]}
                                 value={state}
@@ -171,18 +176,19 @@ export function SelectsSection({ selects, state }: {
     selects: any;
     state: any;
 }) {
+    const { t } = useTranslation();
     const Select = React.lazy(() => import('./Select'));
     
     return (
         <EntitySection
-            title="Selects"
+            title={t('deviceInfo.selects')}
             icon={<Category sx={{ mr: 1 }} />}
             count={Object.keys(selects || {}).length}
         >
             {Object.keys(selects || {}).map((key) => (
                 <Grid item xs={12} sm={6} key={key}>
                     <Paper sx={{ p: 2, borderRadius: 2 }}>
-                        <React.Suspense fallback={<div>Loading...</div>}>
+                        <React.Suspense fallback={<div>{t('common.loading')}</div>}>
                             <Select
                                 item={selects[key]}
                                 value={state}

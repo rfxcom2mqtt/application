@@ -9,11 +9,13 @@ import {
     Divider,
     Paper,
     Skeleton,
+    Button,
+    Stack,
 } from '@mui/material';
-import { Code } from '@mui/icons-material';
+import { Code, Refresh, Edit } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 // Components
-import DeviceHeader from '../../components/device/DeviceHeader';
 import DeviceInfo from '../../components/device/DeviceInfo';
 import {
     SensorsSection,
@@ -26,11 +28,13 @@ import ConfirmationDialogTextfield, {
     DialogTextfieldState,
     closedDialogTextfieldState,
 } from '../../components/ConfirmationDialogTextfield';
+import PageContainer from '../../components/common/PageContainer';
 
 // Hooks
 import { useDevice } from '../../hooks/useDevice';
 
 function DevicePage() {
+    const { t } = useTranslation();
     const {
         device,
         state,
@@ -53,7 +57,7 @@ function DevicePage() {
         setDialogProps({
             open: true,
             action,
-            message: 'Rename device',
+            message: t('device.actions.renameDevice'),
         });
     };
 
@@ -64,7 +68,7 @@ function DevicePage() {
         setDialogProps({
             open: true,
             action,
-            message: 'Rename sensor',
+            message: t('device.actions.renameSensor'),
         });
     };
 
@@ -75,7 +79,7 @@ function DevicePage() {
         setDialogProps({
             open: true,
             action,
-            message: 'Rename switch',
+            message: t('device.actions.renameSwitch'),
         });
     };
 
@@ -90,10 +94,42 @@ function DevicePage() {
         setDialogProps({ ...dialogProps, open: false });
     };
 
+    const pageActions = device ? (
+        <Stack direction="row" spacing={1}>
+            <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={handleRenameDevice}
+            >
+                {t('device.actions.rename')}
+            </Button>
+            <Button
+                variant="outlined"
+                startIcon={<Refresh />}
+                onClick={refresh}
+                disabled={loading}
+            >
+                {t('common.refresh')}
+            </Button>
+        </Stack>
+    ) : null;
+
+    const deviceTitle = device?.name || device?.id || t('device.title');
+    const deviceSubtitle = device ? 
+        t('device.subtitle', { 
+            count: getEntityCount(),
+            type: device.type || t('common.unknown')
+        }) : 
+        t('device.loading');
+
     if (loading) {
         return (
-            <Box sx={{ p: 3 }}>
-                <Skeleton variant="text" width={200} height={40} sx={{ mb: 2 }} />
+            <PageContainer
+                title={t('device.loading')}
+                subtitle={t('device.loadingSubtitle')}
+                actions={pageActions}
+                loading={true}
+            >
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={8}>
                         <Card>
@@ -114,30 +150,31 @@ function DevicePage() {
                         </Card>
                     </Grid>
                 </Grid>
-            </Box>
+            </PageContainer>
         );
     }
 
     if (!device) {
         return (
-            <Box sx={{ p: 3 }}>
+            <PageContainer
+                title={t('device.notFound')}
+                subtitle={t('device.notFoundSubtitle')}
+            >
                 <Alert severity="error">
-                    Device not found or failed to load.
+                    {t('device.notFoundMessage')}
                 </Alert>
-            </Box>
+            </PageContainer>
         );
     }
 
     const entityCounts = getEntityCounts();
 
     return (
-        <Box sx={{ p: 3 }}>
-            <DeviceHeader
-                device={device}
-                entityCount={getEntityCount()}
-                onRename={handleRenameDevice}
-                onRefresh={refresh}
-            />
+        <PageContainer
+            title={deviceTitle}
+            subtitle={deviceSubtitle}
+            actions={pageActions}
+        >
 
             <Grid container spacing={3}>
                 {/* Device Information */}
@@ -198,7 +235,7 @@ function DevicePage() {
                         <CardContent>
                             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Code sx={{ mr: 1 }} />
-                                Raw State (Debug)
+                                {t('device.debug.title')}
                             </Typography>
                             <Divider sx={{ mb: 2 }} />
                             
@@ -218,7 +255,7 @@ function DevicePage() {
                 onCancel={dialogOnCancel}
                 customMessage={dialogProps.message}
             />
-        </Box>
+        </PageContainer>
     );
 }
 

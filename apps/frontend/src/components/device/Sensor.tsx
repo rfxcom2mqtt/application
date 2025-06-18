@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Card,
     CardContent,
@@ -28,6 +29,7 @@ interface SensorProps {
 }
 
 function Sensor(props: SensorProps) {
+    const { t } = useTranslation();
     const { sensor, value, renameAction } = props;
 
     const getValue = (): string => {
@@ -36,16 +38,16 @@ function Sensor(props: SensorProps) {
         
         for (const entity of value) {
             if (entity.entityId === id) {
-                return entity[property]?.toString() || 'N/A';
+                return entity[property]?.toString() || t('deviceInfo.notApplicable');
             }
         }
         
         // Fallback to first entity if no match found
         if (value.length > 0) {
-            return value[0][property]?.toString() || 'N/A';
+            return value[0][property]?.toString() || t('deviceInfo.notApplicable');
         }
         
-        return 'N/A';
+        return t('deviceInfo.notApplicable');
     };
 
     const handleRename = () => {
@@ -159,7 +161,7 @@ function Sensor(props: SensorProps) {
                     </Box>
                     
                     {renameAction && (
-                        <Tooltip title="Rename sensor">
+                        <Tooltip title={t('device.actions.renameSensor')}>
                             <IconButton 
                                 onClick={handleRename} 
                                 size="small"
@@ -228,7 +230,7 @@ function Sensor(props: SensorProps) {
                         )}
                         
                         <Typography variant="caption" color="text.secondary">
-                            ID: {sensor.id}
+                            {t('sensor.id')}: {sensor.id}
                         </Typography>
                     </Stack>
                 </Box>

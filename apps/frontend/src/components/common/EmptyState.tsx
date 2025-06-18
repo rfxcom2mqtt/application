@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
@@ -31,6 +32,7 @@ function EmptyState({
     onClearFilters,
     onDiscoverDevices 
 }: EmptyStateProps) {
+    const { t } = useTranslation();
     const theme = useMuiTheme();
     const hasFilters = searchTerm || (filterType && filterType !== 'all');
     
@@ -38,12 +40,12 @@ function EmptyState({
         if (hasFilters) {
             return {
                 icon: Search,
-                title: 'No matching devices found',
-                description: `No devices match your current search${searchTerm ? ` for "${searchTerm}"` : ''}${filterType && filterType !== 'all' ? ` with type "${filterType}"` : ''}.`,
+                title: t('emptyState.noResults'),
+                description: t('emptyState.noResultsDescription'),
                 suggestions: [
-                    'Try different search terms',
-                    'Clear filters to see all devices',
-                    'Check your spelling',
+                    t('emptyState.suggestions.tryDifferentTerms'),
+                    t('emptyState.suggestions.clearFilters'),
+                    t('emptyState.suggestions.checkSpelling'),
                 ],
                 actions: (
                     <Stack direction="row" spacing={2}>
@@ -53,7 +55,7 @@ function EmptyState({
                                 startIcon={<FilterList />} 
                                 onClick={onClearFilters}
                             >
-                                Clear Filters
+                                {t('devices.clearFilters')}
                             </Button>
                         )}
                         {onRefresh && (
@@ -62,7 +64,7 @@ function EmptyState({
                                 startIcon={<Refresh />} 
                                 onClick={onRefresh}
                             >
-                                Refresh
+                                {t('common.refresh')}
                             </Button>
                         )}
                     </Stack>
@@ -72,13 +74,13 @@ function EmptyState({
 
         return {
             icon: DeviceHub,
-            title: 'No devices discovered',
-            description: 'Your RFXcom2MQTT system hasn\'t discovered any devices yet. Start by scanning for devices or check your RFXcom connection.',
+            title: t('emptyState.noDevices'),
+            description: t('emptyState.noDevicesDescription'),
             suggestions: [
-                'Ensure your RFXcom device is connected',
-                'Check that devices are powered on and in range',
-                'Try triggering devices manually to help discovery',
-                'Verify RFXcom configuration settings',
+                t('emptyState.suggestions.ensureConnection'),
+                t('emptyState.suggestions.checkPowered'),
+                t('emptyState.suggestions.triggerManually'),
+                t('emptyState.suggestions.verifyConfig'),
             ],
             actions: (
                 <Stack direction="row" spacing={2}>
@@ -89,7 +91,7 @@ function EmptyState({
                             onClick={onDiscoverDevices}
                             size="large"
                         >
-                            Discover Devices
+                            {t('devices.discoverDevices')}
                         </Button>
                     )}
                     {onRefresh && (
@@ -99,7 +101,7 @@ function EmptyState({
                             onClick={onRefresh}
                             size="large"
                         >
-                            Refresh
+                            {t('common.refresh')}
                         </Button>
                     )}
                 </Stack>
@@ -161,7 +163,7 @@ function EmptyState({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                                 <Lightbulb sx={{ fontSize: 20, color: 'warning.main' }} />
                                 <Typography variant="subtitle2" color="text.secondary">
-                                    Suggestions:
+                                    {t('emptyState.suggestions.title')}
                                 </Typography>
                             </Box>
                             {content.suggestions.map((suggestion, index) => (

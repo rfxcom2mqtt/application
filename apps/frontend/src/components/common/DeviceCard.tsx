@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Card,
     CardContent,
@@ -57,6 +58,7 @@ const STATUS_COLORS = {
 };
 
 function DeviceCard({ device }: DeviceCardProps) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
@@ -123,7 +125,7 @@ function DeviceCard({ device }: DeviceCardProps) {
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                        <Tooltip title={`Device is ${device.status || 'unknown'}`}>
+                        <Tooltip title={t('deviceCard.deviceStatus', { status: t(`devices.status.${device.status || 'unknown'}`) })}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 {device.status === 'online' ? (
                                     <SignalWifi4Bar color="success" fontSize="small" />
@@ -132,7 +134,7 @@ function DeviceCard({ device }: DeviceCardProps) {
                                 )}
                             </Box>
                         </Tooltip>
-                        <Tooltip title="More actions">
+                        <Tooltip title={t('deviceCard.moreActions')}>
                             <IconButton
                                 size="small"
                                 onClick={handleMenuOpen}
@@ -146,15 +148,15 @@ function DeviceCard({ device }: DeviceCardProps) {
 
                 {/* Device Info */}
                 <Stack spacing={1.5}>
-                    <DeviceInfoRow label="Type" value={device.type} />
+                    <DeviceInfoRow label={t('deviceInfo.type')} value={device.type} />
                     {device.subtype && (
-                        <DeviceInfoRow label="Subtype" value={device.subtype} />
+                        <DeviceInfoRow label={t('deviceInfo.subtype')} value={device.subtype} />
                     )}
                     {device.unitCode && (
-                        <DeviceInfoRow label="Unit Code" value={device.unitCode} />
+                        <DeviceInfoRow label={t('deviceCard.unitCode')} value={device.unitCode} />
                     )}
                     <DeviceInfoRow 
-                        label="Entities" 
+                        label={t('deviceInfo.entities')} 
                         value={
                             <Chip 
                                 label={device.entityCount || 0} 
@@ -176,7 +178,7 @@ function DeviceCard({ device }: DeviceCardProps) {
                             fontStyle: 'italic',
                         }}
                     >
-                        Last seen: {device.lastSeen}
+                        {t('deviceCard.lastSeen', { time: device.lastSeen })}
                     </Typography>
                 )}
             </CardContent>
@@ -192,10 +194,10 @@ function DeviceCard({ device }: DeviceCardProps) {
                     fullWidth
                     size="small"
                 >
-                    View Details
+                    {t('deviceCard.viewDetails')}
                 </Button>
                 {device.status === 'online' && (
-                    <Tooltip title="Quick toggle">
+                        <Tooltip title={t('deviceCard.quickToggle')}>
                         <IconButton
                             size="small"
                             color="primary"
@@ -221,19 +223,19 @@ function DeviceCard({ device }: DeviceCardProps) {
                     <ListItemIcon>
                         <Refresh fontSize="small" />
                     </ListItemIcon>
-                    <ListItemText>Refresh</ListItemText>
+                    <ListItemText>{t('common.refresh')}</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={() => handleQuickAction('edit')}>
                     <ListItemIcon>
                         <Edit fontSize="small" />
                     </ListItemIcon>
-                    <ListItemText>Edit</ListItemText>
+                    <ListItemText>{t('common.edit')}</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={() => handleQuickAction('delete')} sx={{ color: 'error.main' }}>
                     <ListItemIcon>
                         <Delete fontSize="small" color="error" />
                     </ListItemIcon>
-                    <ListItemText>Remove</ListItemText>
+                    <ListItemText>{t('deviceCard.remove')}</ListItemText>
                 </MenuItem>
             </Menu>
         </Card>
