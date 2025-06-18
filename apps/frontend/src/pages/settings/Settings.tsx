@@ -25,6 +25,7 @@ import {
     Save as SaveIcon,
     Refresh as RefreshIcon
 } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import { Settings, SettingMqtt, SettingFrontend, SettingHass, SettingRfxcom } from '../../models/shared';
 import SettingRfxcomEditor from '../../components/settings/SettingRfxcomEditor';
 import MqttSettings from '../../components/settings/MqttSettings';
@@ -68,17 +69,18 @@ function a11yProps(index: number) {
     };
 }
 
-const tabConfig = [
-    { label: 'RFXcom', icon: <RouterIcon />, description: 'Configure RFXcom device settings' },
-    { label: 'MQTT', icon: <MqttIcon />, description: 'Configure MQTT broker connection' },
-    { label: 'Frontend', icon: <FrontendIcon />, description: 'Configure web interface settings' },
-    { label: 'Home Assistant', icon: <HomeAssistantIcon />, description: 'Configure Home Assistant integration' },
-    { label: 'Advanced', icon: <AdvancedIcon />, description: 'Advanced system settings' },
-];
-
 function SettingsPage() {
     const theme = useMuiTheme();
+    const { t } = useTranslation();
     const { showSuccess, showError, showInfo } = useToast();
+    
+    const tabConfig = [
+        { label: t('settings.tabs.rfxcom.label'), icon: <RouterIcon />, description: t('settings.tabs.rfxcom.description') },
+        { label: t('settings.tabs.mqtt.label'), icon: <MqttIcon />, description: t('settings.tabs.mqtt.description') },
+        { label: t('settings.tabs.frontend.label'), icon: <FrontendIcon />, description: t('settings.tabs.frontend.description') },
+        { label: t('settings.tabs.homeAssistant.label'), icon: <HomeAssistantIcon />, description: t('settings.tabs.homeAssistant.description') },
+        { label: t('settings.tabs.advanced.label'), icon: <AdvancedIcon />, description: t('settings.tabs.advanced.description') },
+    ];
     const [settings, setSettings] = React.useState<Settings>();
     const [originalSettings, setOriginalSettings] = React.useState<Settings>();
     const [tabValue, setTabValue] = React.useState<number>(0);
@@ -139,7 +141,7 @@ function SettingsPage() {
         if (originalSettings) {
             setSettings({ ...originalSettings });
             setHasChanges(false);
-            showInfo('Changes discarded');
+            showInfo(t('settings.messages.changesDiscarded'));
         }
     };
 
@@ -150,10 +152,10 @@ function SettingsPage() {
                 await settingsApi.updateSettings(settings);
                 setOriginalSettings({ ...settings });
                 setHasChanges(false);
-                showSuccess('Settings saved successfully');
+                showSuccess(t('settings.messages.saveSuccess'));
             } catch (error) {
                 console.error('Failed to save settings:', error);
-                showError('Failed to save settings. Please try again.');
+                showError(t('settings.messages.saveError'));
             } finally {
                 setSaving(false);
             }
@@ -169,7 +171,7 @@ function SettingsPage() {
             setHasChanges(false);
         } catch (error) {
             console.error('Failed to load settings:', error);
-            showError('Failed to load settings. Please refresh the page.');
+            showError(t('settings.messages.loadError'));
         } finally {
             setLoading(false);
         }
@@ -193,10 +195,10 @@ function SettingsPage() {
         <Container maxWidth="lg" sx={{ py: 4 }}>
             <Box sx={{ mb: 4 }}>
                 <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
-                    Settings
+                    {t('settings.title')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    Configure your RFXcom2MQTT system settings
+                    {t('settings.subtitle')}
                 </Typography>
             </Box>
 
@@ -286,7 +288,7 @@ function SettingsPage() {
                         <Box>
                             {hasChanges && (
                                 <Alert severity="warning" sx={{ py: 0 }}>
-                                    You have unsaved changes
+                                    {t('settings.actions.unsavedChanges')}
                                 </Alert>
                             )}
                         </Box>
@@ -297,7 +299,7 @@ function SettingsPage() {
                                 disabled={!hasChanges || saving}
                                 startIcon={<RefreshIcon />}
                             >
-                                Reset
+                                {t('settings.actions.reset')}
                             </Button>
                             <Button
                                 variant="contained"
@@ -305,7 +307,7 @@ function SettingsPage() {
                                 disabled={!hasChanges || saving}
                                 startIcon={<SaveIcon />}
                             >
-                                {saving ? 'Saving...' : 'Save Changes'}
+                                {saving ? t('settings.actions.saving') : t('settings.actions.save')}
                             </Button>
                         </Box>
                     </Box>
@@ -337,7 +339,7 @@ function SettingsPage() {
             >
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                     <CircularProgress color="inherit" />
-                    <Typography variant="body1">Saving settings...</Typography>
+                    <Typography variant="body1">{t('settings.messages.savingSettings')}</Typography>
                 </Box>
             </Backdrop>
 

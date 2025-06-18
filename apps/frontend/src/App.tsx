@@ -1,11 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
+import './i18n'; // Initialize i18n
 import Header from './components/Header';
 import config from './utils/config';
 import { Box, CircularProgress, Alert } from '@mui/material';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastProvider } from './components/common/Toast';
+import { useTranslation } from 'react-i18next';
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: Error | null }> {
@@ -25,19 +27,28 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
     render() {
         if (this.state.hasError) {
             return (
-                <Box sx={{ p: 3 }}>
-                    <Alert severity="error">
-                        <strong>Something went wrong.</strong>
-                        <p>Please try refreshing the page. If the problem persists, please contact support.</p>
-                        <p>{this.state.error?.message}</p>
-                    </Alert>
-                </Box>
+                <ErrorBoundaryContent error={this.state.error} />
             );
         }
 
         return this.props.children;
     }
 }
+
+// Error Boundary Content Component (functional component to use hooks)
+const ErrorBoundaryContent = ({ error }: { error: Error | null }) => {
+    const { t } = useTranslation();
+    
+    return (
+        <Box sx={{ p: 3 }}>
+            <Alert severity="error">
+                <strong>{t('errors.somethingWentWrong')}</strong>
+                <p>{t('errors.tryRefreshing')}</p>
+                <p>{error?.message}</p>
+            </Alert>
+        </Box>
+    );
+};
 
 // Loading component for suspense fallback
 const LoadingFallback = () => (
@@ -54,14 +65,18 @@ const SettingsPage = lazy(() => import('./pages/settings/Settings'));
 const JournalsPage = lazy(() => import('./pages/journals/Journals'));
 
 // Not Found Page
-const NotFoundPage = () => (
-    <Box sx={{ p: 3, textAlign: 'center' }}>
-        <Alert severity="warning">
-            <strong>404 - Page Not Found</strong>
-            <p>The page you are looking for does not exist.</p>
-        </Alert>
-    </Box>
-);
+const NotFoundPage = () => {
+    const { t } = useTranslation();
+    
+    return (
+        <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Alert severity="warning">
+                <strong>{t('errors.pageNotFound')}</strong>
+                <p>{t('errors.pageNotFoundDescription')}</p>
+            </Alert>
+        </Box>
+    );
+};
 
 /**
  * Main Application Component

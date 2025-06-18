@@ -23,6 +23,8 @@ import {
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { useTranslation } from 'react-i18next';
+import PageContainer from '../../components/common/PageContainer';
 
 import controllerApi from '../../api/ControllerApi';
 
@@ -31,6 +33,8 @@ import controllerApi from '../../api/ControllerApi';
  * Displays information about the RFXCOM controller and bridge
  */
 function ControllerInfoPage() {
+    const { t } = useTranslation();
+    
     // State
     const [controllerInfo, setControllerInfo] = useState<BridgeInfo>();
     const [loading, setLoading] = useState<boolean>(true);
@@ -55,7 +59,7 @@ function ControllerInfoPage() {
             })
             .catch((err) => {
                 console.error('Failed to fetch controller info:', err);
-                setError('Failed to load controller information. Please try again later.');
+                setError(t('controller.loadError'));
                 setLoading(false);
             });
     };
@@ -68,7 +72,7 @@ function ControllerInfoPage() {
         controllerApi.restart()
             .then(() => {
                 setNotification({
-                    message: 'Controller restart initiated successfully',
+                    message: t('controller.restart.success'),
                     severity: 'success'
                 });
                 
@@ -80,7 +84,7 @@ function ControllerInfoPage() {
             .catch((err) => {
                 console.error('Failed to restart controller:', err);
                 setNotification({
-                    message: 'Failed to restart controller',
+                    message: t('controller.restart.error'),
                     severity: 'error'
                 });
                 setLoading(false);
@@ -92,39 +96,65 @@ function ControllerInfoPage() {
         setNotification(null);
     };
 
+    const pageActions = (
+        <Button 
+            variant="contained" 
+            color="warning" 
+            startIcon={<RestartAltIcon />}
+            onClick={() => setRestartDialogOpen(true)}
+            disabled={loading}
+        >
+            {t('controller.restart.button')}
+        </Button>
+    );
+
     // Render loading state
     if (loading && !controllerInfo) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                <CircularProgress />
-            </Box>
+            <PageContainer
+                title={t('controller.title')}
+                subtitle={t('controller.subtitle')}
+                actions={pageActions}
+                loading={true}
+                maxWidth="lg"
+            >
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                    <CircularProgress />
+                </Box>
+            </PageContainer>
         );
     }
 
     // Render error state
     if (error) {
         return (
-            <Box sx={{ p: 3 }}>
+            <PageContainer
+                title={t('controller.title')}
+                subtitle={t('controller.subtitle')}
+                actions={pageActions}
+                maxWidth="lg"
+            >
                 <Alert 
                     severity="error" 
                     action={
                         <Button color="inherit" size="small" onClick={fetchControllerInfo}>
-                            Retry
+                            {t('common.retry')}
                         </Button>
                     }
                 >
                     {error}
                 </Alert>
-            </Box>
+            </PageContainer>
         );
     }
 
     return (
-        <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-                <InfoIcon sx={{ mr: 1 }} /> Controller Information
-            </Typography>
-            
+        <PageContainer
+            title={t('controller.title')}
+            subtitle={t('controller.subtitle')}
+            actions={pageActions}
+            maxWidth="lg"
+        >
             {loading && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
                     <CircularProgress size={24} />
@@ -133,57 +163,57 @@ function ControllerInfoPage() {
             
             <Card sx={{ mb: 3 }}>
                 <CardHeader 
-                    title="RFXCOM Hardware" 
-                    subheader="Information about the RFXCOM controller hardware"
+                    title={t('controller.hardware.title')} 
+                    subheader={t('controller.hardware.subtitle')}
                     avatar={<SettingsIcon />}
                 />
                 <Divider />
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Protocols</FormLabel>
+                            <FormLabel>{t('controller.hardware.protocols')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
                             <Typography>
                                 {controllerInfo?.coordinator.enabledProtocols?.length 
                                     ? controllerInfo.coordinator.enabledProtocols.join(', ') 
-                                    : 'None'}
+                                    : t('common.none')}
                             </Typography>
                         </Grid>
                         
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Firmware Type</FormLabel>
+                            <FormLabel>{t('controller.hardware.firmwareType')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography>{controllerInfo?.coordinator.firmwareType || 'Unknown'}</Typography>
+                            <Typography>{controllerInfo?.coordinator.firmwareType || t('common.unknown')}</Typography>
                         </Grid>
                         
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Firmware Version</FormLabel>
+                            <FormLabel>{t('controller.hardware.firmwareVersion')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography>{controllerInfo?.coordinator.firmwareVersion || 'Unknown'}</Typography>
+                            <Typography>{controllerInfo?.coordinator.firmwareVersion || t('common.unknown')}</Typography>
                         </Grid>
                         
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Hardware Version</FormLabel>
+                            <FormLabel>{t('controller.hardware.hardwareVersion')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography>{controllerInfo?.coordinator.hardwareVersion || 'Unknown'}</Typography>
+                            <Typography>{controllerInfo?.coordinator.hardwareVersion || t('common.unknown')}</Typography>
                         </Grid>
                         
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Receiver Type</FormLabel>
+                            <FormLabel>{t('controller.hardware.receiverType')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography>{controllerInfo?.coordinator.receiverType || 'Unknown'}</Typography>
+                            <Typography>{controllerInfo?.coordinator.receiverType || t('common.unknown')}</Typography>
                         </Grid>
                         
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Receiver Code</FormLabel>
+                            <FormLabel>{t('controller.hardware.receiverCode')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography>{controllerInfo?.coordinator.receiverTypeCode || 'Unknown'}</Typography>
+                            <Typography>{controllerInfo?.coordinator.receiverTypeCode || t('common.unknown')}</Typography>
                         </Grid>
                     </Grid>
                 </CardContent>
@@ -191,57 +221,45 @@ function ControllerInfoPage() {
             
             <Card>
                 <CardHeader 
-                    title="RFXCOM2MQTT Bridge" 
-                    subheader="Information about the RFXCOM2MQTT bridge software"
+                    title={t('controller.bridge.title')} 
+                    subheader={t('controller.bridge.subtitle')}
                     avatar={<InfoIcon />}
                 />
                 <Divider />
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Version</FormLabel>
+                            <FormLabel>{t('controller.bridge.version')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography>{controllerInfo?.version || 'Unknown'}</Typography>
+                            <Typography>{controllerInfo?.version || t('common.unknown')}</Typography>
                         </Grid>
                         
                         <Grid item xs={6} sm={4}>
-                            <FormLabel>Log Level</FormLabel>
+                            <FormLabel>{t('controller.bridge.logLevel')}</FormLabel>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography>{controllerInfo?.logLevel || 'Unknown'}</Typography>
+                            <Typography>{controllerInfo?.logLevel || t('common.unknown')}</Typography>
                         </Grid>
                     </Grid>
                 </CardContent>
             </Card>
-            
-            <Stack direction="row" spacing={2} sx={{ mt: 3, justifyContent: 'flex-end' }}>
-                <Button 
-                    variant="contained" 
-                    color="warning" 
-                    startIcon={<RestartAltIcon />}
-                    onClick={() => setRestartDialogOpen(true)}
-                    disabled={loading}
-                >
-                    Restart Controller
-                </Button>
-            </Stack>
             
             {/* Restart Confirmation Dialog */}
             <Dialog
                 open={restartDialogOpen}
                 onClose={() => setRestartDialogOpen(false)}
             >
-                <DialogTitle>Restart Controller?</DialogTitle>
+                <DialogTitle>{t('controller.restart.confirmTitle')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to restart the RFXCOM controller? This will temporarily interrupt communication with your devices.
+                        {t('controller.restart.confirmMessage')}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setRestartDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={() => setRestartDialogOpen(false)}>{t('common.cancel')}</Button>
                     <Button onClick={handleRestartController} color="warning" autoFocus>
-                        Restart
+                        {t('controller.restart.button')}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -261,7 +279,7 @@ function ControllerInfoPage() {
                     {notification?.message || ''}
                 </Alert>
             </Snackbar>
-        </Box>
+        </PageContainer>
     );
 }
 

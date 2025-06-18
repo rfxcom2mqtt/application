@@ -17,12 +17,14 @@ import {
     WifiOff as WifiOffIcon,
     Wifi as WifiIcon
 } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Journals page component for displaying system logs
  * Uses WebSocket connection to receive real-time logs
  */
 function JournalsPage() {
+    const { t } = useTranslation();
     const [socket, setSocket] = useState<Socket | null>(null);
     const [connectionError, setConnectionError] = useState<string | null>(null);
     const [connecting, setConnecting] = useState<boolean>(true);
@@ -117,10 +119,10 @@ function JournalsPage() {
                     </Box>
                     <Box sx={{ flex: 1 }}>
                         <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
-                            System Journals
+                            {t('journals.title')}
                         </Typography>
                         <Typography variant="body1" color="text.secondary">
-                            Real-time system logs and application events
+                            {t('journals.subtitle')}
                         </Typography>
                     </Box>
                     
@@ -138,7 +140,7 @@ function JournalsPage() {
                             color={connecting ? 'text.secondary' : socket ? 'success.main' : 'error.main'}
                             fontWeight="medium"
                         >
-                            {connecting ? 'Connecting...' : socket ? 'Connected' : 'Disconnected'}
+                            {connecting ? t('journals.connection.connecting') : socket ? t('journals.connection.connected') : t('journals.connection.disconnected')}
                         </Typography>
                     </Box>
                 </Box>
@@ -159,7 +161,7 @@ function JournalsPage() {
                             }}
                         >
                             <Typography variant="body2">
-                                Establishing connection to server...
+                                {t('journals.connection.establishingConnection')}
                             </Typography>
                         </Alert>
                     )}
@@ -175,7 +177,7 @@ function JournalsPage() {
                             onClose={() => setConnectionError(null)}
                         >
                             <Typography variant="body2" fontWeight="medium">
-                                Connection Failed
+                                {t('journals.connection.connectionFailed')}
                             </Typography>
                             <Typography variant="body2" sx={{ mt: 0.5 }}>
                                 {connectionError}
@@ -207,10 +209,10 @@ function JournalsPage() {
                             sx={{ borderRadius: 2 }}
                         >
                             <Typography variant="body2" fontWeight="medium">
-                                No Connection Available
+                                {t('journals.connection.noConnectionAvailable')}
                             </Typography>
                             <Typography variant="body2" sx={{ mt: 0.5 }}>
-                                Please check your network connection and server status. The page will automatically reconnect when the server becomes available.
+                                {t('journals.connection.checkNetworkConnection')}
                             </Typography>
                         </Alert>
                     </Box>

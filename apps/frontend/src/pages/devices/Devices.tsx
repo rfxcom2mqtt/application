@@ -7,6 +7,7 @@ import {
     Stack,
 } from '@mui/material';
 import { Refresh, Add } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import DeviceCard from '../../components/common/DeviceCard';
@@ -21,6 +22,8 @@ import { useDevices } from '../../hooks/useDevices';
 import { useDeviceFilters } from '../../hooks/useDeviceFilters';
 
 function DevicesPage() {
+    const { t } = useTranslation();
+    
     // Use custom hooks for data and filtering
     const { devices, loading, refresh, resetState, resetDevices } = useDevices();
     const {
@@ -42,14 +45,14 @@ function DevicesPage() {
                 onClick={refresh}
                 disabled={loading}
             >
-                Refresh
+                {t('common.refresh')}
             </Button>
             <Button
                 variant="contained"
                 startIcon={<Add />}
                 onClick={() => {/* TODO: Add device discovery */}}
             >
-                Discover Devices
+                {t('devices.discoverDevices')}
             </Button>
         </Stack>
     );
@@ -57,8 +60,8 @@ function DevicesPage() {
     if (loading) {
         return (
             <PageContainer
-                title="Devices"
-                subtitle="Manage and monitor your connected devices"
+                title={t('devices.title')}
+                subtitle={t('devices.subtitle')}
                 actions={pageActions}
                 loading={true}
             >
@@ -69,8 +72,8 @@ function DevicesPage() {
 
     return (
         <PageContainer
-            title="Devices"
-            subtitle="Manage and monitor your connected devices"
+            title={t('devices.title')}
+            subtitle={t('devices.subtitle')}
             actions={pageActions}
         >
             {/* Controls */}
@@ -90,27 +93,27 @@ function DevicesPage() {
             {/* Device Count & Status */}
             <Stack direction="row" spacing={2} sx={{ mb: 3, alignItems: 'center' }}>
                 <Alert severity="info" sx={{ flex: 1 }}>
-                    Found {filteredDevices.length} device{filteredDevices.length !== 1 ? 's' : ''}
-                    {searchTerm && ` matching "${searchTerm}"`}
-                    {filterType !== 'all' && ` of type "${filterType}"`}
+                    {t('devices.foundDevices', { count: filteredDevices.length })}
+                    {searchTerm && ` ${t('devices.matchingSearch', { searchTerm })}`}
+                    {filterType !== 'all' && ` ${t('devices.ofType', { filterType })}`}
                 </Alert>
                 
                 {/* Quick stats */}
                 <Stack direction="row" spacing={1}>
                     <Chip 
-                        label={`Total: ${devices.length}`} 
+                        label={`${t('common.total')}: ${devices.length}`} 
                         color="primary" 
                         variant="outlined" 
                         size="small"
                     />
                     <Chip 
-                        label={`Online: ${devices.filter(d => d.status === 'online').length}`} 
+                        label={`${t('common.online')}: ${devices.filter(d => d.status === 'online').length}`} 
                         color="success" 
                         variant="outlined" 
                         size="small"
                     />
                     <Chip 
-                        label={`Offline: ${devices.filter(d => d.status === 'offline').length}`} 
+                        label={`${t('common.offline')}: ${devices.filter(d => d.status === 'offline').length}`} 
                         color="error" 
                         variant="outlined" 
                         size="small"

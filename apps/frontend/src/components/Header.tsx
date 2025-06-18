@@ -20,16 +20,18 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LanguageIcon from '@mui/icons-material/Language';
 import { useTheme as useAppTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Navigation items configuration
  */
-const navigationItems = [
-    { name: 'Informations', path: '/' },
-    { name: 'Devices', path: '/devices' },
-    { name: 'Settings', path: '/settings' },
-    { name: 'Journals', path: '/logs' },
+const getNavigationItems = (t: any) => [
+    { name: t('navigation.informations'), path: '/' },
+    { name: t('navigation.devices'), path: '/devices' },
+    { name: t('navigation.settings'), path: '/settings' },
+    { name: t('navigation.journals'), path: '/logs' },
 ];
 
 /**
@@ -72,42 +74,47 @@ interface MobileNavMenuProps {
 /**
  * Mobile navigation menu component
  */
-const MobileNavMenu = memo<MobileNavMenuProps>(({ anchorEl, open, onClose, onNavigate }) => (
-    <Menu
-        id="mobile-nav-menu"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-        }}
-        keepMounted
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-        }}
-        open={open}
-        onClose={onClose}
-        sx={{
-            display: { xs: 'block', md: 'none' },
-        }}
-    >
-        {navigationItems.map((item) => (
-            <MenuItem 
-                key={item.name} 
-                onClick={() => onNavigate(item.path)}
-                component={NavLink}
-                to={item.path}
-                sx={{
-                    '&.active': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                    },
-                }}
-            >
-                <Typography textAlign="center">{item.name}</Typography>
-            </MenuItem>
-        ))}
-    </Menu>
-));
+const MobileNavMenu = memo<MobileNavMenuProps>(({ anchorEl, open, onClose, onNavigate }) => {
+    const { t } = useTranslation();
+    const navigationItems = getNavigationItems(t);
+    
+    return (
+        <Menu
+            id="mobile-nav-menu"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+            open={open}
+            onClose={onClose}
+            sx={{
+                display: { xs: 'block', md: 'none' },
+            }}
+        >
+            {navigationItems.map((item) => (
+                <MenuItem 
+                    key={item.path} 
+                    onClick={() => onNavigate(item.path)}
+                    component={NavLink}
+                    to={item.path}
+                    sx={{
+                        '&.active': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        },
+                    }}
+                >
+                    <Typography textAlign="center">{item.name}</Typography>
+                </MenuItem>
+            ))}
+        </Menu>
+    );
+});
 
 MobileNavMenu.displayName = 'MobileNavMenu';
 
@@ -122,27 +129,32 @@ interface DesktopNavMenuProps {
 /**
  * Desktop navigation menu component
  */
-const DesktopNavMenu = memo<DesktopNavMenuProps>(({ onNavigate, currentPath }) => (
-    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-        {navigationItems.map((item) => (
-            <Button
-                key={item.name}
-                component={NavLink}
-                to={item.path}
-                sx={{
-                    my: 2, 
-                    color: 'white', 
-                    display: 'block',
-                    '&.active': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                    },
-                }}
-            >
-                {item.name}
-            </Button>
-        ))}
-    </Box>
-));
+const DesktopNavMenu = memo<DesktopNavMenuProps>(({ onNavigate, currentPath }) => {
+    const { t } = useTranslation();
+    const navigationItems = getNavigationItems(t);
+    
+    return (
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {navigationItems.map((item) => (
+                <Button
+                    key={item.path}
+                    component={NavLink}
+                    to={item.path}
+                    sx={{
+                        my: 2, 
+                        color: 'white', 
+                        display: 'block',
+                        '&.active': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                        },
+                    }}
+                >
+                    {item.name}
+                </Button>
+            ))}
+        </Box>
+    );
+});
 
 DesktopNavMenu.displayName = 'DesktopNavMenu';
 
@@ -154,7 +166,9 @@ const Header = memo(() => {
     const navigate = useNavigate();
     const location = useLocation();
     const { mode, toggleTheme } = useAppTheme();
+    const { t, i18n } = useTranslation();
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
+    const [languageMenuAnchor, setLanguageMenuAnchor] = useState<null | HTMLElement>(null);
     const [searchValue, setSearchValue] = useState('');
 
     // Event handlers with useCallback to prevent unnecessary re-renders
@@ -165,6 +179,19 @@ const Header = memo(() => {
     const handleCloseMobileMenu = useCallback(() => {
         setMobileMenuAnchor(null);
     }, []);
+
+    const handleOpenLanguageMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
+        setLanguageMenuAnchor(event.currentTarget);
+    }, []);
+
+    const handleCloseLanguageMenu = useCallback(() => {
+        setLanguageMenuAnchor(null);
+    }, []);
+
+    const handleLanguageChange = useCallback((language: string) => {
+        i18n.changeLanguage(language);
+        handleCloseLanguageMenu();
+    }, [i18n, handleCloseLanguageMenu]);
 
     const handleNavigate = useCallback((path: string) => {
         navigate(path);
@@ -195,7 +222,7 @@ const Header = memo(() => {
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                         <IconButton
                             size="large"
-                            aria-label="navigation menu"
+                            aria-label={t('header.navigationMenu')}
                             aria-controls="mobile-nav-menu"
                             aria-haspopup="true"
                             onClick={handleOpenMobileMenu}
@@ -227,7 +254,7 @@ const Header = memo(() => {
                         <form onSubmit={handleSearchSubmit}>
                             <TextField
                                 size="small"
-                                placeholder="Search devices..."
+                                placeholder={t('header.searchPlaceholder')}
                                 value={searchValue}
                                 onChange={handleSearchChange}
                                 sx={{
@@ -265,8 +292,31 @@ const Header = memo(() => {
 
                     {/* Action Icons */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {/* Language Switcher */}
+                        <Tooltip title={t('settings.language.title')}>
+                            <IconButton
+                                onClick={handleOpenLanguageMenu}
+                                color="inherit"
+                                aria-label="language"
+                            >
+                                <LanguageIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            anchorEl={languageMenuAnchor}
+                            open={Boolean(languageMenuAnchor)}
+                            onClose={handleCloseLanguageMenu}
+                        >
+                            <MenuItem onClick={() => handleLanguageChange('en')}>
+                                {t('settings.language.english')}
+                            </MenuItem>
+                            <MenuItem onClick={() => handleLanguageChange('fr')}>
+                                {t('settings.language.french')}
+                            </MenuItem>
+                        </Menu>
+
                         {/* Theme Toggle */}
-                        <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
+                        <Tooltip title={mode === 'light' ? t('header.switchToDarkMode') : t('header.switchToLightMode')}>
                             <IconButton
                                 onClick={toggleTheme}
                                 color="inherit"
@@ -277,7 +327,7 @@ const Header = memo(() => {
                         </Tooltip>
 
                         {/* Notifications */}
-                        <Tooltip title="Notifications">
+                        <Tooltip title={t('header.notifications')}>
                             <IconButton color="inherit" aria-label="notifications">
                                 <Badge badgeContent={0} color="error">
                                     <NotificationsIcon />
@@ -286,7 +336,7 @@ const Header = memo(() => {
                         </Tooltip>
 
                         {/* Quick Settings */}
-                        <Tooltip title="Settings">
+                        <Tooltip title={t('navigation.settings')}>
                             <IconButton
                                 color="inherit"
                                 aria-label="settings"
