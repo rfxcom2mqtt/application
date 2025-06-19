@@ -1,6 +1,6 @@
 {
   "name": "@rfxcom2mqtt/frontend",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "private": false,
   "dependencies": {
     "@emotion/react": "^11.11.4",

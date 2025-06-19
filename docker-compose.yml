@@ -1,11 +1,10 @@
 services: 
   rfxcom2mqtt:
-    image: rfxcom2mqtt/rfxcom2mqtt
-    container_name: rfxcom2mqtt
+    image: sguernion/rfxcom2mqtt:1.0.0-dev
+    #command: ["ls", "./dist/application"]
     build: ./
     volumes:
-      - ./apps/backend/config:/app/apps/backend/config
-      - ./apps/backend/data:/app/apps/backend/data
+      - ./apps/backend/config:/app/data
     ports:
       - 8070:8891  # Single port for both frontend (/) and backend (/api)
     #devices:

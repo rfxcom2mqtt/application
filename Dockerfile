@@ -1,8 +1,4 @@
-# Multi-stage Dockerfile to run both backend and frontend on port 3000
-# Backend serves /api routes, frontend serves / routes
-
-# 1. Build stage
-FROM node:24-slim AS builder
+FROM node:24-alpine AS base
 
 # Enable pnpm
 ENV PNPM_HOME="/pnpm"
@@ -11,67 +7,27 @@ RUN corepack enable
 
 WORKDIR /app
 
-# Copy package files for dependency installation
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/backend/package.json ./apps/backend/
-COPY apps/frontend/package.json ./apps/frontend/
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+FROM base AS builder
 
 # Copy source code (excluding node_modules via .dockerignore)
 COPY apps/ ./apps/
-COPY tsconfig.base.json ./
-COPY eslint.config.js ./
-COPY .prettierrc ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+COPY eslint.config.js .prettierrc ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Build both applications
 RUN pnpm build
 
 # 2. Production stage
-FROM node:24-slim AS production
+FROM base AS production
 
 # Install curl for health checks and enable pnpm for workspace support
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-# Enable pnpm for workspace resolution
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-
-WORKDIR /app
-
-# Copy workspace configuration to maintain package structure
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/pnpm-workspace.yaml ./
-
-# Copy built backend application
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/apps/backend/package.json ./apps/backend/
-
-# Copy built frontend to backend's public directory for serving
-COPY --from=builder /app/apps/frontend/dist ./apps/backend/public
-
-# Copy production dependencies (including workspace links)
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
-
-# Copy complete frontend package (needed for backend to import @rfxcom2mqtt/frontend)
-COPY --from=builder /app/apps/frontend ./apps/frontend
-
-# Create symlink for workspace package resolution
-RUN mkdir -p ./apps/backend/node_modules/@rfxcom2mqtt && \
-    rm -f ./apps/backend/node_modules/@rfxcom2mqtt/frontend && \
-    ln -sf /app/apps/frontend ./apps/backend/node_modules/@rfxcom2mqtt/frontend
-
-# Copy configuration files
-COPY apps/backend/config ./apps/backend/config
+RUN apk add --no-cache curl
 
 # Create data directory for runtime files
-RUN mkdir -p ./apps/backend/data
-
-# Create symlink for config directory so the application can find it
-RUN ln -sf ./apps/backend/config ./config
+RUN mkdir -p ./data
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -79,10 +35,28 @@ ENV PROFILE=production
 
 # Expose port 8891 (backend serves both API and frontend)
 EXPOSE 8891
+ENV PORT=8891
+
+# Copy workspace configuration files for proper dependency resolution
+COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
+
+# Copy backend package.json and built application
+COPY --from=builder /app/apps/backend/package.json ./
+COPY --from=builder /app/apps/backend/dist ./dist
+
+# Copy frontend package.json, index.js and built application for workspace dependency
+COPY --from=builder /app/apps/frontend/package.json ./apps/frontend/
+COPY --from=builder /app/apps/frontend/index.js ./apps/frontend/
+COPY --from=builder /app/apps/frontend/dist ./apps/frontend/dist
+
+# Install production dependencies only (this will create proper workspace links)
+RUN pnpm install --prod --no-frozen-lockfile
 
 # Health check to ensure the application is running
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8891/api/bridge/info || exit 1
 
-# Start the backend server (which serves both API and frontend)
-CMD ["node", "./apps/backend/dist/index.js"]
+ARG NODE_ENTRYPOINT=./dist/index.js
+ENV NODE_ENTRYPOINT="${NODE_ENTRYPOINT}"
+
+CMD [ "sh", "-c", "node $NODE_ENTRYPOINT" ]
