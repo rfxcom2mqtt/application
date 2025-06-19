@@ -1,22 +1,22 @@
-import fs from "fs";
-import { settingsService } from "../../../config/settings";
-import { DeviceState, EntityState } from "../../../core/models";
-import StateStore, { DeviceStore } from "../../../core/store/state";
+import fs from 'fs';
+import { settingsService } from '../../../config/settings';
+import { DeviceState, EntityState } from '../../../core/models';
+import StateStore, { DeviceStore } from '../../../core/store/state';
 
 // Mock dependencies
-jest.mock("fs", () => ({
+jest.mock('fs', () => ({
   existsSync: jest.fn(),
   readFileSync: jest.fn(),
   writeFileSync: jest.fn(),
 }));
 
-jest.mock("../../../config/settings", () => ({
+jest.mock('../../../config/settings', () => ({
   settingsService: {
     get: jest.fn(),
   },
 }));
 
-jest.mock("../../../utils/logger", () => ({
+jest.mock('../../../utils/logger', () => ({
   loggerFactory: {
     getLogger: jest.fn(() => ({
       info: jest.fn(),
@@ -27,14 +27,14 @@ jest.mock("../../../utils/logger", () => ({
   },
 }));
 
-describe("StateStore", () => {
+describe('StateStore', () => {
   let stateStore: StateStore;
   const originalEnv = process.env;
 
   beforeEach(() => {
     jest.clearAllMocks();
     process.env = { ...originalEnv };
-    process.env.RFXCOM2MQTT_DATA = "/test/data/";
+    process.env.RFXCOM2MQTT_DATA = '/test/data/';
 
     (settingsService.get as jest.Mock).mockReturnValue({
       cacheState: {
@@ -51,8 +51,8 @@ describe("StateStore", () => {
     jest.useRealTimers();
   });
 
-  describe("constructor", () => {
-    it("should set saveInterval based on settings", () => {
+  describe('constructor', () => {
+    it('should set saveInterval based on settings', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
@@ -67,7 +67,7 @@ describe("StateStore", () => {
       expect((store as any).saveInterval).toBe(1000 * 60 * 5);
     });
 
-    it("should use default saveInterval if not specified in settings", () => {
+    it('should use default saveInterval if not specified in settings', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {},
@@ -81,12 +81,12 @@ describe("StateStore", () => {
     });
   });
 
-  describe("start", () => {
-    it("should load state and set up save interval", () => {
+  describe('start', () => {
+    it('should load state and set up save interval', () => {
       // Arrange
       jest.useFakeTimers();
-      const loadSpy = jest.spyOn(stateStore, "load");
-      const saveSpy = jest.spyOn(stateStore as any, "save");
+      const loadSpy = jest.spyOn(stateStore, 'load');
+      const saveSpy = jest.spyOn(stateStore as any, 'save');
 
       // Act
       stateStore.start();
@@ -98,11 +98,11 @@ describe("StateStore", () => {
     });
   });
 
-  describe("stop", () => {
-    it("should clear timer and save state", () => {
+  describe('stop', () => {
+    it('should clear timer and save state', () => {
       // Arrange
       jest.useFakeTimers();
-      const saveSpy = jest.spyOn(stateStore as any, "save");
+      const saveSpy = jest.spyOn(stateStore as any, 'save');
       stateStore.start();
 
       // Act
@@ -115,10 +115,10 @@ describe("StateStore", () => {
     });
   });
 
-  describe("load", () => {
-    it("should load state from file if it exists", () => {
+  describe('load', () => {
+    it('should load state from file if it exists', () => {
       // Arrange
-      const mockState = { entity1: { id: "entity1", value: "test" } };
+      const mockState = { entity1: { id: 'entity1', value: 'test' } };
       (fs.existsSync as jest.Mock).mockReturnValue(true);
       (fs.readFileSync as jest.Mock).mockReturnValue(JSON.stringify(mockState));
 
@@ -126,15 +126,12 @@ describe("StateStore", () => {
       stateStore.load();
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith("/test/data/state.json");
-      expect(fs.readFileSync).toHaveBeenCalledWith(
-        "/test/data/state.json",
-        "utf8",
-      );
+      expect(fs.existsSync).toHaveBeenCalledWith('/test/data/state.json');
+      expect(fs.readFileSync).toHaveBeenCalledWith('/test/data/state.json', 'utf8');
       expect((stateStore as any).state).toEqual(mockState);
     });
 
-    it("should handle file not existing", () => {
+    it('should handle file not existing', () => {
       // Arrange
       (fs.existsSync as jest.Mock).mockReturnValue(false);
 
@@ -142,51 +139,48 @@ describe("StateStore", () => {
       stateStore.load();
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith("/test/data/state.json");
+      expect(fs.existsSync).toHaveBeenCalledWith('/test/data/state.json');
       expect(fs.readFileSync).not.toHaveBeenCalled();
       expect((stateStore as any).state).toEqual({});
     });
 
-    it("should handle JSON parse error", () => {
+    it('should handle JSON parse error', () => {
       // Arrange
       (fs.existsSync as jest.Mock).mockReturnValue(true);
-      (fs.readFileSync as jest.Mock).mockReturnValue("invalid json");
+      (fs.readFileSync as jest.Mock).mockReturnValue('invalid json');
 
       // Act
       stateStore.load();
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith("/test/data/state.json");
-      expect(fs.readFileSync).toHaveBeenCalledWith(
-        "/test/data/state.json",
-        "utf8",
-      );
+      expect(fs.existsSync).toHaveBeenCalledWith('/test/data/state.json');
+      expect(fs.readFileSync).toHaveBeenCalledWith('/test/data/state.json', 'utf8');
       expect((stateStore as any).state).toEqual({});
     });
   });
 
-  describe("save", () => {
-    it("should save state to file if cacheState is enabled", () => {
+  describe('save', () => {
+    it('should save state to file if cacheState is enabled', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
           enable: true,
         },
       });
-      (stateStore as any).state = { entity1: { id: "entity1", value: "test" } };
+      (stateStore as any).state = { entity1: { id: 'entity1', value: 'test' } };
 
       // Act
       (stateStore as any).save();
 
       // Assert
       expect(fs.writeFileSync).toHaveBeenCalledWith(
-        "/test/data/state.json",
-        JSON.stringify({ entity1: { id: "entity1", value: "test" } }, null, 4),
-        "utf8",
+        '/test/data/state.json',
+        JSON.stringify({ entity1: { id: 'entity1', value: 'test' } }, null, 4),
+        'utf8'
       );
     });
 
-    it("should not save state if cacheState is disabled", () => {
+    it('should not save state if cacheState is disabled', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
@@ -201,7 +195,7 @@ describe("StateStore", () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
-    it("should handle write errors", () => {
+    it('should handle write errors', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
@@ -209,7 +203,7 @@ describe("StateStore", () => {
         },
       });
       (fs.writeFileSync as jest.Mock).mockImplementation(() => {
-        throw new Error("Write error");
+        throw new Error('Write error');
       });
 
       // Act & Assert
@@ -217,27 +211,23 @@ describe("StateStore", () => {
     });
   });
 
-  describe("reset", () => {
-    it("should reset state and write empty object to file", () => {
+  describe('reset', () => {
+    it('should reset state and write empty object to file', () => {
       // Arrange
-      (stateStore as any).state = { entity1: { id: "entity1", value: "test" } };
+      (stateStore as any).state = { entity1: { id: 'entity1', value: 'test' } };
 
       // Act
       stateStore.reset();
 
       // Assert
       expect((stateStore as any).state).toEqual({});
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
-        "/test/data/state.json",
-        "{}",
-        "utf8",
-      );
+      expect(fs.writeFileSync).toHaveBeenCalledWith('/test/data/state.json', '{}', 'utf8');
     });
 
-    it("should handle write errors", () => {
+    it('should handle write errors', () => {
       // Arrange
       (fs.writeFileSync as jest.Mock).mockImplementation(() => {
-        throw new Error("Write error");
+        throw new Error('Write error');
       });
 
       // Act & Assert
@@ -245,11 +235,11 @@ describe("StateStore", () => {
     });
   });
 
-  describe("exists", () => {
-    it("should return true if entity exists", () => {
+  describe('exists', () => {
+    it('should return true if entity exists', () => {
       // Arrange
-      (stateStore as any).state = { entity1: { id: "entity1", value: "test" } };
-      const entity = { id: "entity1" } as EntityState;
+      (stateStore as any).state = { entity1: { id: 'entity1', value: 'test' } };
+      const entity = { id: 'entity1' } as EntityState;
 
       // Act
       const result = stateStore.exists(entity);
@@ -258,10 +248,10 @@ describe("StateStore", () => {
       expect(result).toBe(true);
     });
 
-    it("should return false if entity does not exist", () => {
+    it('should return false if entity does not exist', () => {
       // Arrange
-      (stateStore as any).state = { entity1: { id: "entity1", value: "test" } };
-      const entity = { id: "entity2" } as EntityState;
+      (stateStore as any).state = { entity1: { id: 'entity1', value: 'test' } };
+      const entity = { id: 'entity2' } as EntityState;
 
       // Act
       const result = stateStore.exists(entity);
@@ -271,64 +261,64 @@ describe("StateStore", () => {
     });
   });
 
-  describe("get", () => {
-    it("should return entity state if it exists", () => {
+  describe('get', () => {
+    it('should return entity state if it exists', () => {
       // Arrange
-      const entityState = { id: "entity1", value: "test" };
+      const entityState = { id: 'entity1', value: 'test' };
       (stateStore as any).state = { entity1: entityState };
 
       // Act
-      const result = stateStore.get("entity1");
+      const result = stateStore.get('entity1');
 
       // Assert
       expect(result).toEqual(entityState);
     });
 
-    it("should return empty object if entity does not exist", () => {
+    it('should return empty object if entity does not exist', () => {
       // Arrange
-      (stateStore as any).state = { entity1: { id: "entity1", value: "test" } };
+      (stateStore as any).state = { entity1: { id: 'entity1', value: 'test' } };
 
       // Act
-      const result = stateStore.get("entity2");
+      const result = stateStore.get('entity2');
 
       // Assert
       expect(result).toEqual({});
     });
   });
 
-  describe("getByDeviceIdAndUnitCode", () => {
-    it("should return entity state if it matches device ID and unit code", () => {
+  describe('getByDeviceIdAndUnitCode', () => {
+    it('should return entity state if it matches device ID and unit code', () => {
       // Arrange
-      const entityState = { id: "device1", unitCode: "1", value: "test" };
+      const entityState = { id: 'device1', unitCode: '1', value: 'test' };
       (stateStore as any).state = { entity1: entityState };
 
       // Act
-      const result = stateStore.getByDeviceIdAndUnitCode("device1", 1);
+      const result = stateStore.getByDeviceIdAndUnitCode('device1', 1);
 
       // Assert
       expect(result).toEqual(entityState);
     });
 
-    it("should return empty object if no entity matches", () => {
+    it('should return empty object if no entity matches', () => {
       // Arrange
       (stateStore as any).state = {
-        entity1: { id: "device1", unitCode: "2", value: "test" },
+        entity1: { id: 'device1', unitCode: '2', value: 'test' },
       };
 
       // Act
-      const result = stateStore.getByDeviceIdAndUnitCode("device1", 1);
+      const result = stateStore.getByDeviceIdAndUnitCode('device1', 1);
 
       // Assert
       expect(result).toEqual({});
     });
   });
 
-  describe("getByDeviceId", () => {
-    it("should return all entities that match device ID", () => {
+  describe('getByDeviceId', () => {
+    it('should return all entities that match device ID', () => {
       // Arrange
-      const entity1 = { id: "device1", unitCode: "1", value: "test1" };
-      const entity2 = { id: "device1", unitCode: "2", value: "test2" };
-      const entity3 = { id: "device2", unitCode: "1", value: "test3" };
+      const entity1 = { id: 'device1', unitCode: '1', value: 'test1' };
+      const entity2 = { id: 'device1', unitCode: '2', value: 'test2' };
+      const entity3 = { id: 'device2', unitCode: '1', value: 'test3' };
       (stateStore as any).state = {
         entity1,
         entity2,
@@ -336,32 +326,32 @@ describe("StateStore", () => {
       };
 
       // Act
-      const result = stateStore.getByDeviceId("device1");
+      const result = stateStore.getByDeviceId('device1');
 
       // Assert
       expect(result).toEqual([entity1, entity2]);
     });
 
-    it("should return empty array if no entities match", () => {
+    it('should return empty array if no entities match', () => {
       // Arrange
       (stateStore as any).state = {
-        entity1: { id: "device1", unitCode: "1", value: "test1" },
+        entity1: { id: 'device1', unitCode: '1', value: 'test1' },
       };
 
       // Act
-      const result = stateStore.getByDeviceId("device2");
+      const result = stateStore.getByDeviceId('device2');
 
       // Assert
       expect(result).toEqual([]);
     });
   });
 
-  describe("getAll", () => {
-    it("should return all state", () => {
+  describe('getAll', () => {
+    it('should return all state', () => {
       // Arrange
       const state = {
-        entity1: { id: "entity1", value: "test1" },
-        entity2: { id: "entity2", value: "test2" },
+        entity1: { id: 'entity1', value: 'test1' },
+        entity2: { id: 'entity2', value: 'test2' },
       };
       (stateStore as any).state = state;
 
@@ -373,11 +363,11 @@ describe("StateStore", () => {
     });
   });
 
-  describe("getAllValue", () => {
-    it("should return all state values as array", () => {
+  describe('getAllValue', () => {
+    it('should return all state values as array', () => {
       // Arrange
-      const entity1 = { id: "entity1", value: "test1" };
-      const entity2 = { id: "entity2", value: "test2" };
+      const entity1 = { id: 'entity1', value: 'test1' };
+      const entity2 = { id: 'entity2', value: 'test2' };
       (stateStore as any).state = {
         entity1,
         entity2,
@@ -391,77 +381,77 @@ describe("StateStore", () => {
     });
   });
 
-  describe("set", () => {
-    it("should update existing entity state", () => {
+  describe('set', () => {
+    it('should update existing entity state', () => {
       // Arrange
       const existingState = {
-        id: "entity1",
-        value: "test1",
-        entityId: "entity1",
+        id: 'entity1',
+        value: 'test1',
+        entityId: 'entity1',
       };
-      const update = { value: "updated" };
+      const update = { value: 'updated' };
       (stateStore as any).state = { entity1: existingState };
 
       // Act
-      const result = stateStore.set("entity1", update);
+      const result = stateStore.set('entity1', update);
 
       // Assert
       expect(result).toEqual({
-        id: "entity1",
-        value: "updated",
-        entityId: "entity1",
+        id: 'entity1',
+        value: 'updated',
+        entityId: 'entity1',
       });
       expect((stateStore as any).state.entity1).toEqual({
-        id: "entity1",
-        value: "updated",
-        entityId: "entity1",
+        id: 'entity1',
+        value: 'updated',
+        entityId: 'entity1',
       });
     });
 
-    it("should create new entity state if it does not exist", () => {
+    it('should create new entity state if it does not exist', () => {
       // Arrange
-      const update = { value: "new" };
+      const update = { value: 'new' };
       (stateStore as any).state = {};
 
       // Act
-      const result = stateStore.set("entity1", update);
+      const result = stateStore.set('entity1', update);
 
       // Assert
-      expect(result).toEqual({ value: "new", entityId: "entity1" });
+      expect(result).toEqual({ value: 'new', entityId: 'entity1' });
       expect((stateStore as any).state.entity1).toEqual({
-        value: "new",
-        entityId: "entity1",
+        value: 'new',
+        entityId: 'entity1',
       });
     });
   });
 
-  describe("remove", () => {
-    it("should remove entity state", () => {
+  describe('remove', () => {
+    it('should remove entity state', () => {
       // Arrange
       (stateStore as any).state = {
-        entity1: { id: "entity1", value: "test1" },
-        entity2: { id: "entity2", value: "test2" },
+        entity1: { id: 'entity1', value: 'test1' },
+        entity2: { id: 'entity2', value: 'test2' },
       };
 
       // Act
-      stateStore.remove("entity1");
+      stateStore.remove('entity1');
 
       // Assert
       expect((stateStore as any).state).toEqual({
-        entity2: { id: "entity2", value: "test2" },
+        entity2: { id: 'entity2', value: 'test2' },
       });
     });
   });
 });
 
-describe("DeviceStore", () => {
+describe('DeviceStore', () => {
   let deviceStore: DeviceStore;
   const originalEnv = process.env;
 
   beforeEach(() => {
     jest.clearAllMocks();
     process.env = { ...originalEnv };
-    process.env.RFXCOM2MQTT_DATA = "/test/data/";
+    process.env.RFXCOM2MQTT_DATA = '/test/data/';
 
     (settingsService.get as jest.Mock).mockReturnValue({
       cacheState: {
@@ -478,8 +468,8 @@ describe("DeviceStore", () => {
     jest.useRealTimers();
   });
 
-  describe("constructor", () => {
-    it("should set saveInterval based on settings", () => {
+  describe('constructor', () => {
+    it('should set saveInterval based on settings', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
@@ -494,7 +484,7 @@ describe("DeviceStore", () => {
       expect((store as any).saveInterval).toBe(1000 * 60 * 5);
     });
 
-    it("should use default saveInterval if not specified in settings", () => {
+    it('should use default saveInterval if not specified in settings', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {},
@@ -508,12 +498,12 @@ describe("DeviceStore", () => {
     });
   });
 
-  describe("start", () => {
-    it("should load devices and set up save interval", () => {
+  describe('start', () => {
+    it('should load devices and set up save interval', () => {
       // Arrange
       jest.useFakeTimers();
-      const loadSpy = jest.spyOn(deviceStore, "load");
-      const saveSpy = jest.spyOn(deviceStore as any, "save");
+      const loadSpy = jest.spyOn(deviceStore, 'load');
+      const saveSpy = jest.spyOn(deviceStore as any, 'save');
 
       // Act
       deviceStore.start();
@@ -525,11 +515,11 @@ describe("DeviceStore", () => {
     });
   });
 
-  describe("stop", () => {
-    it("should clear timer and save devices", () => {
+  describe('stop', () => {
+    it('should clear timer and save devices', () => {
       // Arrange
       jest.useFakeTimers();
-      const saveSpy = jest.spyOn(deviceStore as any, "save");
+      const saveSpy = jest.spyOn(deviceStore as any, 'save');
       deviceStore.start();
 
       // Act
@@ -542,28 +532,23 @@ describe("DeviceStore", () => {
     });
   });
 
-  describe("load", () => {
-    it("should load devices from file if it exists", () => {
+  describe('load', () => {
+    it('should load devices from file if it exists', () => {
       // Arrange
-      const mockDevices = { device1: { id: "device1", name: "Device 1" } };
+      const mockDevices = { device1: { id: 'device1', name: 'Device 1' } };
       (fs.existsSync as jest.Mock).mockReturnValue(true);
-      (fs.readFileSync as jest.Mock).mockReturnValue(
-        JSON.stringify(mockDevices),
-      );
+      (fs.readFileSync as jest.Mock).mockReturnValue(JSON.stringify(mockDevices));
 
       // Act
       deviceStore.load();
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith("/test/data/devices.json");
-      expect(fs.readFileSync).toHaveBeenCalledWith(
-        "/test/data/devices.json",
-        "utf8",
-      );
+      expect(fs.existsSync).toHaveBeenCalledWith('/test/data/devices.json');
+      expect(fs.readFileSync).toHaveBeenCalledWith('/test/data/devices.json', 'utf8');
       expect((deviceStore as any).devices).toEqual(mockDevices);
     });
 
-    it("should handle file not existing", () => {
+    it('should handle file not existing', () => {
       // Arrange
       (fs.existsSync as jest.Mock).mockReturnValue(false);
 
@@ -571,31 +556,28 @@ describe("DeviceStore", () => {
       deviceStore.load();
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith("/test/data/devices.json");
+      expect(fs.existsSync).toHaveBeenCalledWith('/test/data/devices.json');
       expect(fs.readFileSync).not.toHaveBeenCalled();
       expect((deviceStore as any).devices).toEqual({});
     });
 
-    it("should handle JSON parse error", () => {
+    it('should handle JSON parse error', () => {
       // Arrange
       (fs.existsSync as jest.Mock).mockReturnValue(true);
-      (fs.readFileSync as jest.Mock).mockReturnValue("invalid json");
+      (fs.readFileSync as jest.Mock).mockReturnValue('invalid json');
 
       // Act
       deviceStore.load();
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith("/test/data/devices.json");
-      expect(fs.readFileSync).toHaveBeenCalledWith(
-        "/test/data/devices.json",
-        "utf8",
-      );
+      expect(fs.existsSync).toHaveBeenCalledWith('/test/data/devices.json');
+      expect(fs.readFileSync).toHaveBeenCalledWith('/test/data/devices.json', 'utf8');
       expect((deviceStore as any).devices).toEqual({});
     });
   });
 
-  describe("save", () => {
-    it("should save devices to file if cacheState is enabled", () => {
+  describe('save', () => {
+    it('should save devices to file if cacheState is enabled', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
@@ -603,7 +585,7 @@ describe("DeviceStore", () => {
         },
       });
       (deviceStore as any).devices = {
-        device1: { id: "device1", name: "Device 1" },
+        device1: { id: 'device1', name: 'Device 1' },
       };
 
       // Act
@@ -611,17 +593,13 @@ describe("DeviceStore", () => {
 
       // Assert
       expect(fs.writeFileSync).toHaveBeenCalledWith(
-        "/test/data/devices.json",
-        JSON.stringify(
-          { device1: { id: "device1", name: "Device 1" } },
-          null,
-          4,
-        ),
-        "utf8",
+        '/test/data/devices.json',
+        JSON.stringify({ device1: { id: 'device1', name: 'Device 1' } }, null, 4),
+        'utf8'
       );
     });
 
-    it("should not save devices if cacheState is disabled", () => {
+    it('should not save devices if cacheState is disabled', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
@@ -636,7 +614,7 @@ describe("DeviceStore", () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
-    it("should handle write errors", () => {
+    it('should handle write errors', () => {
       // Arrange
       (settingsService.get as jest.Mock).mockReturnValue({
         cacheState: {
@@ -644,7 +622,7 @@ describe("DeviceStore", () => {
         },
       });
       (fs.writeFileSync as jest.Mock).mockImplementation(() => {
-        throw new Error("Write error");
+        throw new Error('Write error');
       });
 
       // Act & Assert
@@ -652,11 +630,11 @@ describe("DeviceStore", () => {
     });
   });
 
-  describe("reset", () => {
-    it("should reset devices and write empty object to file", () => {
+  describe('reset', () => {
+    it('should reset devices and write empty object to file', () => {
       // Arrange
       (deviceStore as any).devices = {
-        device1: { id: "device1", name: "Device 1" },
+        device1: { id: 'device1', name: 'Device 1' },
       };
 
       // Act
@@ -664,17 +642,13 @@ describe("DeviceStore", () => {
 
       // Assert
       expect((deviceStore as any).devices).toEqual({});
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
-        "/test/data/devices.json",
-        "{}",
-        "utf8",
-      );
+      expect(fs.writeFileSync).toHaveBeenCalledWith('/test/data/devices.json', '{}', 'utf8');
     });
 
-    it("should handle write errors", () => {
+    it('should handle write errors', () => {
       // Arrange
       (fs.writeFileSync as jest.Mock).mockImplementation(() => {
-        throw new Error("Write error");
+        throw new Error('Write error');
       });
 
       // Act & Assert
@@ -682,54 +656,54 @@ describe("DeviceStore", () => {
     });
   });
 
-  describe("exists", () => {
-    it("should return true if device exists", () => {
+  describe('exists', () => {
+    it('should return true if device exists', () => {
       // Arrange
       (deviceStore as any).devices = {
-        device1: { id: "device1", name: "Device 1" },
+        device1: { id: 'device1', name: 'Device 1' },
       };
 
       // Act
-      const result = deviceStore.exists("device1");
+      const result = deviceStore.exists('device1');
 
       // Assert
       expect(result).toBe(true);
     });
 
-    it("should return false if device does not exist", () => {
+    it('should return false if device does not exist', () => {
       // Arrange
       (deviceStore as any).devices = {
-        device1: { id: "device1", name: "Device 1" },
+        device1: { id: 'device1', name: 'Device 1' },
       };
 
       // Act
-      const result = deviceStore.exists("device2");
+      const result = deviceStore.exists('device2');
 
       // Assert
       expect(result).toBe(false);
     });
   });
 
-  describe("get", () => {
-    it("should return device if it exists", () => {
+  describe('get', () => {
+    it('should return device if it exists', () => {
       // Arrange
-      const device = { id: "device1", name: "Device 1" } as DeviceState;
+      const device = { id: 'device1', name: 'Device 1' } as DeviceState;
       (deviceStore as any).devices = { device1: device };
 
       // Act
-      const result = deviceStore.get("device1");
+      const result = deviceStore.get('device1');
 
       // Assert
       expect(result).toEqual(device);
     });
   });
 
-  describe("getAll", () => {
-    it("should return all devices", () => {
+  describe('getAll', () => {
+    it('should return all devices', () => {
       // Arrange
       const devices = {
-        device1: { id: "device1", name: "Device 1" },
-        device2: { id: "device2", name: "Device 2" },
+        device1: { id: 'device1', name: 'Device 1' },
+        device2: { id: 'device2', name: 'Device 2' },
       };
       (deviceStore as any).devices = devices;
 
@@ -741,50 +715,50 @@ describe("DeviceStore", () => {
     });
   });
 
-  describe("set", () => {
-    it("should update existing device", () => {
+  describe('set', () => {
+    it('should update existing device', () => {
       // Arrange
-      const existingDevice = new DeviceState("device1", "Device 1");
-      const update = { name: "Updated Device" } as DeviceState;
+      const existingDevice = new DeviceState('device1', 'Device 1');
+      const update = { name: 'Updated Device' } as DeviceState;
       (deviceStore as any).devices = { device1: existingDevice };
 
       // Act
-      const result = deviceStore.set("device1", update);
+      const result = deviceStore.set('device1', update);
 
       // Assert
-      expect(result.name).toBe("Updated Device");
-      expect((deviceStore as any).devices.device1.name).toBe("Updated Device");
+      expect(result.name).toBe('Updated Device');
+      expect((deviceStore as any).devices.device1.name).toBe('Updated Device');
     });
 
-    it("should create new device if it does not exist", () => {
+    it('should create new device if it does not exist', () => {
       // Arrange
-      const update = { name: "New Device" } as DeviceState;
+      const update = { name: 'New Device' } as DeviceState;
       (deviceStore as any).devices = {};
 
       // Act
-      const result = deviceStore.set("device1", update);
+      const result = deviceStore.set('device1', update);
 
       // Assert
-      expect(result.id).toBe("device1");
-      expect(result.name).toBe("New Device");
+      expect(result.id).toBe('device1');
+      expect(result.name).toBe('New Device');
       expect((deviceStore as any).devices.device1).toBe(result);
     });
   });
 
-  describe("remove", () => {
-    it("should remove device", () => {
+  describe('remove', () => {
+    it('should remove device', () => {
       // Arrange
       (deviceStore as any).devices = {
-        device1: { id: "device1", name: "Device 1" },
-        device2: { id: "device2", name: "Device 2" },
+        device1: { id: 'device1', name: 'Device 1' },
+        device2: { id: 'device2', name: 'Device 2' },
       };
 
       // Act
-      deviceStore.remove("device1");
+      deviceStore.remove('device1');
 
       // Assert
       expect((deviceStore as any).devices).toEqual({
-        device2: { id: "device2", name: "Device 2" },
+        device2: { id: 'device2', name: 'Device 2' },
       });
     });
   });

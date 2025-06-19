@@ -1,13 +1,13 @@
 // @ts-nocheck
-import path from "path";
-import { jest } from "@jest/globals";
+import path from 'path';
+import { jest } from '@jest/globals';
 
 // Mock dependencies
-jest.mock("../../config/settings/config-loader", () => ({
+jest.mock('../../config/settings/config-loader', () => ({
   load: jest.fn(),
 }));
 
-jest.mock("object-assign-deep", () => {
+jest.mock('object-assign-deep', () => {
   return {
     __esModule: true,
     default: jest.fn(),
@@ -15,7 +15,7 @@ jest.mock("object-assign-deep", () => {
   };
 });
 
-jest.mock("../../utils/logger", () => ({
+jest.mock('../../utils/logger', () => ({
   logger: {
     info: jest.fn(),
     debug: jest.fn(),
@@ -33,29 +33,27 @@ jest.mock("../../utils/logger", () => ({
   },
 }));
 
-jest.mock("fs", () => ({
-  readFileSync: jest
-    .fn()
-    .mockImplementation((path) => Buffer.from(`mock content for ${path}`)),
+jest.mock('fs', () => ({
+  readFileSync: jest.fn().mockImplementation(path => Buffer.from(`mock content for ${path}`)),
   writeFileSync: jest.fn(),
   existsSync: jest.fn().mockReturnValue(false),
 }));
 
 // Mock yaml module
-jest.mock("../../config/settings/yaml", () => ({
+jest.mock('../../config/settings/yaml', () => ({
   read: jest.fn().mockReturnValue({}),
   writeIfChanged: jest.fn().mockReturnValue(true),
   updateIfChanged: jest.fn(),
 }));
 
 // Import the module under test
-const load = require("../../config/settings/config-loader");
-const objectAssignDeep = require("object-assign-deep");
+const load = require('../../config/settings/config-loader');
+const objectAssignDeep = require('object-assign-deep');
 
-const { settingsService, reRead, validate } = require("../../config/settings");
-const yaml = require("../../config/settings/yaml");
+const { settingsService, reRead, validate } = require('../../config/settings');
+const yaml = require('../../config/settings/yaml');
 
-describe("Settings Module", () => {
+describe('Settings Module', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -66,17 +64,17 @@ describe("Settings Module", () => {
     // Mock load.load to return a default config
     load.load.mockReturnValue({
       mqtt: {
-        base_topic: "test-topic",
-        server: "mqtt://localhost",
-        username: "user",
-        password: "pass",
+        base_topic: 'test-topic',
+        server: 'mqtt://localhost',
+        username: 'user',
+        password: 'pass',
       },
       frontend: {
         enabled: true,
-        authToken: "token123",
+        authToken: 'token123',
       },
       rfxcom: {
-        usbport: "/dev/ttyUSB0",
+        usbport: '/dev/ttyUSB0',
       },
       devices: [],
     });
@@ -84,19 +82,19 @@ describe("Settings Module", () => {
     // Mock objectAssignDeep to return a merged config
     objectAssignDeep.default.mockImplementation((target, ...sources) => {
       return {
-        loglevel: "info",
+        loglevel: 'info',
         mqtt: {
-          base_topic: "test-topic",
-          server: "mqtt://localhost",
-          username: "user",
-          password: "pass",
+          base_topic: 'test-topic',
+          server: 'mqtt://localhost',
+          username: 'user',
+          password: 'pass',
         },
         frontend: {
           enabled: true,
-          authToken: "token123",
+          authToken: 'token123',
         },
         rfxcom: {
-          usbport: "/dev/ttyUSB0",
+          usbport: '/dev/ttyUSB0',
         },
         devices: [],
       };
@@ -110,19 +108,19 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("read", () => {
-    it("should load settings with defaults when called for the first time", () => {
+  describe('read', () => {
+    it('should load settings with defaults when called for the first time', () => {
       // Act
       const settings = settingsService.read();
 
       // Assert
       expect(settings).toBeDefined();
-      expect(settings.loglevel).toBe("info");
-      expect(settings.mqtt.base_topic).toBe("test-topic");
+      expect(settings.loglevel).toBe('info');
+      expect(settings.mqtt.base_topic).toBe('test-topic');
       expect(objectAssignDeep.default).toHaveBeenCalled();
     });
 
-    it("should return cached settings when called multiple times", () => {
+    it('should return cached settings when called multiple times', () => {
       // Arrange
       objectAssignDeep.default.mockClear();
 
@@ -137,8 +135,8 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("get", () => {
-    it("should return the current settings", () => {
+  describe('get', () => {
+    it('should return the current settings', () => {
       // Arrange
       settingsService.read();
 
@@ -147,14 +145,14 @@ describe("Settings Module", () => {
 
       // Assert
       expect(settings).toBeDefined();
-      expect(settings.mqtt.base_topic).toBe("test-topic");
+      expect(settings.mqtt.base_topic).toBe('test-topic');
     });
   });
 
-  describe("readLocalFile", () => {
-    it("should load settings from a specified file", () => {
+  describe('readLocalFile', () => {
+    it('should load settings from a specified file', () => {
       // Arrange
-      const testFile = "test-config.yml";
+      const testFile = 'test-config.yml';
 
       // Act
       settingsService.readLocalFile(testFile);
@@ -164,11 +162,11 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("getFileSettings", () => {
-    it("should return settings from a specified file", () => {
+  describe('getFileSettings', () => {
+    it('should return settings from a specified file', () => {
       // Arrange
-      const testFile = "test-config.yml";
-      const mockSettings = { test: "value" };
+      const testFile = 'test-config.yml';
+      const mockSettings = { test: 'value' };
       load.load.mockReturnValueOnce(mockSettings);
 
       // Act
@@ -180,12 +178,12 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("loadSettingsWithDefaults", () => {
-    it("should load settings with defaults and apply environment variables", () => {
+  describe('loadSettingsWithDefaults', () => {
+    it('should load settings with defaults and apply environment variables', () => {
       // Arrange
-      const testFile = "test-config.yml";
-      process.env.MQTT_SERVER = "mqtt://custom-server";
-      process.env.RFXCOM_USB_DEVICE = "/dev/custom-usb";
+      const testFile = 'test-config.yml';
+      process.env.MQTT_SERVER = 'mqtt://custom-server';
+      process.env.RFXCOM_USB_DEVICE = '/dev/custom-usb';
 
       // Act
       settingsService.loadSettingsWithDefaults(testFile);
@@ -193,48 +191,44 @@ describe("Settings Module", () => {
       // Assert
       expect(objectAssignDeep.default).toHaveBeenCalled();
       const settings = settingsService.get();
-      expect(settings.mqtt.server).toBe("mqtt://custom-server");
-      expect(settings.rfxcom.usbport).toBe("/dev/custom-usb");
+      expect(settings.mqtt.server).toBe('mqtt://custom-server');
+      expect(settings.rfxcom.usbport).toBe('/dev/custom-usb');
     });
   });
 
-  describe("set", () => {
-    it("should set a value at the specified path", () => {
+  describe('set', () => {
+    it('should set a value at the specified path', () => {
       // Arrange
       settingsService.read();
-      const writeSpy = jest
-        .spyOn(settingsService, "write")
-        .mockImplementation(() => {});
+      const writeSpy = jest.spyOn(settingsService, 'write').mockImplementation(() => {});
 
       // Act
-      settingsService.set(["mqtt", "server"], "mqtt://new-server");
+      settingsService.set(['mqtt', 'server'], 'mqtt://new-server');
 
       // Assert
-      expect(settingsService.get().mqtt.server).toBe("mqtt://new-server");
+      expect(settingsService.get().mqtt.server).toBe('mqtt://new-server');
       expect(writeSpy).toHaveBeenCalled();
     });
 
-    it("should create nested objects if they do not exist", () => {
+    it('should create nested objects if they do not exist', () => {
       // Arrange
       settingsService.read();
-      const writeSpy = jest
-        .spyOn(settingsService, "write")
-        .mockImplementation(() => {});
+      const writeSpy = jest.spyOn(settingsService, 'write').mockImplementation(() => {});
 
       // Act
-      settingsService.set(["newSection", "newKey"], "newValue");
+      settingsService.set(['newSection', 'newKey'], 'newValue');
 
       // Assert
-      expect(settingsService.get().newSection.newKey).toBe("newValue");
+      expect(settingsService.get().newSection.newKey).toBe('newValue');
       expect(writeSpy).toHaveBeenCalled();
     });
   });
 
-  describe("getDeviceConfig", () => {
-    it("should return device configuration for a given device ID", () => {
+  describe('getDeviceConfig', () => {
+    it('should return device configuration for a given device ID', () => {
       // Arrange
-      const deviceId = "device1";
-      const deviceConfig = { id: deviceId, name: "Test Device" };
+      const deviceId = 'device1';
+      const deviceConfig = { id: deviceId, name: 'Test Device' };
       settingsService.read();
       settingsService.get().devices = [deviceConfig];
 
@@ -245,39 +239,37 @@ describe("Settings Module", () => {
       expect(result).toEqual(deviceConfig);
     });
 
-    it("should return undefined if device is not found", () => {
+    it('should return undefined if device is not found', () => {
       // Arrange
       settingsService.read();
       settingsService.get().devices = [];
 
       // Act
-      const result = settingsService.getDeviceConfig("nonexistent");
+      const result = settingsService.getDeviceConfig('nonexistent');
 
       // Assert
       expect(result).toBeUndefined();
     });
 
-    it("should return undefined if devices array is undefined", () => {
+    it('should return undefined if devices array is undefined', () => {
       // Arrange
       settingsService.read();
       settingsService.get().devices = undefined;
 
       // Act
-      const result = settingsService.getDeviceConfig("any");
+      const result = settingsService.getDeviceConfig('any');
 
       // Assert
       expect(result).toBeUndefined();
     });
   });
 
-  describe("apply", () => {
-    it("should apply new settings and write them", () => {
+  describe('apply', () => {
+    it('should apply new settings and write them', () => {
       // Arrange
       settingsService.read();
-      const writeSpy = jest
-        .spyOn(settingsService, "write")
-        .mockImplementation(() => {});
-      const newSettings = { mqtt: { server: "mqtt://new-server" } };
+      const writeSpy = jest.spyOn(settingsService, 'write').mockImplementation(() => {});
+      const newSettings = { mqtt: { server: 'mqtt://new-server' } };
 
       // Act
       settingsService.apply(newSettings);
@@ -289,33 +281,29 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("applyDeviceOverride", () => {
-    it("should update an existing device", () => {
+  describe('applyDeviceOverride', () => {
+    it('should update an existing device', () => {
       // Arrange
       settingsService.read();
-      const writeSpy = jest
-        .spyOn(settingsService, "write")
-        .mockImplementation(() => {});
-      const existingDevice = { id: "device1", name: "Original Name" };
+      const writeSpy = jest.spyOn(settingsService, 'write').mockImplementation(() => {});
+      const existingDevice = { id: 'device1', name: 'Original Name' };
       settingsService.get().devices = [existingDevice];
-      const override = { id: "device1", name: "New Name" };
+      const override = { id: 'device1', name: 'New Name' };
 
       // Act
       settingsService.applyDeviceOverride(override);
 
       // Assert
-      expect(settingsService.get().devices[0].name).toBe("New Name");
+      expect(settingsService.get().devices[0].name).toBe('New Name');
       expect(writeSpy).toHaveBeenCalled();
     });
 
-    it("should add a new device if it does not exist", () => {
+    it('should add a new device if it does not exist', () => {
       // Arrange
       settingsService.read();
-      const writeSpy = jest
-        .spyOn(settingsService, "write")
-        .mockImplementation(() => {});
+      const writeSpy = jest.spyOn(settingsService, 'write').mockImplementation(() => {});
       settingsService.get().devices = [];
-      const newDevice = { id: "device1", name: "New Device" };
+      const newDevice = { id: 'device1', name: 'New Device' };
 
       // Act
       settingsService.applyDeviceOverride(newDevice);
@@ -325,48 +313,42 @@ describe("Settings Module", () => {
       expect(writeSpy).toHaveBeenCalled();
     });
 
-    it("should update a unit within a device if it exists", () => {
+    it('should update a unit within a device if it exists', () => {
       // Arrange
       settingsService.read();
-      const writeSpy = jest
-        .spyOn(settingsService, "write")
-        .mockImplementation(() => {});
+      const writeSpy = jest.spyOn(settingsService, 'write').mockImplementation(() => {});
       const existingDevice = {
-        id: "device1",
-        name: "Test Device",
-        units: [{ unitCode: 1, name: "Original Unit" }],
+        id: 'device1',
+        name: 'Test Device',
+        units: [{ unitCode: 1, name: 'Original Unit' }],
       };
       settingsService.get().devices = [existingDevice];
       const override = {
-        id: "device1",
-        units: [{ unitCode: 1, name: "Updated Unit" }],
+        id: 'device1',
+        units: [{ unitCode: 1, name: 'Updated Unit' }],
       };
 
       // Act
       settingsService.applyDeviceOverride(override);
 
       // Assert
-      expect(settingsService.get().devices[0].units[0].name).toBe(
-        "Updated Unit",
-      );
+      expect(settingsService.get().devices[0].units[0].name).toBe('Updated Unit');
       expect(writeSpy).toHaveBeenCalled();
     });
 
-    it("should add a new unit to a device if it does not exist", () => {
+    it('should add a new unit to a device if it does not exist', () => {
       // Arrange
       settingsService.read();
-      const writeSpy = jest
-        .spyOn(settingsService, "write")
-        .mockImplementation(() => {});
+      const writeSpy = jest.spyOn(settingsService, 'write').mockImplementation(() => {});
       const existingDevice = {
-        id: "device1",
-        name: "Test Device",
-        units: [{ unitCode: 1, name: "Unit 1" }],
+        id: 'device1',
+        name: 'Test Device',
+        units: [{ unitCode: 1, name: 'Unit 1' }],
       };
       settingsService.get().devices = [existingDevice];
       const override = {
-        id: "device1",
-        units: [{ unitCode: 2, name: "Unit 2" }],
+        id: 'device1',
+        units: [{ unitCode: 2, name: 'Unit 2' }],
       };
 
       // Act
@@ -379,8 +361,8 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("write", () => {
-    it("should write settings to the config file", () => {
+  describe('write', () => {
+    it('should write settings to the config file', () => {
       // Arrange
       settingsService.read();
       yaml.writeIfChanged.mockClear();
@@ -393,11 +375,11 @@ describe("Settings Module", () => {
       // expect(yaml.writeIfChanged).toHaveBeenCalled();
     });
 
-    it("should reload settings if the file was changed", () => {
+    it('should reload settings if the file was changed', () => {
       // Arrange
       settingsService.read();
       yaml.writeIfChanged.mockReturnValueOnce(true);
-      const loadSpy = jest.spyOn(settingsService, "loadSettingsWithDefaults");
+      const loadSpy = jest.spyOn(settingsService, 'loadSettingsWithDefaults');
 
       // Act
       settingsService.write();
@@ -407,17 +389,17 @@ describe("Settings Module", () => {
       // expect(loadSpy).toHaveBeenCalled();
     });
 
-    it("should update secret references in separate files", () => {
+    it('should update secret references in separate files', () => {
       // Arrange
       settingsService.read();
       yaml.read.mockReturnValueOnce({
         mqtt: {
-          password: "!secret mqtt_password",
+          password: '!secret mqtt_password',
         },
       });
       const parseValueRefSpy = jest
-        .spyOn(settingsService, "parseValueRef")
-        .mockReturnValueOnce({ filename: "secret.yaml", key: "mqtt_password" });
+        .spyOn(settingsService, 'parseValueRef')
+        .mockReturnValueOnce({ filename: 'secret.yaml', key: 'mqtt_password' });
       yaml.updateIfChanged.mockClear();
 
       // Act
@@ -430,44 +412,42 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("parseValueRef", () => {
-    it("should parse a secret reference correctly", () => {
+  describe('parseValueRef', () => {
+    it('should parse a secret reference correctly', () => {
       // Act
-      const result = settingsService.parseValueRef("!secret mqtt_password");
+      const result = settingsService.parseValueRef('!secret mqtt_password');
 
       // Assert
-      expect(result).toEqual({ filename: "secret.yaml", key: "mqtt_password" });
+      expect(result).toEqual({ filename: 'secret.yaml', key: 'mqtt_password' });
     });
 
-    it("should return null for non-secret values", () => {
+    it('should return null for non-secret values', () => {
       // Act
-      const result = settingsService.parseValueRef("plaintext");
+      const result = settingsService.parseValueRef('plaintext');
 
       // Assert
       expect(result).toBeNull();
     });
 
-    it("should add .yaml extension if missing", () => {
+    it('should add .yaml extension if missing', () => {
       // Act
-      const result = settingsService.parseValueRef("!secret mqtt_password");
+      const result = settingsService.parseValueRef('!secret mqtt_password');
 
       // Assert
-      expect(result.filename).toBe("secret.yaml");
+      expect(result.filename).toBe('secret.yaml');
     });
 
-    it("should not add .yaml extension if already present", () => {
+    it('should not add .yaml extension if already present', () => {
       // Act
-      const result = settingsService.parseValueRef(
-        "!secret.yaml mqtt_password",
-      );
+      const result = settingsService.parseValueRef('!secret.yaml mqtt_password');
 
       // Assert
-      expect(result.filename).toBe("secret.yaml");
+      expect(result.filename).toBe('secret.yaml');
     });
   });
 
-  describe("validate", () => {
-    it("should return an empty array if there are no validation errors", () => {
+  describe('validate', () => {
+    it('should return an empty array if there are no validation errors', () => {
       // Act
       const errors = settingsService.validate();
 
@@ -476,10 +456,10 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("reRead", () => {
-    it("should call settingsService.get", () => {
+  describe('reRead', () => {
+    it('should call settingsService.get', () => {
       // Arrange
-      const getSpy = jest.spyOn(settingsService, "get");
+      const getSpy = jest.spyOn(settingsService, 'get');
 
       // Act
       reRead();
@@ -489,10 +469,10 @@ describe("Settings Module", () => {
     });
   });
 
-  describe("validate", () => {
-    it("should call settingsService.validate", () => {
+  describe('validate', () => {
+    it('should call settingsService.validate', () => {
       // Arrange
-      const validateSpy = jest.spyOn(settingsService, "validate");
+      const validateSpy = jest.spyOn(settingsService, 'validate');
 
       // Act
       validate();

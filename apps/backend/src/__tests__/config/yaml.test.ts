@@ -1,22 +1,22 @@
 // @ts-nocheck
-import fs from "fs";
-import yaml from "js-yaml";
-import { jest } from "@jest/globals";
-import yamlModule from "../../config/settings/yaml";
+import fs from 'fs';
+import yaml from 'js-yaml';
+import { jest } from '@jest/globals';
+import yamlModule from '../../config/settings/yaml';
 
 // Mock dependencies
-jest.mock("fs", () => ({
+jest.mock('fs', () => ({
   existsSync: jest.fn(),
   readFileSync: jest.fn(),
   writeFileSync: jest.fn(),
 }));
 
-jest.mock("js-yaml", () => ({
+jest.mock('js-yaml', () => ({
   load: jest.fn(),
   dump: jest.fn(),
 }));
 
-jest.mock("../../utils/logger", () => ({
+jest.mock('../../utils/logger', () => ({
   logger: {
     info: jest.fn(),
     debug: jest.fn(),
@@ -25,19 +25,19 @@ jest.mock("../../utils/logger", () => ({
   },
 }));
 
-describe("YAML Module", () => {
-  const { logger } = require("../../utils/logger");
+describe('YAML Module', () => {
+  const { logger } = require('../../utils/logger');
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("read", () => {
-    it("should read and parse a YAML file", () => {
+  describe('read', () => {
+    it('should read and parse a YAML file', () => {
       // Arrange
-      const filePath = "config.yml";
-      const fileContent = "key: value";
-      const parsedContent = { key: "value" };
+      const filePath = 'config.yml';
+      const fileContent = 'key: value';
+      const parsedContent = { key: 'value' };
 
       fs.readFileSync.mockReturnValue(fileContent);
       yaml.load.mockReturnValue(parsedContent);
@@ -46,30 +46,30 @@ describe("YAML Module", () => {
       const result = yamlModule.read(filePath);
 
       // Assert
-      expect(fs.readFileSync).toHaveBeenCalledWith(filePath, "utf8");
+      expect(fs.readFileSync).toHaveBeenCalledWith(filePath, 'utf8');
       expect(yaml.load).toHaveBeenCalledWith(fileContent);
       expect(result).toEqual(parsedContent);
     });
 
-    it("should return an empty object if YAML content is null", () => {
+    it('should return an empty object if YAML content is null', () => {
       // Arrange
-      fs.readFileSync.mockReturnValue("");
+      fs.readFileSync.mockReturnValue('');
       yaml.load.mockReturnValue(null);
 
       // Act
-      const result = yamlModule.read("config.yml");
+      const result = yamlModule.read('config.yml');
 
       // Assert
       expect(result).toEqual({});
     });
 
-    it("should add file property to YAMLException errors", () => {
+    it('should add file property to YAMLException errors', () => {
       // Arrange
-      const filePath = "invalid.yml";
-      const yamlError = new Error("Invalid YAML");
-      yamlError.name = "YAMLException";
+      const filePath = 'invalid.yml';
+      const yamlError = new Error('Invalid YAML');
+      yamlError.name = 'YAMLException';
 
-      fs.readFileSync.mockReturnValue("invalid: yaml: content");
+      fs.readFileSync.mockReturnValue('invalid: yaml: content');
       yaml.load.mockImplementation(() => {
         throw yamlError;
       });
@@ -77,33 +77,33 @@ describe("YAML Module", () => {
       // Act & Assert
       try {
         yamlModule.read(filePath);
-        fail("Should have thrown an error");
+        fail('Should have thrown an error');
       } catch (error) {
-        expect(error.name).toBe("YAMLException");
+        expect(error.name).toBe('YAMLException');
         expect(error.file).toBe(filePath);
       }
     });
 
-    it("should propagate other errors without modification", () => {
+    it('should propagate other errors without modification', () => {
       // Arrange
-      const genericError = new Error("File system error");
+      const genericError = new Error('File system error');
 
       fs.readFileSync.mockImplementation(() => {
         throw genericError;
       });
 
       // Act & Assert
-      expect(() => yamlModule.read("config.yml")).toThrow(genericError);
+      expect(() => yamlModule.read('config.yml')).toThrow(genericError);
       expect(genericError.file).toBeUndefined();
     });
   });
 
-  describe("readIfExists", () => {
-    it("should read file if it exists", () => {
+  describe('readIfExists', () => {
+    it('should read file if it exists', () => {
       // Arrange
-      const filePath = "config.yml";
-      const fileContent = "key: value";
-      const parsedContent = { key: "value" };
+      const filePath = 'config.yml';
+      const fileContent = 'key: value';
+      const parsedContent = { key: 'value' };
 
       fs.existsSync.mockReturnValue(true);
       fs.readFileSync.mockReturnValue(fileContent);
@@ -114,14 +114,14 @@ describe("YAML Module", () => {
 
       // Assert
       expect(fs.existsSync).toHaveBeenCalledWith(filePath);
-      expect(fs.readFileSync).toHaveBeenCalledWith(filePath, "utf8");
+      expect(fs.readFileSync).toHaveBeenCalledWith(filePath, 'utf8');
       expect(result).toEqual(parsedContent);
     });
 
-    it("should return default value if file does not exist", () => {
+    it('should return default value if file does not exist', () => {
       // Arrange
-      const filePath = "nonexistent.yml";
-      const defaultValue = { default: "value" };
+      const filePath = 'nonexistent.yml';
+      const defaultValue = { default: 'value' };
 
       fs.existsSync.mockReturnValue(false);
 
@@ -134,24 +134,24 @@ describe("YAML Module", () => {
       expect(result).toEqual(defaultValue);
     });
 
-    it("should return undefined if file does not exist and no default is provided", () => {
+    it('should return undefined if file does not exist and no default is provided', () => {
       // Arrange
       fs.existsSync.mockReturnValue(false);
 
       // Act
-      const result = yamlModule.readIfExists("nonexistent.yml");
+      const result = yamlModule.readIfExists('nonexistent.yml');
 
       // Assert
       expect(result).toBeUndefined();
     });
   });
 
-  describe("writeIfChanged", () => {
-    it("should write content if file does not exist", () => {
+  describe('writeIfChanged', () => {
+    it('should write content if file does not exist', () => {
       // Arrange
-      const filePath = "new-config.yml";
-      const content = { key: "value" };
-      const yamlContent = "key: value\n";
+      const filePath = 'new-config.yml';
+      const content = { key: 'value' };
+      const yamlContent = 'key: value\n';
 
       fs.existsSync.mockReturnValue(false);
       yaml.dump.mockReturnValue(yamlContent);
@@ -163,19 +163,19 @@ describe("YAML Module", () => {
       expect(fs.existsSync).toHaveBeenCalledWith(filePath);
       expect(yaml.dump).toHaveBeenCalledWith(content);
       expect(fs.writeFileSync).toHaveBeenCalledWith(filePath, yamlContent);
-      expect(logger.info).toHaveBeenCalledWith("save config file");
+      expect(logger.info).toHaveBeenCalledWith('save config file');
       expect(result).toBe(true);
     });
 
-    it("should write content if file exists but content is different", () => {
+    it('should write content if file exists but content is different', () => {
       // Arrange
-      const filePath = "config.yml";
-      const existingContent = { key: "old value" };
-      const newContent = { key: "new value" };
-      const yamlContent = "key: new value\n";
+      const filePath = 'config.yml';
+      const existingContent = { key: 'old value' };
+      const newContent = { key: 'new value' };
+      const yamlContent = 'key: new value\n';
 
       fs.existsSync.mockReturnValue(true);
-      fs.readFileSync.mockReturnValue("key: old value\n");
+      fs.readFileSync.mockReturnValue('key: old value\n');
       yaml.load.mockReturnValue(existingContent);
       yaml.dump.mockReturnValue(yamlContent);
 
@@ -189,13 +189,13 @@ describe("YAML Module", () => {
       expect(result).toBe(true);
     });
 
-    it("should not write if content is the same", () => {
+    it('should not write if content is the same', () => {
       // Arrange
-      const filePath = "config.yml";
-      const content = { key: "value" };
+      const filePath = 'config.yml';
+      const content = { key: 'value' };
 
       fs.existsSync.mockReturnValue(true);
-      fs.readFileSync.mockReturnValue("key: value\n");
+      fs.readFileSync.mockReturnValue('key: value\n');
       yaml.load.mockReturnValue({ ...content });
 
       // Act
@@ -207,20 +207,20 @@ describe("YAML Module", () => {
       expect(result).toBe(false);
     });
 
-    it("should remove special fields before comparison and writing", () => {
+    it('should remove special fields before comparison and writing', () => {
       // Arrange
-      const filePath = "config.yml";
-      const existingContent = { key: "value" };
+      const filePath = 'config.yml';
+      const existingContent = { key: 'value' };
       const newContent = {
-        key: "value",
-        args: ["test"],
-        envId: "dev",
-        ENVID: "dev",
+        key: 'value',
+        args: ['test'],
+        envId: 'dev',
+        ENVID: 'dev',
         timestamp: Date.now(),
       };
 
       fs.existsSync.mockReturnValue(true);
-      fs.readFileSync.mockReturnValue("key: value\n");
+      fs.readFileSync.mockReturnValue('key: value\n');
       yaml.load.mockReturnValue(existingContent);
 
       // Act
@@ -232,15 +232,15 @@ describe("YAML Module", () => {
     });
   });
 
-  describe("updateIfChanged", () => {
-    it("should update a key if value has changed", () => {
+  describe('updateIfChanged', () => {
+    it('should update a key if value has changed', () => {
       // Arrange
-      const filePath = "config.yml";
-      const key = "setting";
-      const newValue = "new value";
-      const existingContent = { setting: "old value" };
+      const filePath = 'config.yml';
+      const key = 'setting';
+      const newValue = 'new value';
+      const existingContent = { setting: 'old value' };
 
-      fs.readFileSync.mockReturnValue("setting: old value\n");
+      fs.readFileSync.mockReturnValue('setting: old value\n');
       yaml.load.mockReturnValue({ ...existingContent });
 
       // Skip the test if we can't mock the function
@@ -255,13 +255,13 @@ describe("YAML Module", () => {
         yamlModule.updateIfChanged(filePath, key, newValue);
 
         // Assert
-        expect(fs.readFileSync).toHaveBeenCalledWith(filePath, "utf8");
+        expect(fs.readFileSync).toHaveBeenCalledWith(filePath, 'utf8');
 
         // Check if the mock was called
         if (writeIfChangedMock.mock.calls.length > 0) {
           expect(writeIfChangedMock).toHaveBeenCalledWith(
             filePath,
-            expect.objectContaining({ setting: "new value" }),
+            expect.objectContaining({ setting: 'new value' })
           );
         } else {
           // If the mock wasn't called, just check that the content was updated
@@ -273,14 +273,14 @@ describe("YAML Module", () => {
       }
     });
 
-    it("should not update if value is the same", () => {
+    it('should not update if value is the same', () => {
       // Arrange
-      const filePath = "config.yml";
-      const key = "setting";
-      const value = "same value";
-      const existingContent = { setting: "same value" };
+      const filePath = 'config.yml';
+      const key = 'setting';
+      const value = 'same value';
+      const existingContent = { setting: 'same value' };
 
-      fs.readFileSync.mockReturnValue("setting: same value\n");
+      fs.readFileSync.mockReturnValue('setting: same value\n');
       yaml.load.mockReturnValue({ ...existingContent });
 
       // Mock writeIfChanged directly
@@ -291,21 +291,21 @@ describe("YAML Module", () => {
       yamlModule.updateIfChanged(filePath, key, value);
 
       // Assert
-      expect(fs.readFileSync).toHaveBeenCalledWith(filePath, "utf8");
+      expect(fs.readFileSync).toHaveBeenCalledWith(filePath, 'utf8');
       expect(yamlModule.writeIfChanged).not.toHaveBeenCalled();
 
       // Restore original function
       yamlModule.writeIfChanged = originalWriteIfChanged;
     });
 
-    it("should add key if it does not exist", () => {
+    it('should add key if it does not exist', () => {
       // Arrange
-      const filePath = "config.yml";
-      const key = "newSetting";
-      const value = "value";
-      const existingContent = { setting: "value" };
+      const filePath = 'config.yml';
+      const key = 'newSetting';
+      const value = 'value';
+      const existingContent = { setting: 'value' };
 
-      fs.readFileSync.mockReturnValue("setting: value\n");
+      fs.readFileSync.mockReturnValue('setting: value\n');
       yaml.load.mockReturnValue({ ...existingContent });
 
       // Skip the test if we can't mock the function
@@ -320,20 +320,20 @@ describe("YAML Module", () => {
         yamlModule.updateIfChanged(filePath, key, value);
 
         // Assert
-        expect(fs.readFileSync).toHaveBeenCalledWith(filePath, "utf8");
+        expect(fs.readFileSync).toHaveBeenCalledWith(filePath, 'utf8');
 
         // Skip the assertion if the mock wasn't called
         if (writeIfChangedMock.mock.calls.length > 0) {
           expect(writeIfChangedMock).toHaveBeenCalledWith(
             filePath,
             expect.objectContaining({
-              setting: "value",
-              newSetting: "value",
-            }),
+              setting: 'value',
+              newSetting: 'value',
+            })
           );
         } else {
           // Skip this test
-          console.log("Skipping assertion for updateIfChanged test");
+          console.log('Skipping assertion for updateIfChanged test');
         }
       } finally {
         // Restore original function

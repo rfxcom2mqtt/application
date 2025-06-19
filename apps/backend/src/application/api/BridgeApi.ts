@@ -1,6 +1,6 @@
-import { Router, Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { BridgeInfo, Action } from "../../core/models";
+import { Router, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { BridgeInfo, Action } from '../../core/models';
 
 export default class BridgeApi {
   public router: Router;
@@ -10,13 +10,13 @@ export default class BridgeApi {
     this.bridgeInfo = bridgeInfo;
     this.router = Router();
 
-    this.router.get("/info", (req: Request, res: Response) => {
+    this.router.get('/info', (req: Request, res: Response) => {
       res.status(StatusCodes.OK).json(this.bridgeInfo);
     });
 
-    this.router.post("/action", (req: Request, res: Response) => {
+    this.router.post('/action', (req: Request, res: Response) => {
       const action = req.body?.action;
-      actionCallback(new Action("bridge", action));
+      actionCallback(new Action('bridge', action));
       res.status(StatusCodes.OK).json({});
     });
   }

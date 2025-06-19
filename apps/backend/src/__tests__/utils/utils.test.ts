@@ -1,26 +1,26 @@
-import { ProxyConfig, getRfxcom2MQTTVersion } from "../../utils/utils";
+import { ProxyConfig, getRfxcom2MQTTVersion } from '../../utils/utils';
 
 // Mock the package.json require
 jest.mock(
-  "../../package.json",
+  '../../package.json',
   () => ({
-    version: "1.2.3",
+    version: '1.2.3',
   }),
-  { virtual: true },
+  { virtual: true }
 );
 
-describe("Utils", () => {
-  describe("getRfxcom2MQTTVersion", () => {
-    it("should return the version from package.json", () => {
+describe('Utils', () => {
+  describe('getRfxcom2MQTTVersion', () => {
+    it('should return the version from package.json', () => {
       // Act
       const version = getRfxcom2MQTTVersion();
 
       // Assert
-      expect(version).toBe("1.2.1");
+      expect(version).toBe('1.2.1');
     });
   });
 
-  describe("ProxyConfig", () => {
+  describe('ProxyConfig', () => {
     const originalEnv = process.env;
 
     beforeEach(() => {
@@ -33,19 +33,19 @@ describe("Utils", () => {
       process.env = originalEnv;
     });
 
-    describe("getPublicPath", () => {
-      it("should return API_BASE_PATH when set", () => {
+    describe('getPublicPath', () => {
+      it('should return API_BASE_PATH when set', () => {
         // Arrange
-        process.env.API_BASE_PATH = "/api";
+        process.env.API_BASE_PATH = '/api';
 
         // Act
         const result = ProxyConfig.getPublicPath();
 
         // Assert
-        expect(result).toBe("/api");
+        expect(result).toBe('/api');
       });
 
-      it("should return empty string when API_BASE_PATH is not set", () => {
+      it('should return empty string when API_BASE_PATH is not set', () => {
         // Arrange
         delete process.env.API_BASE_PATH;
 
@@ -53,23 +53,23 @@ describe("Utils", () => {
         const result = ProxyConfig.getPublicPath();
 
         // Assert
-        expect(result).toBe("");
+        expect(result).toBe('');
       });
     });
 
-    describe("getBasePath", () => {
-      it("should return API_BASE_PATH when set", () => {
+    describe('getBasePath', () => {
+      it('should return API_BASE_PATH when set', () => {
         // Arrange
-        process.env.API_BASE_PATH = "/api";
+        process.env.API_BASE_PATH = '/api';
 
         // Act
         const result = ProxyConfig.getBasePath();
 
         // Assert
-        expect(result).toBe("/api");
+        expect(result).toBe('/api');
       });
 
-      it("should return empty string when API_BASE_PATH is not set", () => {
+      it('should return empty string when API_BASE_PATH is not set', () => {
         // Arrange
         delete process.env.API_BASE_PATH;
 
@@ -77,20 +77,20 @@ describe("Utils", () => {
         const result = ProxyConfig.getBasePath();
 
         // Assert
-        expect(result).toBe("");
+        expect(result).toBe('');
       });
     });
 
-    describe("getSocketPath", () => {
+    describe('getSocketPath', () => {
       it('should return API_BASE_PATH + "/socket.io" when API_BASE_PATH is set', () => {
         // Arrange
-        process.env.API_BASE_PATH = "/api";
+        process.env.API_BASE_PATH = '/api';
 
         // Act
         const result = ProxyConfig.getSocketPath();
 
         // Assert
-        expect(result).toBe("/api/socket.io");
+        expect(result).toBe('/api/socket.io');
       });
 
       it('should return "/socket.io" when API_BASE_PATH is not set', () => {
@@ -101,23 +101,23 @@ describe("Utils", () => {
         const result = ProxyConfig.getSocketPath();
 
         // Assert
-        expect(result).toBe("/socket.io");
+        expect(result).toBe('/socket.io');
       });
     });
 
-    describe("getSocketNamespace", () => {
-      it("should return WS_NAMESPACE when set", () => {
+    describe('getSocketNamespace', () => {
+      it('should return WS_NAMESPACE when set', () => {
         // Arrange
-        process.env.WS_NAMESPACE = "/ws";
+        process.env.WS_NAMESPACE = '/ws';
 
         // Act
         const result = ProxyConfig.getSocketNamespace();
 
         // Assert
-        expect(result).toBe("/ws");
+        expect(result).toBe('/ws');
       });
 
-      it("should return empty string when WS_NAMESPACE is not set", () => {
+      it('should return empty string when WS_NAMESPACE is not set', () => {
         // Arrange
         delete process.env.WS_NAMESPACE;
 
@@ -125,7 +125,7 @@ describe("Utils", () => {
         const result = ProxyConfig.getSocketNamespace();
 
         // Assert
-        expect(result).toBe("");
+        expect(result).toBe('');
       });
     });
   });

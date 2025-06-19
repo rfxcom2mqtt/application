@@ -57,7 +57,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   const { t } = useTranslation();
   const config = severityConfig[severity];
   const IconComponent = config.icon;
-  
+
   const defaultConfirmText = confirmText || t('common.confirm');
   const defaultCancelText = cancelText || t('common.cancel');
 
@@ -103,12 +103,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-        <Button
-          onClick={onClose}
-          variant="outlined"
-          disabled={loading}
-          sx={{ minWidth: 100 }}
-        >
+        <Button onClick={onClose} variant="outlined" disabled={loading} sx={{ minWidth: 100 }}>
           {defaultCancelText}
         </Button>
         <Button

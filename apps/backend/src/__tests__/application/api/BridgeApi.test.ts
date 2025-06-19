@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import BridgeApi from "../../../application/api/BridgeApi";
-import { BridgeInfo, Action } from "../../../core/models";
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import BridgeApi from '../../../application/api/BridgeApi';
+import { BridgeInfo, Action } from '../../../core/models';
 
 // Mock Express Router
-jest.mock("express", () => {
+jest.mock('express', () => {
   const mockRouter = {
     get: jest.fn().mockReturnThis(),
     post: jest.fn().mockReturnThis(),
@@ -15,7 +15,7 @@ jest.mock("express", () => {
   };
 });
 
-describe("BridgeApi", () => {
+describe('BridgeApi', () => {
   let bridgeApi: BridgeApi;
   let mockBridgeInfo: BridgeInfo;
   let mockActionCallback: jest.Mock;
@@ -28,12 +28,12 @@ describe("BridgeApi", () => {
 
     // Setup mocks
     mockBridgeInfo = {
-      version: "1.2.1",
+      version: '1.2.1',
       coordinator: {
-        receiverType: "Test",
+        receiverType: 'Test',
         firmwareVersion: 123,
       },
-      logLevel: "info",
+      logLevel: 'info',
     } as BridgeInfo;
 
     mockActionCallback = jest.fn();
@@ -51,26 +51,20 @@ describe("BridgeApi", () => {
     bridgeApi = new BridgeApi(mockBridgeInfo, mockActionCallback);
 
     // Get the mock router
-    mockRouter = require("express").Router();
+    mockRouter = require('express').Router();
   });
 
-  describe("constructor", () => {
-    it("should initialize with the provided bridge info and set up routes", () => {
+  describe('constructor', () => {
+    it('should initialize with the provided bridge info and set up routes', () => {
       // Assert
-      expect(require("express").Router).toHaveBeenCalled();
-      expect(mockRouter.get).toHaveBeenCalledWith(
-        "/info",
-        expect.any(Function),
-      );
-      expect(mockRouter.post).toHaveBeenCalledWith(
-        "/action",
-        expect.any(Function),
-      );
+      expect(require('express').Router).toHaveBeenCalled();
+      expect(mockRouter.get).toHaveBeenCalledWith('/info', expect.any(Function));
+      expect(mockRouter.post).toHaveBeenCalledWith('/action', expect.any(Function));
     });
   });
 
-  describe("GET /info", () => {
-    it("should return bridge info", () => {
+  describe('GET /info', () => {
+    it('should return bridge info', () => {
       // Arrange
       const infoHandler = mockRouter.get.mock.calls[0][1];
 
@@ -83,24 +77,22 @@ describe("BridgeApi", () => {
     });
   });
 
-  describe("POST /action", () => {
-    it("should call action callback with bridge action", () => {
+  describe('POST /action', () => {
+    it('should call action callback with bridge action', () => {
       // Arrange
       const actionHandler = mockRouter.post.mock.calls[0][1];
-      mockRequest.body = { action: "restart" };
+      mockRequest.body = { action: 'restart' };
 
       // Act
       actionHandler(mockRequest, mockResponse);
 
       // Assert
-      expect(mockActionCallback).toHaveBeenCalledWith(
-        new Action("bridge", "restart"),
-      );
+      expect(mockActionCallback).toHaveBeenCalledWith(new Action('bridge', 'restart'));
       expect(mockResponse.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });
 
-    it("should handle missing action in request body", () => {
+    it('should handle missing action in request body', () => {
       // Arrange
       const actionHandler = mockRouter.post.mock.calls[0][1];
       mockRequest.body = {};
@@ -109,9 +101,7 @@ describe("BridgeApi", () => {
       actionHandler(mockRequest, mockResponse);
 
       // Assert
-      expect(mockActionCallback).toHaveBeenCalledWith(
-        new Action("bridge", undefined),
-      );
+      expect(mockActionCallback).toHaveBeenCalledWith(new Action('bridge', undefined));
       expect(mockResponse.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });

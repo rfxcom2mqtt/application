@@ -1,10 +1,10 @@
-import { Server as SocketIOServer, Socket } from "socket.io";
-import WebSocketService from "../../application/WebSocketService";
-import { loggerFactory, LogEventTransport } from "../../utils/logger";
-import { ProxyConfig } from "../../utils/utils";
+import { Server as SocketIOServer, Socket } from 'socket.io';
+import WebSocketService from '../../application/WebSocketService';
+import { loggerFactory, LogEventTransport } from '../../utils/logger';
+import { ProxyConfig } from '../../utils/utils';
 
 // Mock dependencies
-jest.mock("socket.io", () => {
+jest.mock('socket.io', () => {
   // Create mock namespace
   const mockNamespace = {
     on: jest.fn(),
@@ -23,7 +23,7 @@ jest.mock("socket.io", () => {
   };
 });
 
-jest.mock("../../utils/logger", () => {
+jest.mock('../../utils/logger', () => {
   return {
     loggerFactory: {
       getLogger: jest.fn().mockReturnValue({
@@ -38,13 +38,13 @@ jest.mock("../../utils/logger", () => {
   };
 });
 
-jest.mock("../../utils/utils", () => ({
+jest.mock('../../utils/utils', () => ({
   ProxyConfig: {
-    getSocketNamespace: jest.fn().mockReturnValue("/test-namespace"),
+    getSocketNamespace: jest.fn().mockReturnValue('/test-namespace'),
   },
 }));
 
-describe("WebSocketService", () => {
+describe('WebSocketService', () => {
   let webSocketService: WebSocketService;
   let mockServer: any;
   let mockNamespace: any;
@@ -57,7 +57,7 @@ describe("WebSocketService", () => {
     // Setup mock socket for connection event
     mockSocket = {
       on: jest.fn(),
-      id: "test-socket-id",
+      id: 'test-socket-id',
       data: {},
     };
   });
@@ -71,31 +71,26 @@ describe("WebSocketService", () => {
     mockServer = (SocketIOServer as unknown as jest.Mock).mock.results[0].value;
 
     // Get mock namespace
-    mockNamespace = mockServer.of("/test-namespace");
+    mockNamespace = mockServer.of('/test-namespace');
 
     return { httpServer };
   };
 
-  describe("init", () => {
-    it("should initialize the WebSocket server", () => {
+  describe('init', () => {
+    it('should initialize the WebSocket server', () => {
       // Arrange & Act
       const { httpServer } = initServiceAndGetMocks();
 
       // Assert
       expect(SocketIOServer).toHaveBeenCalledWith(httpServer, {
-        path: "/socket.io",
+        path: '/socket.io',
       });
-      expect(mockServer.of).toHaveBeenCalledWith("/test-namespace");
-      expect(mockNamespace.on).toHaveBeenCalledWith(
-        "connect",
-        expect.any(Function),
-      );
-      expect(loggerFactory.addTransport).toHaveBeenCalledWith(
-        expect.any(LogEventTransport),
-      );
+      expect(mockServer.of).toHaveBeenCalledWith('/test-namespace');
+      expect(mockNamespace.on).toHaveBeenCalledWith('connect', expect.any(Function));
+      expect(loggerFactory.addTransport).toHaveBeenCalledWith(expect.any(LogEventTransport));
     });
 
-    it("should set up socket event handlers on connection", () => {
+    it('should set up socket event handlers on connection', () => {
       // Arrange
       initServiceAndGetMocks();
 
@@ -106,14 +101,11 @@ describe("WebSocketService", () => {
       connectHandler(mockSocket);
 
       // Assert
-      expect(mockSocket.on).toHaveBeenCalledWith(
-        "getAllLogs",
-        expect.any(Function),
-      );
-      expect(mockSocket.on).toHaveBeenCalledWith("ping", expect.any(Function));
+      expect(mockSocket.on).toHaveBeenCalledWith('getAllLogs', expect.any(Function));
+      expect(mockSocket.on).toHaveBeenCalledWith('ping', expect.any(Function));
     });
 
-    it("should handle ping event", () => {
+    it('should handle ping event', () => {
       // Arrange
       initServiceAndGetMocks();
 
@@ -122,49 +114,47 @@ describe("WebSocketService", () => {
       connectHandler(mockSocket);
 
       // Get the ping handler
-      const pingHandlers = mockSocket.on.mock.calls.filter(
-        (call) => call[0] === "ping",
-      );
+      const pingHandlers = mockSocket.on.mock.calls.filter(call => call[0] === 'ping');
       const pingHandler = pingHandlers[0][1];
 
       // Act
       pingHandler();
 
       // Assert
-      const logger = loggerFactory.getLogger("WEBSOCKET");
-      expect(logger.info).toHaveBeenCalledWith("ping");
+      const logger = loggerFactory.getLogger('WEBSOCKET');
+      expect(logger.info).toHaveBeenCalledWith('ping');
     });
   });
 
-  describe("sendLog", () => {
-    it("should emit log event with the message", () => {
+  describe('sendLog', () => {
+    it('should emit log event with the message', () => {
       // Arrange
       initServiceAndGetMocks();
-      const message = { level: "info", message: "Test message" };
+      const message = { level: 'info', message: 'Test message' };
 
       // Act
       webSocketService.sendLog(message);
 
       // Assert
-      expect(mockNamespace.emit).toHaveBeenCalledWith("log", message);
+      expect(mockNamespace.emit).toHaveBeenCalledWith('log', message);
     });
   });
 
-  describe("getAllLogs", () => {
-    it("should send all stored messages", () => {
+  describe('getAllLogs', () => {
+    it('should send all stored messages', () => {
       // Arrange
       initServiceAndGetMocks();
 
       // Add some messages to the service
-      const message1 = { id: "1", level: "info", value: "Test message 1" };
-      const message2 = { id: "2", level: "error", value: "Test message 2" };
+      const message1 = { id: '1', level: 'info', value: 'Test message 1' };
+      const message2 = { id: '2', level: 'error', value: 'Test message 2' };
 
       // Use private property access to add messages to the set
       (webSocketService as any).messages.add(message1);
       (webSocketService as any).messages.add(message2);
 
       // Spy on sendLog method
-      const sendLogSpy = jest.spyOn(webSocketService, "sendLog");
+      const sendLogSpy = jest.spyOn(webSocketService, 'sendLog');
 
       // Act
       webSocketService.getAllLogs();
@@ -176,19 +166,19 @@ describe("WebSocketService", () => {
     });
   });
 
-  describe("onLog", () => {
-    it("should add log event to messages and emit it", () => {
+  describe('onLog', () => {
+    it('should add log event to messages and emit it', () => {
       // Arrange
       initServiceAndGetMocks();
       const logEvent = {
-        level: "info",
-        message: "Test log message",
-        label: "TEST",
+        level: 'info',
+        message: 'Test log message',
+        label: 'TEST',
         timestamp: new Date().toISOString(),
       };
 
       // Spy on sendLog method
-      const sendLogSpy = jest.spyOn(webSocketService, "sendLog");
+      const sendLogSpy = jest.spyOn(webSocketService, 'sendLog');
 
       // Act
       webSocketService.onLog(logEvent);
@@ -198,14 +188,14 @@ describe("WebSocketService", () => {
 
       // Check that the log event was emitted (sendLog calls emit with 'log')
       expect(mockNamespace.emit).toHaveBeenCalledWith(
-        "log",
+        'log',
         expect.objectContaining({
           id: expect.any(String),
           level: logEvent.level,
           value: logEvent.message,
           label: logEvent.label,
           time: logEvent.timestamp,
-        }),
+        })
       );
 
       // Note: The 'logged' event is emitted via setImmediate, which is asynchronous
@@ -219,19 +209,19 @@ describe("WebSocketService", () => {
           value: logEvent.message,
           label: logEvent.label,
           time: logEvent.timestamp,
-        }),
+        })
       );
     });
   });
 
-  describe("disconnect", () => {
-    it("should log disconnect message", () => {
+  describe('disconnect', () => {
+    it('should log disconnect message', () => {
       // Act
       webSocketService.disconnect();
 
       // Assert
-      const logger = loggerFactory.getLogger("WEBSOCKET");
-      expect(logger.info).toHaveBeenCalledWith("disconnect");
+      const logger = loggerFactory.getLogger('WEBSOCKET');
+      expect(logger.info).toHaveBeenCalledWith('disconnect');
     });
   });
 });

@@ -50,7 +50,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
       >
         {breadcrumbItems.map((item, index) => {
           const isLast = index === breadcrumbItems.length - 1;
-          
+
           if (isLast) {
             return (
               <Typography
@@ -62,11 +62,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                   fontWeight: 500,
                 }}
               >
-                {item.icon && (
-                  <Box sx={{ mr: 0.5, display: 'flex' }}>
-                    {item.icon}
-                  </Box>
-                )}
+                {item.icon && <Box sx={{ mr: 0.5, display: 'flex' }}>{item.icon}</Box>}
                 {item.label}
               </Typography>
             );
@@ -88,11 +84,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                 },
               }}
             >
-              {item.icon && (
-                <Box sx={{ mr: 0.5, display: 'flex' }}>
-                  {item.icon}
-                </Box>
-              )}
+              {item.icon && <Box sx={{ mr: 0.5, display: 'flex' }}>{item.icon}</Box>}
               {item.label}
             </Link>
           );
@@ -113,9 +105,9 @@ function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
   ];
 
   let currentPath = '';
-  pathSegments.forEach((segment, index) => {
+  pathSegments.forEach(segment => {
     currentPath += `/${segment}`;
-    
+
     // Skip if it's a dynamic route parameter (like device ID)
     if (segment.match(/^[a-f0-9-]{36}$/i) || segment.match(/^\d+$/)) {
       breadcrumbs.push({

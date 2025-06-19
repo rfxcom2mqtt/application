@@ -1,14 +1,14 @@
-import Discovery from "../../adapters/discovery";
-import { getMqttInstance } from "../../adapters/mqtt";
-import { getRfxcomInstance } from "../../adapters/rfxcom";
-import Server from "../../application";
-import { settingsService } from "../../config/settings";
-import { BRIDGE_ACTIONS } from "../../constants";
-import Controller from "../../core/Controller";
-import { BridgeInfo, Action } from "../../core/models";
+import Discovery from '../../adapters/discovery';
+import { getMqttInstance } from '../../adapters/mqtt';
+import { getRfxcomInstance } from '../../adapters/rfxcom';
+import Server from '../../application';
+import { settingsService } from '../../config/settings';
+import { BRIDGE_ACTIONS } from '../../constants';
+import Controller from '../../core/Controller';
+import { BridgeInfo, Action } from '../../core/models';
 
 // Mock dependencies
-jest.mock("../../adapters/mqtt", () => ({
+jest.mock('../../adapters/mqtt', () => ({
   getMqttInstance: jest.fn().mockReturnValue({
     connect: jest.fn().mockResolvedValue(undefined),
     disconnect: jest.fn().mockResolvedValue(undefined),
@@ -16,18 +16,18 @@ jest.mock("../../adapters/mqtt", () => ({
     publish: jest.fn(),
     publishState: jest.fn(),
     topics: {
-      base: "rfxcom2mqtt",
-      devices: "rfxcom2mqtt/devices",
-      info: "rfxcom2mqtt/bridge/info",
+      base: 'rfxcom2mqtt',
+      devices: 'rfxcom2mqtt/devices',
+      info: 'rfxcom2mqtt/bridge/info',
     },
   }),
 }));
 
-jest.mock("../../adapters/rfxcom", () => ({
+jest.mock('../../adapters/rfxcom', () => ({
   getRfxcomInstance: jest.fn().mockReturnValue({
     initialise: jest.fn().mockResolvedValue(undefined),
     stop: jest.fn().mockResolvedValue(undefined),
-    getStatus: jest.fn().mockImplementation((callback) => callback("online")),
+    getStatus: jest.fn().mockImplementation(callback => callback('online')),
     onStatus: jest.fn(),
     onDisconnect: jest.fn(),
     subscribeProtocolsEvent: jest.fn(),
@@ -35,7 +35,7 @@ jest.mock("../../adapters/rfxcom", () => ({
   }),
 }));
 
-jest.mock("../../adapters/discovery", () => {
+jest.mock('../../adapters/discovery', () => {
   // Create mock functions
   const mockStart = jest.fn().mockResolvedValue(undefined);
   const mockStop = jest.fn().mockResolvedValue(undefined);
@@ -68,7 +68,7 @@ jest.mock("../../adapters/discovery", () => {
   };
 });
 
-jest.mock("../../application", () => {
+jest.mock('../../application', () => {
   const mockStart = jest.fn();
   const mockStop = jest.fn().mockResolvedValue(undefined);
   const mockEnableApi = jest.fn();
@@ -87,19 +87,19 @@ jest.mock("../../application", () => {
   };
 });
 
-jest.mock("../../config/settings", () => ({
+jest.mock('../../config/settings', () => ({
   settingsService: {
     read: jest.fn().mockReturnValue({
       frontend: { enabled: true },
-      mqtt: { base_topic: "rfxcom2mqtt" },
-      rfxcom: { usbport: "/dev/ttyUSB0" },
+      mqtt: { base_topic: 'rfxcom2mqtt' },
+      rfxcom: { usbport: '/dev/ttyUSB0' },
       homeassistant: { discovery: true },
       healthcheck: { enabled: false },
     }),
     get: jest.fn().mockReturnValue({
       frontend: { enabled: true },
-      mqtt: { base_topic: "rfxcom2mqtt" },
-      rfxcom: { usbport: "/dev/ttyUSB0" },
+      mqtt: { base_topic: 'rfxcom2mqtt' },
+      rfxcom: { usbport: '/dev/ttyUSB0' },
       homeassistant: { discovery: true },
       healthcheck: { enabled: false },
       devices: [],
@@ -107,17 +107,17 @@ jest.mock("../../config/settings", () => ({
   },
 }));
 
-jest.mock("../../utils/utils", () => ({
-  getRfxcom2MQTTVersion: jest.fn().mockReturnValue("1.2.1"),
+jest.mock('../../utils/utils', () => ({
+  getRfxcom2MQTTVersion: jest.fn().mockReturnValue('1.2.1'),
   ProxyConfig: {
-    getPublicPath: jest.fn().mockReturnValue("/api"),
-    getBasePath: jest.fn().mockReturnValue("/api"),
-    getSocketPath: jest.fn().mockReturnValue("/api/socket.io"),
-    getSocketNamespace: jest.fn().mockReturnValue(""),
+    getPublicPath: jest.fn().mockReturnValue('/api'),
+    getBasePath: jest.fn().mockReturnValue('/api'),
+    getSocketPath: jest.fn().mockReturnValue('/api/socket.io'),
+    getSocketNamespace: jest.fn().mockReturnValue(''),
   },
 }));
 
-jest.mock("../../utils/logger", () => ({
+jest.mock('../../utils/logger', () => ({
   logger: {
     info: jest.fn(),
     debug: jest.fn(),
@@ -134,11 +134,11 @@ jest.mock("../../utils/logger", () => ({
   },
 }));
 
-jest.mock("node-cron", () => ({
+jest.mock('node-cron', () => ({
   schedule: jest.fn(),
 }));
 
-describe("Controller", () => {
+describe('Controller', () => {
   let controller: Controller;
   let exitCallback: jest.Mock;
 
@@ -148,8 +148,8 @@ describe("Controller", () => {
     controller = new Controller(exitCallback);
   });
 
-  describe("constructor", () => {
-    it("should initialize components", () => {
+  describe('constructor', () => {
+    it('should initialize components', () => {
       // Assert
       expect(settingsService.read).toHaveBeenCalled();
       expect(getMqttInstance).toHaveBeenCalled();
@@ -159,8 +159,8 @@ describe("Controller", () => {
     });
   });
 
-  describe("start", () => {
-    it("should start all components", async () => {
+  describe('start', () => {
+    it('should start all components', async () => {
       // Act
       await controller.start();
 
@@ -168,9 +168,7 @@ describe("Controller", () => {
       // Get the mock instance from the constructor call
       const serverInstance = (Server as jest.Mock).mock.instances[0];
       // Since we're mocking the implementation, we need to check if the mock function was called
-      expect(
-        (Server as jest.Mock).mock.results[0].value.start,
-      ).toHaveBeenCalled();
+      expect((Server as jest.Mock).mock.results[0].value.start).toHaveBeenCalled();
 
       const rfxBridge = getRfxcomInstance();
       expect(rfxBridge.initialise).toHaveBeenCalled();
@@ -182,20 +180,18 @@ describe("Controller", () => {
       expect(mqttClient.connect).toHaveBeenCalled();
     });
 
-    it("should handle RFXCOM initialization error", async () => {
+    it('should handle RFXCOM initialization error', async () => {
       // Arrange
-      const error = new Error("RFXCOM initialization failed");
-      (getRfxcomInstance().initialise as jest.Mock).mockRejectedValueOnce(
-        error,
-      );
+      const error = new Error('RFXCOM initialization failed');
+      (getRfxcomInstance().initialise as jest.Mock).mockRejectedValueOnce(error);
 
       // Act & Assert
       await expect(controller.start()).rejects.toThrow();
     });
 
-    it("should handle MQTT connection error", async () => {
+    it('should handle MQTT connection error', async () => {
       // Arrange
-      const error = new Error("MQTT connection failed");
+      const error = new Error('MQTT connection failed');
       (getMqttInstance().connect as jest.Mock).mockRejectedValueOnce(error);
 
       // Act
@@ -207,8 +203,8 @@ describe("Controller", () => {
     });
   });
 
-  describe("stop", () => {
-    it("should stop all components", async () => {
+  describe('stop', () => {
+    it('should stop all components', async () => {
       // Act
       await controller.stop();
 
@@ -217,9 +213,9 @@ describe("Controller", () => {
       expect(exitCallback).toHaveBeenCalled();
     });
 
-    it("should handle errors during shutdown", async () => {
+    it('should handle errors during shutdown', async () => {
       // Arrange
-      const error = new Error("Shutdown error");
+      const error = new Error('Shutdown error');
       (getMqttInstance().disconnect as jest.Mock).mockRejectedValueOnce(error);
 
       // Act
@@ -229,11 +225,9 @@ describe("Controller", () => {
       expect(exitCallback).toHaveBeenCalledWith(1, false);
     });
 
-    it("should pass restart flag to exit callback", async () => {
+    it('should pass restart flag to exit callback', async () => {
       // Arrange
-      (getMqttInstance().disconnect as jest.Mock).mockResolvedValueOnce(
-        undefined,
-      );
+      (getMqttInstance().disconnect as jest.Mock).mockResolvedValueOnce(undefined);
 
       // Act
       await controller.stop(true);
@@ -243,12 +237,12 @@ describe("Controller", () => {
     });
   });
 
-  describe("runAction", () => {
-    it("should run bridge action", async () => {
+  describe('runAction', () => {
+    it('should run bridge action', async () => {
       // Arrange
-      const action = new Action("bridge", BRIDGE_ACTIONS.RESTART);
+      const action = new Action('bridge', BRIDGE_ACTIONS.RESTART);
       const restartSpy = jest
-        .spyOn(controller as any, "restartBridge")
+        .spyOn(controller as any, 'restartBridge')
         .mockResolvedValueOnce(undefined);
 
       // Act
@@ -258,27 +252,23 @@ describe("Controller", () => {
       expect(restartSpy).toHaveBeenCalled();
     });
 
-    it("should run device action", async () => {
+    it('should run device action', async () => {
       // Arrange
-      const action = new Action("device", "switchOn", "device1", "entity1");
+      const action = new Action('device', 'switchOn', 'device1', 'entity1');
       const runDeviceActionSpy = jest
-        .spyOn(controller as any, "runDeviceAction")
+        .spyOn(controller as any, 'runDeviceAction')
         .mockResolvedValueOnce(undefined);
 
       // Act
       await controller.runAction(action);
 
       // Assert
-      expect(runDeviceActionSpy).toHaveBeenCalledWith(
-        "device1",
-        "entity1",
-        "switchOn",
-      );
+      expect(runDeviceActionSpy).toHaveBeenCalledWith('device1', 'entity1', 'switchOn');
     });
 
-    it("should handle unknown action type", async () => {
+    it('should handle unknown action type', async () => {
       // Arrange
-      const action = { type: "unknown", action: "test" } as any;
+      const action = { type: 'unknown', action: 'test' } as any;
 
       // Act
       await controller.runAction(action);
@@ -287,11 +277,11 @@ describe("Controller", () => {
     });
   });
 
-  describe("onMQTTMessage", () => {
-    it("should handle command messages", () => {
+  describe('onMQTTMessage', () => {
+    it('should handle command messages', () => {
       // Arrange
       const data = {
-        topic: "rfxcom2mqtt/command/lighting2/0x123456/1",
+        topic: 'rfxcom2mqtt/command/lighting2/0x123456/1',
         message: '{"command":"on"}',
       };
 
@@ -301,17 +291,17 @@ describe("Controller", () => {
       // Assert
       const rfxBridge = getRfxcomInstance();
       expect(rfxBridge.onCommand).toHaveBeenCalledWith(
-        "lighting2",
-        "0x123456/1",
+        'lighting2',
+        '0x123456/1',
         '{"command":"on"}',
-        undefined,
+        undefined
       );
     });
 
-    it("should handle invalid topic structure", () => {
+    it('should handle invalid topic structure', () => {
       // Arrange
       const data = {
-        topic: "invalid/topic",
+        topic: 'invalid/topic',
         message: '{"command":"on"}',
       };
 
@@ -324,13 +314,13 @@ describe("Controller", () => {
     });
   });
 
-  describe("subscribeTopic", () => {
-    it("should return the correct topics", () => {
+  describe('subscribeTopic', () => {
+    it('should return the correct topics', () => {
       // Act
       const topics = controller.subscribeTopic();
 
       // Assert
-      expect(topics).toEqual(["rfxcom2mqtt/command/#"]);
+      expect(topics).toEqual(['rfxcom2mqtt/command/#']);
     });
   });
 });

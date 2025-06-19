@@ -1,11 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import {
-  Snackbar,
-  Alert,
-  AlertColor,
-  Slide,
-  SlideProps,
-} from '@mui/material';
+import { Snackbar, Alert, AlertColor, Slide, SlideProps } from '@mui/material';
 
 interface Toast {
   id: string;
@@ -43,37 +37,48 @@ interface ToastProviderProps {
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const showToast = useCallback((
-    message: string, 
-    severity: AlertColor = 'info', 
-    duration: number = 6000
-  ) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    const newToast: Toast = { id, message, severity, duration };
-    
-    setToasts(prev => [...prev, newToast]);
+  const showToast = useCallback(
+    (message: string, severity: AlertColor = 'info', duration: number = 6000) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      const newToast: Toast = { id, message, severity, duration };
 
-    // Auto-remove toast after duration
-    setTimeout(() => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
-    }, duration);
-  }, []);
+      setToasts(prev => [...prev, newToast]);
 
-  const showSuccess = useCallback((message: string, duration?: number) => {
-    showToast(message, 'success', duration);
-  }, [showToast]);
+      // Auto-remove toast after duration
+      setTimeout(() => {
+        setToasts(prev => prev.filter(toast => toast.id !== id));
+      }, duration);
+    },
+    []
+  );
 
-  const showError = useCallback((message: string, duration?: number) => {
-    showToast(message, 'error', duration);
-  }, [showToast]);
+  const showSuccess = useCallback(
+    (message: string, duration?: number) => {
+      showToast(message, 'success', duration);
+    },
+    [showToast]
+  );
 
-  const showWarning = useCallback((message: string, duration?: number) => {
-    showToast(message, 'warning', duration);
-  }, [showToast]);
+  const showError = useCallback(
+    (message: string, duration?: number) => {
+      showToast(message, 'error', duration);
+    },
+    [showToast]
+  );
 
-  const showInfo = useCallback((message: string, duration?: number) => {
-    showToast(message, 'info', duration);
-  }, [showToast]);
+  const showWarning = useCallback(
+    (message: string, duration?: number) => {
+      showToast(message, 'warning', duration);
+    },
+    [showToast]
+  );
+
+  const showInfo = useCallback(
+    (message: string, duration?: number) => {
+      showToast(message, 'info', duration);
+    },
+    [showToast]
+  );
 
   const handleClose = useCallback((id: string) => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
@@ -99,14 +104,14 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
           TransitionComponent={SlideTransition}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           sx={{
-            bottom: `${(index * 70) + 24}px !important`,
+            bottom: `${index * 70 + 24}px !important`,
           }}
         >
           <Alert
             onClose={() => handleClose(toast.id)}
             severity={toast.severity}
             variant="filled"
-            sx={{ 
+            sx={{
               width: '100%',
               minWidth: 300,
               boxShadow: 3,

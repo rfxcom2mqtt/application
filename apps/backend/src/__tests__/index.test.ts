@@ -1,13 +1,13 @@
 // @ts-nocheck
-import { jest } from "@jest/globals";
+import { jest } from '@jest/globals';
 
 // Mock dependencies
-jest.mock("dotenv", () => ({
+jest.mock('dotenv', () => ({
   config: jest.fn(),
 }));
 
 // Mock Controller
-jest.mock("../core/Controller", () => {
+jest.mock('../core/Controller', () => {
   const mockStart = jest.fn().mockResolvedValue(undefined);
   const mockStop = jest.fn().mockResolvedValue(undefined);
 
@@ -22,14 +22,14 @@ jest.mock("../core/Controller", () => {
   };
 });
 
-jest.mock("../utils/logger", () => ({
+jest.mock('../utils/logger', () => ({
   logger: {
     info: jest.fn(),
     error: jest.fn(),
   },
 }));
 
-describe("index.ts", () => {
+describe('index.ts', () => {
   // Store original process properties
   const originalArgv = process.argv;
   const originalOn = process.on;
@@ -59,87 +59,79 @@ describe("index.ts", () => {
     jest.resetModules();
   });
 
-  describe("getEnvironmentFile", () => {
-    it("should use default .env file when no env-file argument is provided", () => {
+  describe('getEnvironmentFile', () => {
+    it('should use default .env file when no env-file argument is provided', () => {
       // Import the module to trigger the code
-      require("../index");
+      require('../index');
 
       // Check if dotenv.config was called with the default path
-      const dotenv = require("dotenv");
-      expect(dotenv.config).toHaveBeenCalledWith({ path: ".env" });
+      const dotenv = require('dotenv');
+      expect(dotenv.config).toHaveBeenCalledWith({ path: '.env' });
     });
 
-    it("should use specified env file when env-file argument is provided", () => {
+    it('should use specified env file when env-file argument is provided', () => {
       // Set up process.argv with custom env file
-      process.argv = [...originalArgv, "--env-file=.env.test"];
+      process.argv = [...originalArgv, '--env-file=.env.test'];
 
       // Import the module to trigger the code
-      require("../index");
+      require('../index');
 
       // Check if dotenv.config was called with the specified path
-      const dotenv = require("dotenv");
-      expect(dotenv.config).toHaveBeenCalledWith({ path: ".env.test" });
+      const dotenv = require('dotenv');
+      expect(dotenv.config).toHaveBeenCalledWith({ path: '.env.test' });
     });
   });
 
-  describe("signal handlers", () => {
-    it("should register handlers for SIGINT and SIGTERM", () => {
+  describe('signal handlers', () => {
+    it('should register handlers for SIGINT and SIGTERM', () => {
       // Import the module to trigger the code
-      require("../index");
+      require('../index');
 
       // Check if process.on was called for SIGINT and SIGTERM
-      expect(process.on).toHaveBeenCalledWith("SIGINT", expect.any(Function));
-      expect(process.on).toHaveBeenCalledWith("SIGTERM", expect.any(Function));
+      expect(process.on).toHaveBeenCalledWith('SIGINT', expect.any(Function));
+      expect(process.on).toHaveBeenCalledWith('SIGTERM', expect.any(Function));
     });
 
-    it("should register handlers for uncaughtException and unhandledRejection", () => {
+    it('should register handlers for uncaughtException and unhandledRejection', () => {
       // Import the module to trigger the code
-      require("../index");
+      require('../index');
 
       // Check if process.on was called for uncaughtException and unhandledRejection
-      expect(process.on).toHaveBeenCalledWith(
-        "uncaughtException",
-        expect.any(Function),
-      );
-      expect(process.on).toHaveBeenCalledWith(
-        "unhandledRejection",
-        expect.any(Function),
-      );
+      expect(process.on).toHaveBeenCalledWith('uncaughtException', expect.any(Function));
+      expect(process.on).toHaveBeenCalledWith('unhandledRejection', expect.any(Function));
     });
   });
 
-  describe("handleExit", () => {
-    it("should call process.exit with the provided exit code when shouldRestart is false", () => {
+  describe('handleExit', () => {
+    it('should call process.exit with the provided exit code when shouldRestart is false', () => {
       // Import the module to trigger the code
-      require("../index");
+      require('../index');
 
       // Since we can't directly access private functions, we'll test this indirectly
       // by triggering an uncaught exception
       const mockCalls = process.on.mock.calls;
-      const uncaughtExceptionHandler = mockCalls.find(
-        (call) => call[0] === "uncaughtException",
-      )?.[1];
+      const uncaughtExceptionHandler = mockCalls.find(call => call[0] === 'uncaughtException')?.[1];
 
       if (uncaughtExceptionHandler) {
         // Trigger the handler with a mock error
-        uncaughtExceptionHandler(new Error("Test error"));
+        uncaughtExceptionHandler(new Error('Test error'));
 
         // Check if process.exit was called with exit code 1
         expect(process.exit).toHaveBeenCalledWith(1);
       } else {
         // Use Jest's expect to fail the test if handler not found
-        expect("Uncaught exception handler not found").toBe(false);
+        expect('Uncaught exception handler not found').toBe(false);
       }
     });
   });
 
-  describe("startApplication", () => {
-    it("should create and start a Controller instance", async () => {
+  describe('startApplication', () => {
+    it('should create and start a Controller instance', async () => {
       // Import the module to trigger the code
-      require("../index");
+      require('../index');
 
       // Check if Controller was instantiated
-      const Controller = require("../core/Controller").default;
+      const Controller = require('../core/Controller').default;
       expect(Controller).toHaveBeenCalled();
 
       // Get the mock instance
@@ -147,15 +139,13 @@ describe("index.ts", () => {
       expect(mockInstance.start).toHaveBeenCalled();
     });
 
-    it("should exit with code 1 if starting the application fails", async () => {
+    it('should exit with code 1 if starting the application fails', async () => {
       // Reset modules to clear previous test state
       jest.resetModules();
 
       // Mock Controller to throw an error when start is called
-      jest.mock("../core/Controller", () => {
-        const mockStart = jest
-          .fn()
-          .mockRejectedValue(new Error("Start failed"));
+      jest.mock('../core/Controller', () => {
+        const mockStart = jest.fn().mockRejectedValue(new Error('Start failed'));
         const mockStop = jest.fn().mockResolvedValue(undefined);
 
         const mockController = jest.fn().mockImplementation(() => ({
@@ -170,10 +160,10 @@ describe("index.ts", () => {
       });
 
       // Import the module to trigger the code
-      require("../index");
+      require('../index');
 
       // Wait for the promise rejection to be handled
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise(resolve => setTimeout(resolve, 0));
 
       // Check if process.exit was called with exit code 1
       expect(process.exit).toHaveBeenCalledWith(1);

@@ -29,7 +29,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // Check localStorage first, then system preference
     const savedMode = localStorage.getItem('theme-mode') as ThemeMode;
     if (savedMode) return savedMode;
-    
+
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 

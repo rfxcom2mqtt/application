@@ -1,20 +1,20 @@
-import { getMqttInstance } from "../../../adapters/mqtt";
-import { MockMqtt } from "../../../adapters/mqtt/MockMqtt";
-import Mqtt from "../../../adapters/mqtt/Mqtt";
-import { settingsService } from "../../../config/settings";
+import { getMqttInstance } from '../../../adapters/mqtt';
+import { MockMqtt } from '../../../adapters/mqtt/MockMqtt';
+import Mqtt from '../../../adapters/mqtt/Mqtt';
+import { settingsService } from '../../../config/settings';
 
 // Mock the settings service
-jest.mock("../../../config/settings", () => ({
+jest.mock('../../../config/settings', () => ({
   settingsService: {
     get: jest.fn(),
   },
 }));
 
 // Mock the Mqtt and MockMqtt classes
-jest.mock("../../../adapters/mqtt/Mqtt");
-jest.mock("../../../adapters/mqtt/MockMqtt");
+jest.mock('../../../adapters/mqtt/Mqtt');
+jest.mock('../../../adapters/mqtt/MockMqtt');
 
-describe("MQTT Index", () => {
+describe('MQTT Index', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -22,7 +22,7 @@ describe("MQTT Index", () => {
   it('should return MockMqtt instance when server is set to "mock"', () => {
     // Arrange
     (settingsService.get as jest.Mock).mockReturnValue({
-      mqtt: { server: "mock" },
+      mqtt: { server: 'mock' },
     });
 
     // Act
@@ -37,7 +37,7 @@ describe("MQTT Index", () => {
   it('should return Mqtt instance when server is not "mock"', () => {
     // Arrange
     (settingsService.get as jest.Mock).mockReturnValue({
-      mqtt: { server: "localhost" },
+      mqtt: { server: 'localhost' },
     });
 
     // Act

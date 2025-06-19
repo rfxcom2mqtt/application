@@ -1,9 +1,9 @@
-import { Rfxcom, getRfxcomInstance } from "../../../adapters/rfxcom";
-import * as RfxcomModule from "../../../adapters/rfxcom/Rfxcom";
+import { Rfxcom, getRfxcomInstance } from '../../../adapters/rfxcom';
+import * as RfxcomModule from '../../../adapters/rfxcom/Rfxcom';
 
 // Mock the Rfxcom module
-jest.mock("../../../adapters/rfxcom/Rfxcom", () => {
-  const originalModule = jest.requireActual("../../../adapters/rfxcom/Rfxcom");
+jest.mock('../../../adapters/rfxcom/Rfxcom', () => {
+  const originalModule = jest.requireActual('../../../adapters/rfxcom/Rfxcom');
   return {
     __esModule: true,
     ...originalModule,
@@ -12,19 +12,19 @@ jest.mock("../../../adapters/rfxcom/Rfxcom", () => {
   };
 });
 
-describe("RFXCOM Index", () => {
+describe('RFXCOM Index', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should re-export Rfxcom class", () => {
+  it('should re-export Rfxcom class', () => {
     // Assert
     expect(Rfxcom).toBe(RfxcomModule.default);
   });
 
-  it("should re-export getRfxcomInstance function", () => {
+  it('should re-export getRfxcomInstance function', () => {
     // Arrange
-    const mockInstance = { test: "instance" };
+    const mockInstance = { test: 'instance' };
     (RfxcomModule.getRfxcomInstance as jest.Mock).mockReturnValue(mockInstance);
 
     // Act

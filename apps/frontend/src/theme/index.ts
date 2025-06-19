@@ -1,5 +1,4 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import { alpha } from '@mui/material/styles';
 
 // Design tokens
 const spacing = {
@@ -181,7 +180,10 @@ const createAppTheme = (mode: 'light' | 'dark'): ThemeOptions => ({
       styleOverrides: {
         body: {
           scrollbarWidth: 'thin',
-          scrollbarColor: mode === 'light' ? `${colors.grey[400]} ${colors.grey[100]}` : `${colors.grey[600]} ${colors.grey[800]}`,
+          scrollbarColor:
+            mode === 'light'
+              ? `${colors.grey[400]} ${colors.grey[100]}`
+              : `${colors.grey[600]} ${colors.grey[800]}`,
           '&::-webkit-scrollbar': {
             width: 8,
           },
@@ -199,15 +201,15 @@ const createAppTheme = (mode: 'light' | 'dark'): ThemeOptions => ({
       styleOverrides: {
         root: {
           borderRadius: 16,
-          boxShadow: mode === 'light' 
-            ? '0 2px 8px rgba(0, 0, 0, 0.08)' 
-            : '0 2px 8px rgba(0, 0, 0, 0.24)',
+          boxShadow:
+            mode === 'light' ? '0 2px 8px rgba(0, 0, 0, 0.08)' : '0 2px 8px rgba(0, 0, 0, 0.24)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: mode === 'light' 
-              ? '0 8px 24px rgba(0, 0, 0, 0.12)' 
-              : '0 8px 24px rgba(0, 0, 0, 0.32)',
+            boxShadow:
+              mode === 'light'
+                ? '0 8px 24px rgba(0, 0, 0, 0.12)'
+                : '0 8px 24px rgba(0, 0, 0, 0.32)',
           },
         },
       },
@@ -244,23 +246,20 @@ const createAppTheme = (mode: 'light' | 'dark'): ThemeOptions => ({
           borderRadius: 16,
         },
         elevation1: {
-          boxShadow: mode === 'light' 
-            ? '0 2px 8px rgba(0, 0, 0, 0.08)' 
-            : '0 2px 8px rgba(0, 0, 0, 0.24)',
+          boxShadow:
+            mode === 'light' ? '0 2px 8px rgba(0, 0, 0, 0.08)' : '0 2px 8px rgba(0, 0, 0, 0.24)',
         },
         elevation2: {
-          boxShadow: mode === 'light' 
-            ? '0 4px 16px rgba(0, 0, 0, 0.12)' 
-            : '0 4px 16px rgba(0, 0, 0, 0.32)',
+          boxShadow:
+            mode === 'light' ? '0 4px 16px rgba(0, 0, 0, 0.12)' : '0 4px 16px rgba(0, 0, 0, 0.32)',
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          boxShadow: mode === 'light' 
-            ? '0 2px 8px rgba(0, 0, 0, 0.08)' 
-            : '0 2px 8px rgba(0, 0, 0, 0.24)',
+          boxShadow:
+            mode === 'light' ? '0 2px 8px rgba(0, 0, 0, 0.08)' : '0 2px 8px rgba(0, 0, 0, 0.24)',
         },
       },
     },

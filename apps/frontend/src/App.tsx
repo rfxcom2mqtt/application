@@ -10,51 +10,53 @@ import { ToastProvider } from './components/common/Toast';
 import { useTranslation } from 'react-i18next';
 
 // Error Boundary Component
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: Error | null }> {
-    constructor(props: { children: React.ReactNode }) {
-        super(props);
-        this.state = { hasError: false, error: null };
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(_error: Error, _errorInfo: React.ErrorInfo) {
+    // Error is handled by displaying error boundary content
+    // In production, you might want to log this to an error reporting service
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ErrorBoundaryContent error={this.state.error} />;
     }
 
-    static getDerivedStateFromError(error: Error) {
-        return { hasError: true, error };
-    }
-
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-        console.error('Uncaught error:', error, errorInfo);
-    }
-
-    render() {
-        if (this.state.hasError) {
-            return (
-                <ErrorBoundaryContent error={this.state.error} />
-            );
-        }
-
-        return this.props.children;
-    }
+    return this.props.children;
+  }
 }
 
 // Error Boundary Content Component (functional component to use hooks)
 const ErrorBoundaryContent = ({ error }: { error: Error | null }) => {
-    const { t } = useTranslation();
-    
-    return (
-        <Box sx={{ p: 3 }}>
-            <Alert severity="error">
-                <strong>{t('errors.somethingWentWrong')}</strong>
-                <p>{t('errors.tryRefreshing')}</p>
-                <p>{error?.message}</p>
-            </Alert>
-        </Box>
-    );
+  const { t } = useTranslation();
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Alert severity="error">
+        <strong>{t('errors.somethingWentWrong')}</strong>
+        <p>{t('errors.tryRefreshing')}</p>
+        <p>{error?.message}</p>
+      </Alert>
+    </Box>
+  );
 };
 
 // Loading component for suspense fallback
 const LoadingFallback = () => (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-        <CircularProgress />
-    </Box>
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+    <CircularProgress />
+  </Box>
 );
 
 // Lazy-loaded components
@@ -66,16 +68,16 @@ const JournalsPage = lazy(() => import('./pages/journals/Journals'));
 
 // Not Found Page
 const NotFoundPage = () => {
-    const { t } = useTranslation();
-    
-    return (
-        <Box sx={{ p: 3, textAlign: 'center' }}>
-            <Alert severity="warning">
-                <strong>{t('errors.pageNotFound')}</strong>
-                <p>{t('errors.pageNotFoundDescription')}</p>
-            </Alert>
-        </Box>
-    );
+  const { t } = useTranslation();
+
+  return (
+    <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Alert severity="warning">
+        <strong>{t('errors.pageNotFound')}</strong>
+        <p>{t('errors.pageNotFoundDescription')}</p>
+      </Alert>
+    </Box>
+  );
 };
 
 /**
@@ -83,28 +85,28 @@ const NotFoundPage = () => {
  * Sets up routing and global error handling
  */
 function App() {
-    return (
-        <ThemeProvider>
-            <ToastProvider>
-                <ErrorBoundary>
-                    <BrowserRouter basename={config.basePath}>
-                        <Header />
-                        <Suspense fallback={<LoadingFallback />}>
-                            <Routes>
-                                <Route path="/" element={<ControllerInfoPage />} />
-                                <Route path="/devices" element={<DevicesPage />} />
-                                <Route path="/devices/:id" element={<DevicePage />} />
-                                <Route path="/settings" element={<SettingsPage />} />
-                                <Route path="/logs" element={<JournalsPage />} />
-                                <Route path="/404" element={<NotFoundPage />} />
-                                <Route path="*" element={<Navigate to="/404" replace />} />
-                            </Routes>
-                        </Suspense>
-                    </BrowserRouter>
-                </ErrorBoundary>
-            </ToastProvider>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider>
+      <ToastProvider>
+        <ErrorBoundary>
+          <BrowserRouter basename={config.basePath}>
+            <Header />
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<ControllerInfoPage />} />
+                <Route path="/devices" element={<DevicesPage />} />
+                <Route path="/devices/:id" element={<DevicePage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/logs" element={<JournalsPage />} />
+                <Route path="/404" element={<NotFoundPage />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </ToastProvider>
+    </ThemeProvider>
+  );
 }
 
 export default App;

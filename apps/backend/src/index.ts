@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-import dotenv from "dotenv";
-import Controller from "./core/Controller";
-import { logger } from "./utils/logger";
+import dotenv from 'dotenv';
+import Controller from './core/Controller';
+import { logger } from './utils/logger';
 
 // Load environment variables from the specified file
 dotenv.config({ path: getEnvironmentFile() });
@@ -15,15 +15,15 @@ let isShuttingDown = false;
  * @returns The path to the environment file to load
  */
 function getEnvironmentFile(): string {
-  const envFileArg = process.argv.find((arg) => arg.includes("--env-file="));
+  const envFileArg = process.argv.find(arg => arg.includes('--env-file='));
 
   if (envFileArg) {
-    const envFile = envFileArg.replace("--env-file=", "");
+    const envFile = envFileArg.replace('--env-file=', '');
     logger.info(`Loading environment from: ${envFile}`);
     return envFile;
   }
 
-  return ".env";
+  return '.env';
 }
 
 /**
@@ -43,7 +43,7 @@ function handleExit(exitCode: number, shouldRestart: boolean = false): void {
  */
 async function startApplication(): Promise<void> {
   try {
-    logger.info("Starting RFXCOM2MQTT application");
+    logger.info('Starting RFXCOM2MQTT application');
     controller = new Controller(handleExit);
     await controller.start();
   } catch (error) {
@@ -58,24 +58,24 @@ async function startApplication(): Promise<void> {
 function handleGracefulShutdown(): void {
   if (!isShuttingDown && controller) {
     isShuttingDown = true;
-    logger.info("Received shutdown signal, stopping application gracefully");
+    logger.info('Received shutdown signal, stopping application gracefully');
     controller.stop(false);
   }
 }
 
 // Register signal handlers for graceful shutdown
-process.on("SIGINT", handleGracefulShutdown);
-process.on("SIGTERM", handleGracefulShutdown);
+process.on('SIGINT', handleGracefulShutdown);
+process.on('SIGTERM', handleGracefulShutdown);
 
 // Handle uncaught exceptions
-process.on("uncaughtException", (error) => {
+process.on('uncaughtException', error => {
   logger.error(`Uncaught exception: ${error.message}`);
-  logger.error(error.stack || "No stack trace available");
+  logger.error(error.stack || 'No stack trace available');
   process.exit(1);
 });
 
 // Handle unhandled promise rejections
-process.on("unhandledRejection", (reason, promise) => {
+process.on('unhandledRejection', (reason, promise) => {
   logger.error(`Unhandled promise rejection at: ${promise}, reason: ${reason}`);
   process.exit(1);
 });
