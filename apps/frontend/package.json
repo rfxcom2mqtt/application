@@ -35,7 +35,10 @@
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "react-scripts test",
+    "test": "NODE_ENV=test vitest run",
+    "test:watch": "NODE_ENV=test vitest",
+    "test:cov": "NODE_ENV=test vitest run --coverage",
+    "test:debug": "NODE_ENV=test vitest --inspect-brk --inspect --logHeapUsage --threads=false",
     "pretty": "prettier --write \"./src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\"",
     "pretty:check": "prettier --check \"./src/**/*.{js,jsx,ts,tsx}\""
@@ -62,8 +65,10 @@
     "compress-create-react-app": "^1.4.5",
     "eslint": "^9.0.0",
     "eslint-plugin-react": "^7.34.1",
+    "jsdom": "^24.0.0",
     "prettier": "^3.2.5",
-    "vite": "^5.2.0"
+    "vite": "^5.2.0",
+    "vitest": "^1.4.0"
   },
   "main": "index.js",
   "description": "RFXCOM to MQTT bridge for RFXtrx433 devices",

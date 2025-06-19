@@ -30,5 +30,10 @@ export default defineConfig({
     extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   // Ensure public directory assets are properly handled
-  publicDir: 'public'
+  publicDir: 'public',
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/setupTests.ts'],
+  }
 })

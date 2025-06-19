@@ -1,4 +1,4 @@
-import { SettingDevice } from 'src/config/settings';
+import { SettingDevice } from '../../config/settings';
 import { RfxcomEvent, RfxcomInfo } from '../models/rfxcom';
 
 export interface OnStatusCallback {

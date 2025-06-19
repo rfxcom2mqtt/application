@@ -11,7 +11,8 @@
     "build": "pnpm run -r build",
     "dev": "pnpm run --parallel -r dev",
     "start": "pnpm run --parallel -r start",
-    "test": "pnpm run -r test",
+    "test": "pnpm run --filter \"./packages/*\" --filter \"./apps/*\" test",
+    "test:e2e": "pnpm run --filter \"./apps/*\" test:e2e",
     "lint": "pnpm run -r lint",
     "format": "prettier -w \"./{apps,packages}/*/{src,test}/**/*.{ts,tsx,js}\"",
     "pretty": "pnpm run -r pretty",
@@ -30,5 +31,15 @@
   "devDependencies": {
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "shelljs": ">=0.8.5",
+      "nth-check": ">=2.0.1",
+      "yargs-parser": ">=5.0.1",
+      "postcss": ">=8.4.31",
+      "esbuild": ">=0.25.0",
+      "webpack-dev-server": ">=5.2.1"
+    }
   }
 }
