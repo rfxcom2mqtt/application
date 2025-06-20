@@ -1,5 +1,6 @@
 import { MQTTOptions } from '../../adapters/mqtt';
-import { MQTTMessage, Topic } from '../models/mqtt';
+import { MQTTMessage } from '../models';
+import { Topic } from '../models/mqtt';
 
 export type MqttPayload = string | Record<string, unknown> | Buffer;
 export type MqttCallback = (error?: Error) => void;

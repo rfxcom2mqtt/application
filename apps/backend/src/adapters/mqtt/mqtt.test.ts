@@ -1,7 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import * as mqtt from 'mqtt';
 import Mqtt from './Mqtt';
-import { MQTTMessage } from '../../core/models/mqtt';
+import { MQTTMessage } from '../../core/models';
 import { MqttConnectionError } from '../../utils/errorHandling';
 
 // Mock the mqtt library

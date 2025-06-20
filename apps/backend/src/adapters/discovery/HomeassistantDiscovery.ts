@@ -1,7 +1,6 @@
 'use strict';
 
 import { SettingDevice, settingsService } from '../../config/settings';
-import { MQTTMessage } from '../../core/models/mqtt';
 import { IMqtt } from '../../core/services/mqtt.service';
 import IRfxcom from '../../core/services/rfxcom.service';
 import StateStore, { DeviceStore } from '../../core/store/state';
@@ -10,6 +9,7 @@ import AbstractDiscovery from './AbstractDiscovery';
 import { lookup } from './Homeassistant';
 
 import {
+  MQTTMessage,
   DeviceSwitch,
   DeviceBinarySensor,
   DeviceSelect,

@@ -1,7 +1,7 @@
 'use strict';
 
 import { DeviceStateStore } from '../../core/models';
-import { MQTTMessage } from '../../core/models/mqtt';
+import { MQTTMessage } from '../../core/models';
 import { IMqtt, MqttEventListener } from '../../core/services/mqtt.service';
 import IRfxcom from '../../core/services/rfxcom.service';
 import StateStore, { DeviceStore } from '../../core/store/state';

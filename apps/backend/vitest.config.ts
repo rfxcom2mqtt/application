@@ -1,19 +1,21 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    environment: 'node',
     globals: true,
+    environment: 'node',
     setupFiles: ['./src/setupTests.ts'],
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/*.e2e.test.ts', // Exclude e2e tests from regular test runs
-    ],
-  },
-  resolve: {
-    alias: {
-      '@': './src',
-    },
-  },
-});
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'dist/',
+        'coverage/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/index.js'
+      ]
+    }
+  }
+})

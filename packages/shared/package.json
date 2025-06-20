@@ -14,17 +14,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "zod": "^3.22.4"
+    "zod": "^3.24.1"
   },
-  "devDependencies": {
-    "@types/node": "^20.12.7",
-    "eslint": "^9.0.0",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.5",
-    "vitest": "^3.2.4"
-  },
+  "devDependencies": {},
   "engines": {
-    "node": ">=24"
+    "node": ">=22",
+    "pnpm": ">=9"
   },
   "author": "Sguernion<sguernion@github.com>",
   "license": "Apache-2.0"

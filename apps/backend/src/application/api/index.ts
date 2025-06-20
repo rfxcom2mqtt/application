@@ -20,7 +20,7 @@ export default class Api {
     actionCallback: any
   ) {
     this.router = Router();
-    this.router.use('*', (req: Request, res: Response, next: NextFunction) => {
+    this.router.use('/', (req: Request, res: Response, next: NextFunction) => {
       return this.onApiRequest(req, res, next);
     });
 
