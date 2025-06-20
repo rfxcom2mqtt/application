@@ -1,36 +1,26 @@
-"use strict";
+'use strict';
 
-import { DeviceStateStore } from "../../core/models";
-import { MQTTMessage } from "../../core/models/mqtt";
-import { IMqtt, MqttEventListener } from "../../core/services/mqtt.service";
-import IRfxcom from "../../core/services/rfxcom.service";
-import StateStore, { DeviceStore } from "../../core/store/state";
-import BridgeDiscovery from "./BridgeDiscovery";
-import HomeassistantDiscovery from "./HomeassistantDiscovery";
+import { DeviceStateStore } from '../../core/models';
+import { MQTTMessage } from '../../core/models/mqtt';
+import { IMqtt, MqttEventListener } from '../../core/services/mqtt.service';
+import IRfxcom from '../../core/services/rfxcom.service';
+import StateStore, { DeviceStore } from '../../core/store/state';
+import BridgeDiscovery from './BridgeDiscovery';
+import HomeassistantDiscovery from './HomeassistantDiscovery';
 
 export default class Discovery implements MqttEventListener {
   protected baseTopic: string;
   homeassistant: HomeassistantDiscovery;
   bridge: BridgeDiscovery;
-  
+
   // Getter for testing purposes
   getBaseTopic(): string {
     return this.baseTopic;
   }
 
-  constructor(
-    mqtt: IMqtt,
-    rfxtrx: IRfxcom,
-    state: StateStore,
-    device: DeviceStore,
-  ) {
+  constructor(mqtt: IMqtt, rfxtrx: IRfxcom, state: StateStore, device: DeviceStore) {
     this.baseTopic = mqtt.topics.base;
-    this.homeassistant = new HomeassistantDiscovery(
-      mqtt,
-      rfxtrx,
-      state,
-      device,
-    );
+    this.homeassistant = new HomeassistantDiscovery(mqtt, rfxtrx, state, device);
     this.bridge = new BridgeDiscovery(mqtt, rfxtrx);
   }
 
@@ -45,11 +35,11 @@ export default class Discovery implements MqttEventListener {
   }
 
   subscribeTopic(): string[] {
-    return [this.baseTopic + "/cmd/#", this.baseTopic + "/bridge/request/#"];
+    return [this.baseTopic + '/cmd/#', this.baseTopic + '/bridge/request/#'];
   }
 
   onMQTTMessage(data: MQTTMessage) {
-    if (data.topic.includes(this.baseTopic + "/cmd/")) {
+    if (data.topic.includes(this.baseTopic + '/cmd/')) {
       this.homeassistant.onMQTTMessage(data);
     } else {
       this.bridge.onMQTTMessage(data);
@@ -64,10 +54,7 @@ export default class Discovery implements MqttEventListener {
     }
   }
 
-  publishDiscoveryDeviceToMqtt(
-    deviceJson: DeviceStateStore,
-    bridgeName: string,
-  ) {
+  publishDiscoveryDeviceToMqtt(deviceJson: DeviceStateStore, bridgeName: string) {
     this.homeassistant.publishDiscoveryDeviceToMqtt(deviceJson, bridgeName);
   }
 }

@@ -11,8 +11,8 @@ export class Topic {
 
   constructor(baseTopic: string) {
     this.base = baseTopic;
-    this.devices = "devices";
-    this.will = "bridge/status";
-    this.info = "bridge/info";
+    this.devices = 'devices';
+    this.will = 'bridge/status';
+    this.info = 'bridge/info';
   }
 }

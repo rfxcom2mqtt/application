@@ -1,0 +1,258 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "refresh": "Actualiser",
+    "search": "Rechercher",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "error": "Erreur",
+    "success": "Succès",
+    "warning": "Avertissement",
+    "info": "Information",
+    "total": "Total",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "all": "Tous",
+    "none": "Aucun",
+    "unknown": "Inconnu",
+    "retry": "Réessayer"
+  },
+  "navigation": {
+    "informations": "Informations",
+    "devices": "Appareils",
+    "settings": "Paramètres",
+    "journals": "Journaux"
+  },
+  "header": {
+    "appName": "Rfxcom2Mqtt",
+    "searchPlaceholder": "Rechercher des appareils...",
+    "switchToLightMode": "Passer en mode clair",
+    "switchToDarkMode": "Passer en mode sombre",
+    "notifications": "Notifications",
+    "navigationMenu": "menu de navigation"
+  },
+  "errors": {
+    "somethingWentWrong": "Une erreur s'est produite.",
+    "tryRefreshing": "Veuillez actualiser la page. Si le problème persiste, veuillez contacter le support.",
+    "pageNotFound": "404 - Page non trouvée",
+    "pageNotFoundDescription": "La page que vous recherchez n'existe pas."
+  },
+  "devices": {
+    "title": "Appareils",
+    "subtitle": "Gérer et surveiller vos appareils connectés",
+    "discoverDevices": "Découvrir les appareils",
+    "searchDevices": "Rechercher des appareils...",
+    "foundDevices": "{{count}} appareil trouvé",
+    "foundDevices_plural": "{{count}} appareils trouvés",
+    "matchingSearch": "correspondant à \"{{searchTerm}}\"",
+    "ofType": "de type \"{{filterType}}\"",
+    "noDevicesFound": "Aucun appareil trouvé",
+    "noDevicesFoundDescription": "Aucun appareil ne correspond à vos filtres actuels.",
+    "clearFilters": "Effacer les filtres",
+    "viewMode": {
+      "grid": "Vue en grille",
+      "list": "Vue en liste"
+    },
+    "status": {
+      "online": "En ligne",
+      "offline": "Hors ligne",
+      "unknown": "Inconnu"
+    },
+    "actions": {
+      "resetState": "Réinitialiser l'état",
+      "resetDevices": "Réinitialiser les appareils"
+    }
+  },
+  "device": {
+    "title": "Appareil",
+    "subtitle": "{{count}} entités • {{type}}",
+    "loading": "Chargement de l'appareil...",
+    "loadingSubtitle": "Veuillez patienter pendant le chargement des informations de l'appareil",
+    "notFound": "Appareil non trouvé",
+    "notFoundSubtitle": "L'appareil demandé n'a pas pu être trouvé",
+    "notFoundMessage": "Appareil non trouvé ou échec du chargement.",
+    "actions": {
+      "rename": "Renommer",
+      "renameDevice": "Renommer l'appareil",
+      "renameSensor": "Renommer le capteur",
+      "renameSwitch": "Renommer l'interrupteur"
+    },
+    "debug": {
+      "title": "État brut (Debug)"
+    }
+  },
+  "deviceInfo": {
+    "title": "Informations de l'appareil",
+    "name": "Nom",
+    "originalName": "Nom original",
+    "rfxcomId": "ID RFXCOM",
+    "manufacturer": "Fabricant",
+    "type": "Type",
+    "subtype": "Sous-type",
+    "entities": "Entités",
+    "totalEntities": "{{count}} entités au total",
+    "notApplicable": "N/A",
+    "quickStats": "Statistiques rapides",
+    "sensors": "Capteurs",
+    "switches": "Interrupteurs",
+    "binarySensors": "Capteurs binaires",
+    "covers": "Volets",
+    "selects": "Sélecteurs",
+    "noEntities": "Aucune entité disponible pour cet appareil"
+  },
+  "deviceHeader": {
+    "entitiesCount": "{{count}} entités",
+    "refreshData": "Actualiser les données de l'appareil",
+    "goBack": "Retour"
+  },
+  "deviceCard": {
+    "deviceStatus": "L'appareil est {{status}}",
+    "moreActions": "Plus d'actions",
+    "unitCode": "Code d'unité",
+    "lastSeen": "Vu pour la dernière fois : {{time}}",
+    "viewDetails": "Voir les détails",
+    "quickToggle": "Basculement rapide",
+    "remove": "Supprimer"
+  },
+  "sensor": {
+    "id": "ID"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Configurer les paramètres de votre système RFXcom2MQTT",
+    "theme": {
+      "title": "Thème",
+      "description": "Choisissez votre thème préféré",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
+    "language": {
+      "title": "Langue",
+      "description": "Sélectionnez votre langue préférée",
+      "english": "English",
+      "french": "Français"
+    },
+    "advanced": {
+      "title": "Paramètres avancés",
+      "description": "Options de configuration avancées"
+    },
+    "tabs": {
+      "rfxcom": {
+        "label": "RFXcom",
+        "description": "Configurer les paramètres de l'appareil RFXcom"
+      },
+      "mqtt": {
+        "label": "MQTT",
+        "description": "Configurer la connexion au courtier MQTT"
+      },
+      "frontend": {
+        "label": "Interface",
+        "description": "Configurer les paramètres de l'interface web"
+      },
+      "homeAssistant": {
+        "label": "Home Assistant",
+        "description": "Configurer l'intégration Home Assistant"
+      },
+      "advanced": {
+        "label": "Avancé",
+        "description": "Paramètres système avancés"
+      }
+    },
+    "actions": {
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "reset": "Réinitialiser",
+      "unsavedChanges": "Vous avez des modifications non enregistrées"
+    },
+    "messages": {
+      "saveSuccess": "Paramètres enregistrés avec succès",
+      "saveError": "Échec de l'enregistrement des paramètres. Veuillez réessayer.",
+      "loadError": "Échec du chargement des paramètres. Veuillez actualiser la page.",
+      "changesDiscarded": "Modifications annulées",
+      "savingSettings": "Enregistrement des paramètres..."
+    }
+  },
+  "controller": {
+    "title": "Informations du contrôleur",
+    "subtitle": "Voir le statut et les informations du contrôleur",
+    "loadError": "Échec du chargement des informations du contrôleur. Veuillez réessayer plus tard.",
+    "hardware": {
+      "title": "Matériel RFXCOM",
+      "subtitle": "Informations sur le matériel du contrôleur RFXCOM",
+      "protocols": "Protocoles",
+      "firmwareType": "Type de firmware",
+      "firmwareVersion": "Version du firmware",
+      "hardwareVersion": "Version du matériel",
+      "receiverType": "Type de récepteur",
+      "receiverCode": "Code du récepteur"
+    },
+    "bridge": {
+      "title": "Pont RFXCOM2MQTT",
+      "subtitle": "Informations sur le logiciel pont RFXCOM2MQTT",
+      "version": "Version",
+      "logLevel": "Niveau de journalisation"
+    },
+    "restart": {
+      "button": "Redémarrer le contrôleur",
+      "confirmTitle": "Redémarrer le contrôleur ?",
+      "confirmMessage": "Êtes-vous sûr de vouloir redémarrer le contrôleur RFXCOM ? Cela interrompra temporairement la communication avec vos appareils.",
+      "success": "Redémarrage du contrôleur initié avec succès",
+      "error": "Échec du redémarrage du contrôleur"
+    }
+  },
+  "journals": {
+    "title": "Journaux système",
+    "subtitle": "Journaux système en temps réel et événements d'application",
+    "connection": {
+      "connecting": "Connexion...",
+      "connected": "Connecté",
+      "disconnected": "Déconnecté",
+      "establishingConnection": "Établissement de la connexion au serveur...",
+      "connectionFailed": "Échec de la connexion",
+      "noConnectionAvailable": "Aucune connexion disponible",
+      "checkNetworkConnection": "Veuillez vérifier votre connexion réseau et l'état du serveur. La page se reconnectera automatiquement lorsque le serveur sera disponible."
+    }
+  },
+  "toast": {
+    "deviceUpdated": "Appareil mis à jour avec succès",
+    "deviceDeleted": "Appareil supprimé avec succès",
+    "settingsSaved": "Paramètres enregistrés avec succès",
+    "errorOccurred": "Une erreur s'est produite",
+    "connectionLost": "Connexion perdue",
+    "connectionRestored": "Connexion rétablie"
+  },
+  "confirmDialog": {
+    "title": "Confirmer l'action",
+    "message": "Êtes-vous sûr de vouloir effectuer cette action ?",
+    "deleteDevice": "Êtes-vous sûr de vouloir supprimer cet appareil ?",
+    "resetState": "Êtes-vous sûr de vouloir réinitialiser l'état ?",
+    "resetDevices": "Êtes-vous sûr de vouloir réinitialiser tous les appareils ?",
+    "processing": "Traitement en cours..."
+  },
+  "emptyState": {
+    "noDevices": "Aucun appareil découvert",
+    "noDevicesDescription": "Votre système RFXcom2MQTT n'a encore découvert aucun appareil. Commencez par scanner les appareils ou vérifiez votre connexion RFXcom.",
+    "noResults": "Aucun appareil correspondant trouvé",
+    "noResultsDescription": "Essayez d'ajuster vos critères de recherche ou vos filtres.",
+    "startDiscovery": "Démarrer la découverte",
+    "clearSearch": "Effacer la recherche",
+    "suggestions": {
+      "title": "Suggestions :",
+      "tryDifferentTerms": "Essayez des termes de recherche différents",
+      "clearFilters": "Effacez les filtres pour voir tous les appareils",
+      "checkSpelling": "Vérifiez votre orthographe",
+      "ensureConnection": "Assurez-vous que votre appareil RFXcom est connecté",
+      "checkPowered": "Vérifiez que les appareils sont allumés et à portée",
+      "triggerManually": "Essayez de déclencher les appareils manuellement pour aider la découverte",
+      "verifyConfig": "Vérifiez les paramètres de configuration RFXcom"
+    }
+  }
+}

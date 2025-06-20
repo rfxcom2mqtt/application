@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
-import { SettingDevice, settingsService } from "../../config/settings";
-import { MQTTMessage } from "../../core/models/mqtt";
-import { IMqtt } from "../../core/services/mqtt.service";
-import IRfxcom from "../../core/services/rfxcom.service";
-import StateStore, { DeviceStore } from "../../core/store/state";
-import { logger } from "../../utils/logger";
-import AbstractDiscovery from "./AbstractDiscovery";
-import { lookup } from "./Homeassistant";
+import { SettingDevice, settingsService } from '../../config/settings';
+import { MQTTMessage } from '../../core/models/mqtt';
+import { IMqtt } from '../../core/services/mqtt.service';
+import IRfxcom from '../../core/services/rfxcom.service';
+import StateStore, { DeviceStore } from '../../core/store/state';
+import { logger } from '../../utils/logger';
+import AbstractDiscovery from './AbstractDiscovery';
+import { lookup } from './Homeassistant';
 
 import {
   DeviceSwitch,
@@ -17,19 +17,14 @@ import {
   DeviceSensor,
   DeviceState,
   DeviceStateStore,
-} from "../../core/models";
+} from '../../core/models';
 
 export default class HomeassistantDiscovery extends AbstractDiscovery {
   protected state: StateStore;
   protected deviceStore: DeviceStore;
   protected devicesConfig: SettingDevice[];
 
-  constructor(
-    mqtt: IMqtt,
-    rfxtrx: IRfxcom,
-    state: StateStore,
-    deviceStore: DeviceStore,
-  ) {
+  constructor(mqtt: IMqtt, rfxtrx: IRfxcom, state: StateStore, deviceStore: DeviceStore) {
     super(mqtt, rfxtrx);
     this.devicesConfig = settingsService.get().devices;
     this.state = state;
@@ -47,15 +42,13 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
   }
 
   onMQTTMessage(data: MQTTMessage) {
-    const value = data.message.toString("utf8");
+    const value = data.message.toString('utf8');
     logger.info(`Mqtt cmd from discovery :${data.topic} ${value}`);
-    const dn = data.topic.split("/");
+    const dn = data.topic.split('/');
     const deviceType = dn[2];
     const id = dn[3];
     const unitCode =
-      dn[4] !== undefined && dn[4] !== "set" && dn[4].length > 0
-        ? parseInt(dn[4])
-        : 1;
+      dn[4] !== undefined && dn[4] !== 'set' && dn[4].length > 0 ? parseInt(dn[4]) : 1;
     let entityName = id;
     let entityTopic = id;
 
@@ -63,73 +56,66 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
 
     // Used for units and forms part of the device id
     if (unitCode !== 1) {
-      entityTopic += "/" + unitCode;
-      entityName += "_" + unitCode;
+      entityTopic += '/' + unitCode;
+      entityName += '_' + unitCode;
     }
 
     logger.debug(`update ${deviceType}.${entityName} with value ${value}`);
 
     // get from save state
     const entityState = this.state.getByDeviceIdAndUnitCode(id, unitCode);
-    logger.info("entity  " + JSON.stringify(entityState));
+    logger.info('entity  ' + JSON.stringify(entityState));
     entityState.type = deviceType;
     this.updateEntityStateFromValue(entityState, value);
-    this.rfxtrx.sendCommand(
-      deviceType,
-      id,
-      entityState.rfxFunction,
-      `${id}/${unitCode}`,
-    );
+    this.rfxtrx.sendCommand(deviceType, id, entityState.rfxFunction, `${id}/${unitCode}`);
     this.mqtt.publish(
-      this.mqtt.topics.devices + "/" + entityTopic,
+      this.mqtt.topics.devices + '/' + entityTopic,
       JSON.stringify(entityState),
       (error: any) => {},
-      { retain: true, qos: 1 },
+      { retain: true, qos: 1 }
     );
     this.state.set(entityState.entityId, entityState);
   }
 
   updateEntityStateFromValue(entityState: any, value: string) {
     switch (entityState.type) {
-      case "lighting1":
-      case "lighting2":
-      case "lighting3":
-      case "lighting5":
-      case "lighting6":
+      case 'lighting1':
+      case 'lighting2':
+      case 'lighting3':
+      case 'lighting5':
+      case 'lighting6':
         entityState.command = value;
-        const cmd = value.toLowerCase().split(" ");
+        const cmd = value.toLowerCase().split(' ');
         let command = cmd[0];
-        if (cmd[0] === "group") {
+        if (cmd[0] === 'group') {
           command = cmd[1];
         }
-        if (command === "on") {
-          entityState.commandNumber = cmd[0] === "group" ? 4 : 1; //WORK only for lithing2
-          entityState.rfxFunction = "switchOn";
-        } else if (command === "off") {
-          entityState.commandNumber = cmd[0] === "group" ? 3 : 0; //WORK only for lithing2
-          entityState.rfxFunction = "switchOff";
+        if (command === 'on') {
+          entityState.commandNumber = cmd[0] === 'group' ? 4 : 1; //WORK only for lithing2
+          entityState.rfxFunction = 'switchOn';
+        } else if (command === 'off') {
+          entityState.commandNumber = cmd[0] === 'group' ? 3 : 0; //WORK only for lithing2
+          entityState.rfxFunction = 'switchOff';
         } else {
-          if (cmd[0] === "level") {
-            entityState.rfxFunction = "setLevel";
+          if (cmd[0] === 'level') {
+            entityState.rfxFunction = 'setLevel';
             entityState.rfxOpt = cmd[1];
           }
         }
         break;
-      case "lighting4":
-        entityState.rfxFunction = "sendData";
+      case 'lighting4':
+        entityState.rfxFunction = 'sendData';
         entityState.command = value;
         break;
-      case "chime1":
-        entityState.rfxFunction = "chime";
+      case 'chime1':
+        entityState.rfxFunction = 'chime';
         entityState.command = value;
         break;
 
       //TODO get command for other type
 
       default:
-        logger.info(
-          "device type (" + entityState.type + ") : default update values",
-        );
+        logger.info('device type (' + entityState.type + ') : default update values');
     }
     // if (
     //   entityState.type === "lighting1" ||
@@ -170,9 +156,9 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
   }
 
   publishDiscoveryToMQTT(payload: any) {
-    logger.info("publish to discovery : " + payload.id);
+    logger.info('publish to discovery : ' + payload.id);
     const bridgeName = settingsService.get().homeassistant.discovery_device;
-    const deviceId = payload.subTypeValue + "_" + payload.id.replace("0x", "");
+    const deviceId = payload.subTypeValue + '_' + payload.id.replace('0x', '');
     const deviceName = deviceId;
 
     let deviceJson: DeviceStateStore;
@@ -202,7 +188,7 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     deviceJson.overrideDeviceInfo();
 
     const entityId = deviceJson.getEntityId(payload);
-    this.state.set(entityId, payload, "event");
+    this.state.set(entityId, payload, 'event');
     deviceJson.addEntity(entityId);
 
     this.loadDiscoverySensorInfo(payload, deviceJson);
@@ -215,10 +201,7 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     this.publishDiscoveryDeviceToMqtt(deviceJson, bridgeName);
   }
 
-  publishDiscoveryDeviceToMqtt(
-    deviceJson: DeviceStateStore,
-    bridgeName: string,
-  ) {
+  publishDiscoveryDeviceToMqtt(deviceJson: DeviceStateStore, bridgeName: string) {
     deviceJson.overrideDeviceInfo();
 
     const commonConf = {
@@ -233,16 +216,16 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     for (const index in sensors) {
       const sensor = sensors[index];
       const json = {
-        name: deviceJson.state.name + " " + sensor.name,
+        name: deviceJson.state.name + ' ' + sensor.name,
         object_id: sensor.id,
-        unique_id: sensor.id + "_" + bridgeName,
-        value_template: "{{ value_json." + sensor.property + " }}",
+        unique_id: sensor.id + '_' + bridgeName,
+        value_template: '{{ value_json.' + sensor.property + ' }}',
         ...commonConf,
         ...lookup[sensor.type],
       };
       this.publishDiscovery(
-        "sensor/" + deviceJson.getId() + "/" + sensor.type + "/config",
-        JSON.stringify(json),
+        'sensor/' + deviceJson.getId() + '/' + sensor.type + '/config',
+        JSON.stringify(json)
       );
     }
 
@@ -250,18 +233,18 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     for (const index in binarysensors) {
       const binarysensor = binarysensors[index];
       const json = {
-        name: deviceJson.state.name + " " + binarysensor.name,
+        name: deviceJson.state.name + ' ' + binarysensor.name,
         object_id: binarysensor.id,
-        unique_id: binarysensor.id + "_" + bridgeName,
+        unique_id: binarysensor.id + '_' + bridgeName,
         payload_off: binarysensor.value_off,
         payload_on: binarysensor.value_on,
-        value_template: "{{ value_json." + binarysensor.property + " }}",
+        value_template: '{{ value_json.' + binarysensor.property + ' }}',
         ...commonConf,
         ...lookup[binarysensor.type],
       };
       this.publishDiscovery(
-        "binary_sensor/" + deviceJson.getId() + "/config",
-        JSON.stringify(json),
+        'binary_sensor/' + deviceJson.getId() + '/config',
+        JSON.stringify(json)
       );
     }
 
@@ -269,45 +252,36 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     for (const index in covers) {
       const cover = covers[index];
       const json = {
-        name: deviceJson.state.name + " " + cover.name,
+        name: deviceJson.state.name + ' ' + cover.name,
         object_id: cover.id,
-        unique_id: cover.id + "_" + bridgeName,
-        value_template: "{{ value_json." + cover.property + " }}",
-        position_template: "{{ value_json." + cover.positionProperty + " }}",
+        unique_id: cover.id + '_' + bridgeName,
+        value_template: '{{ value_json.' + cover.property + ' }}',
+        position_template: '{{ value_json.' + cover.positionProperty + ' }}',
         position_topic: deviceJson.getStateTopic(this.topicDevice),
-        state_closing: "DOWN",
-        state_opening: "UP",
-        state_stopped: "STOP",
+        state_closing: 'DOWN',
+        state_opening: 'UP',
+        state_stopped: 'STOP',
         set_position_template: '{ "position": {{ position }} }',
-        set_position_topic: deviceJson.getCommandTopic(
-          this.mqtt.topics.base + "/cmd/",
-          cover.id,
-        ),
+        set_position_topic: deviceJson.getCommandTopic(this.mqtt.topics.base + '/cmd/', cover.id),
         ...commonConf,
         ...lookup[cover.type],
       };
-      this.publishDiscovery(
-        "cover/" + deviceJson.getId() + "/config",
-        JSON.stringify(json),
-      );
+      this.publishDiscovery('cover/' + deviceJson.getId() + '/config', JSON.stringify(json));
     }
 
     const selects = deviceJson.getSelects();
     for (const index in selects) {
       const select = selects[index];
       const json = {
-        name: deviceJson.state.name + " " + select.name,
+        name: deviceJson.state.name + ' ' + select.name,
         object_id: select.id,
-        unique_id: select.id + "_" + bridgeName,
+        unique_id: select.id + '_' + bridgeName,
         options: select.options,
-        value_template: "{{ value_json." + select.property + " }}",
+        value_template: '{{ value_json.' + select.property + ' }}',
         ...commonConf,
         ...lookup[select.type],
       };
-      this.publishDiscovery(
-        "select/" + deviceJson.getId() + "/config",
-        JSON.stringify(json),
-      );
+      this.publishDiscovery('select/' + deviceJson.getId() + '/config', JSON.stringify(json));
     }
 
     const switchs = deviceJson.getSwitchs();
@@ -315,7 +289,7 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
       const switchInfo = switchs[index];
       let entityTopic = deviceJson.getId();
       if (switchInfo.unit !== undefined && !switchInfo.group) {
-        entityTopic += "/" + switchInfo.unit;
+        entityTopic += '/' + switchInfo.unit;
       }
 
       // Skip if switchInfo.id is not defined in switchs
@@ -329,27 +303,18 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
         enabled_by_default: true,
         payload_off: switchInfo.value_off,
         payload_on: switchInfo.value_on,
-        json_attributes_topic: deviceJson.getStateTopic(
-          this.topicDevice,
-          switchInfo.id,
-        ),
-        command_topic: deviceJson.getCommandTopic(
-          this.mqtt.topics.base + "/cmd/",
-          switchInfo.id,
-        ),
+        json_attributes_topic: deviceJson.getStateTopic(this.topicDevice, switchInfo.id),
+        command_topic: deviceJson.getCommandTopic(this.mqtt.topics.base + '/cmd/', switchInfo.id),
         name: switchInfo.name,
         object_id: switchInfo.id,
         origin: this.discoveryOrigin,
         state_off: switchInfo.value_off,
         state_on: switchInfo.value_on,
         state_topic: deviceJson.getStateTopic(this.topicDevice, switchInfo.id),
-        unique_id: switchInfo.id + "_" + bridgeName,
-        value_template: "{{ value_json." + switchInfo.property + " }}",
+        unique_id: switchInfo.id + '_' + bridgeName,
+        value_template: '{{ value_json.' + switchInfo.property + ' }}',
       };
-      this.publishDiscovery(
-        "switch/" + entityTopic + "/config",
-        JSON.stringify(json),
-      );
+      this.publishDiscovery('switch/' + entityTopic + '/config', JSON.stringify(json));
     }
   }
 
@@ -357,25 +322,25 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     let entityId = deviceJson.getEntityId(payload);
     let entityName = payload.id;
     if (
-      payload.type === "lighting1" ||
-      payload.type === "lighting2" ||
-      payload.type === "lighting3" ||
-      payload.type === "lighting5" ||
-      payload.type === "lighting6"
+      payload.type === 'lighting1' ||
+      payload.type === 'lighting2' ||
+      payload.type === 'lighting3' ||
+      payload.type === 'lighting5' ||
+      payload.type === 'lighting6'
     ) {
-      let state_off = "Off";
-      let state_on = "On";
+      let state_off = 'Off';
+      let state_on = 'On';
 
       let originalName = deviceJson.state.originalName;
       if (payload.unitCode !== undefined && !payload.group) {
-        originalName += " " + payload.unitCode;
-        entityName += " " + payload.unitCode;
+        originalName += ' ' + payload.unitCode;
+        entityName += ' ' + payload.unitCode;
       }
 
       if (payload.group) {
-        state_off = "Group off";
-        state_on = "Group On";
-        entityId += "_group";
+        state_off = 'Group off';
+        state_on = 'Group On';
+        entityId += '_group';
       }
 
       const switchInfo = new DeviceSwitch(
@@ -384,7 +349,7 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
         originalName,
         payload.unitCode,
         state_on,
-        state_off,
+        state_off
       );
       switchInfo.group = payload.group;
       deviceJson.addSwitch(switchInfo);
@@ -398,13 +363,13 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
   loadDiscoveryBinarySensorInfo(payload: any, deviceJson: DeviceStateStore) {
     const entityId = deviceJson.getEntityId(payload);
     const entityName = payload.id;
-    if (payload.type === "security1") {
+    if (payload.type === 'security1') {
       const binarySensorInfo = new DeviceBinarySensor(
         entityId,
         entityName,
         entityName,
-        "property",
-        "todo",
+        'property',
+        'todo'
       );
       deviceJson.addBinarySensor(binarySensorInfo);
     }
@@ -413,14 +378,8 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
   loadDiscoverySelectInfo(payload: any, deviceJson: DeviceStateStore) {
     const entityId = deviceJson.getEntityId(payload);
     const entityName = payload.id;
-    if (payload.type === "todo") {
-      const selectInfo = new DeviceSelect(
-        entityId,
-        entityName,
-        entityName,
-        "property",
-        "todo",
-      );
+    if (payload.type === 'todo') {
+      const selectInfo = new DeviceSelect(entityId, entityName, entityName, 'property', 'todo');
       deviceJson.addSelect(selectInfo);
     }
   }
@@ -428,14 +387,8 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
   loadDiscoveryCoverInfo(payload: any, deviceJson: DeviceStateStore) {
     const entityId = deviceJson.getEntityId(payload);
     const entityName = payload.id;
-    if (payload.type === "todo") {
-      const coverInfo = new DeviceCover(
-        entityId,
-        entityName,
-        entityName,
-        "property",
-        "todo",
-      );
+    if (payload.type === 'todo') {
+      const coverInfo = new DeviceCover(entityId, entityName, entityName, 'property', 'todo');
       deviceJson.addCover(coverInfo);
     }
   }
@@ -449,36 +402,36 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     if (payload.rssi !== undefined) {
       deviceJson.addSensor(
         new DeviceSensor(
-          deviceJson.getId() + "_linkquality",
-          "Linkquality",
-          "Link quality (signal strength)",
-          "rssi",
-          "linkquality",
-        ),
+          deviceJson.getId() + '_linkquality',
+          'Linkquality',
+          'Link quality (signal strength)',
+          'rssi',
+          'linkquality'
+        )
       );
     }
     // batteryLevel
     if (payload.batteryLevel !== undefined) {
       deviceJson.addSensor(
         new DeviceSensor(
-          deviceJson.getId() + "_battery",
-          "Battery",
-          "Remaining battery in %",
-          "batteryLevel",
-          "battery",
-        ),
+          deviceJson.getId() + '_battery',
+          'Battery',
+          'Remaining battery in %',
+          'batteryLevel',
+          'battery'
+        )
       );
     }
     // batteryVoltage
     if (payload.batteryVoltage !== undefined) {
       deviceJson.addSensor(
         new DeviceSensor(
-          deviceJson.getId() + "_voltage",
-          "Tension",
-          "Tension",
-          "batteryVoltage",
-          "battery_voltage",
-        ),
+          deviceJson.getId() + '_voltage',
+          'Tension',
+          'Tension',
+          'batteryVoltage',
+          'battery_voltage'
+        )
       );
     }
 
@@ -486,12 +439,12 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     if (payload.humidity !== undefined) {
       deviceJson.addSensor(
         new DeviceSensor(
-          deviceJson.getId() + "_humidity",
-          "Humidity",
-          "Measured relative humidity",
-          "humidity",
-          "humidity",
-        ),
+          deviceJson.getId() + '_humidity',
+          'Humidity',
+          'Measured relative humidity',
+          'humidity',
+          'humidity'
+        )
       );
     }
 
@@ -499,38 +452,26 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     if (payload.temperature !== undefined) {
       deviceJson.addSensor(
         new DeviceSensor(
-          deviceJson.getId() + "_temperature",
-          "Temperature",
-          "Measured temperature value",
-          "temperature",
-          "temperature",
-        ),
+          deviceJson.getId() + '_temperature',
+          'Temperature',
+          'Measured temperature value',
+          'temperature',
+          'temperature'
+        )
       );
     }
 
     // co2
     if (payload.co2 !== undefined) {
       deviceJson.addSensor(
-        new DeviceSensor(
-          deviceJson.getId() + "_co2",
-          "Co2",
-          "Co2",
-          "co2",
-          "co2",
-        ),
+        new DeviceSensor(deviceJson.getId() + '_co2', 'Co2', 'Co2', 'co2', 'co2')
       );
     }
 
     // power
     if (payload.power !== undefined) {
       deviceJson.addSensor(
-        new DeviceSensor(
-          deviceJson.getId() + "_power",
-          "Power",
-          "Power",
-          "power",
-          "power",
-        ),
+        new DeviceSensor(deviceJson.getId() + '_power', 'Power', 'Power', 'power', 'power')
       );
     }
 
@@ -538,12 +479,12 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     if (payload.energy !== undefined) {
       deviceJson.addSensor(
         new DeviceSensor(
-          deviceJson.getId() + "_energy",
-          "Energy",
-          "Energy increment",
-          "energy",
-          "energy",
-        ),
+          deviceJson.getId() + '_energy',
+          'Energy',
+          'Energy increment',
+          'energy',
+          'energy'
+        )
       );
     }
 
@@ -551,51 +492,33 @@ export default class HomeassistantDiscovery extends AbstractDiscovery {
     if (payload.barometer !== undefined) {
       deviceJson.addSensor(
         new DeviceSensor(
-          deviceJson.getId() + "_barometer",
-          "Barometer",
-          "The measured atmospheric pressure",
-          "barometer",
-          "pressure",
-        ),
+          deviceJson.getId() + '_barometer',
+          'Barometer',
+          'The measured atmospheric pressure',
+          'barometer',
+          'pressure'
+        )
       );
     }
 
     // count
     if (payload.count !== undefined) {
       deviceJson.addSensor(
-        new DeviceSensor(
-          deviceJson.getId() + "_count",
-          "Count",
-          "Counter",
-          "count",
-          "count",
-        ),
+        new DeviceSensor(deviceJson.getId() + '_count', 'Count', 'Counter', 'count', 'count')
       );
     }
 
     // weight
     if (payload.weight !== undefined) {
       deviceJson.addSensor(
-        new DeviceSensor(
-          deviceJson.getId() + "_weight",
-          "Weight",
-          "Weight",
-          "weight",
-          "weight",
-        ),
+        new DeviceSensor(deviceJson.getId() + '_weight', 'Weight', 'Weight', 'weight', 'weight')
       );
     }
 
     // uv
     if (payload.uv !== undefined) {
       deviceJson.addSensor(
-        new DeviceSensor(
-          deviceJson.getId() + "_uv",
-          "UV",
-          "UV",
-          "uv",
-          "number",
-        ),
+        new DeviceSensor(deviceJson.getId() + '_uv', 'UV', 'UV', 'uv', 'number')
       );
     }
   }

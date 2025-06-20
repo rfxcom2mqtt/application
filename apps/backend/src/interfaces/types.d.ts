@@ -1,13 +1,13 @@
-declare module "@rfxcom2mqtt/frontend" {
+declare module '@rfxcom2mqtt/frontend' {
   export function getPath(): string;
   export function setConfig(json: any);
 }
 
-declare module "connect-gzip-static" {
+declare module 'connect-gzip-static' {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type RequestHandler = (req: any, res: any) => void;
   export default function gzipStatic(
     root: string,
-    options?: Record<string, unknown>,
+    options?: Record<string, unknown>
   ): RequestHandler;
 }

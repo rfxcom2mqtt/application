@@ -10,41 +10,53 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
+import Badge from '@mui/material/Badge';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import SensorsIcon from '@mui/icons-material/Sensors';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LanguageIcon from '@mui/icons-material/Language';
+import { useTheme as useAppTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Navigation items configuration
  */
-const navigationItems = [
-    { name: 'Informations', path: '/' },
-    { name: 'Devices', path: '/devices' },
-    { name: 'Settings', path: '/settings' },
-    { name: 'Journals', path: '/logs' },
+const getNavigationItems = (t: any) => [
+  { name: t('navigation.informations'), path: '/' },
+  { name: t('navigation.devices'), path: '/devices' },
+  { name: t('navigation.settings'), path: '/settings' },
+  { name: t('navigation.journals'), path: '/logs' },
 ];
 
 /**
  * Logo component for the header
  */
 const Logo = memo(() => (
-    <>
-        <SensorsIcon sx={{ mr: 1 }} />
-        <Typography
-            variant="h6"
-            noWrap
-            component={NavLink}
-            to="/"
-            sx={{
-                mr: 2,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.2rem',
-                color: 'inherit',
-                textDecoration: 'none',
-            }}
-        >
-            Rfxcom2Mqtt
-        </Typography>
-    </>
+  <>
+    <SensorsIcon sx={{ mr: 1 }} />
+    <Typography
+      variant="h6"
+      noWrap
+      component={NavLink}
+      to="/"
+      sx={{
+        mr: 2,
+        fontFamily: 'monospace',
+        fontWeight: 700,
+        letterSpacing: '.2rem',
+        color: 'inherit',
+        textDecoration: 'none',
+      }}
+    >
+      Rfxcom2Mqtt
+    </Typography>
+  </>
 ));
 
 Logo.displayName = 'Logo';
@@ -53,86 +65,91 @@ Logo.displayName = 'Logo';
  * Props for the MobileNavMenu component
  */
 interface MobileNavMenuProps {
-    anchorEl: HTMLElement | null;
-    open: boolean;
-    onClose: () => void;
-    onNavigate: (path: string) => void;
+  anchorEl: HTMLElement | null;
+  open: boolean;
+  onClose: () => void;
 }
 
 /**
  * Mobile navigation menu component
  */
-const MobileNavMenu = memo<MobileNavMenuProps>(({ anchorEl, open, onClose, onNavigate }) => (
+const MobileNavMenu = memo<MobileNavMenuProps>(({ anchorEl, open, onClose }) => {
+  const { t } = useTranslation();
+  const navigationItems = getNavigationItems(t);
+
+  return (
     <Menu
-        id="mobile-nav-menu"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-        }}
-        keepMounted
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-        }}
-        open={open}
-        onClose={onClose}
-        sx={{
-            display: { xs: 'block', md: 'none' },
-        }}
+      id="mobile-nav-menu"
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left',
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'left',
+      }}
+      open={open}
+      onClose={onClose}
+      sx={{
+        display: { xs: 'block', md: 'none' },
+      }}
     >
-        {navigationItems.map((item) => (
-            <MenuItem 
-                key={item.name} 
-                onClick={() => onNavigate(item.path)}
-                component={NavLink}
-                to={item.path}
-                sx={{
-                    '&.active': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                    },
-                }}
-            >
-                <Typography textAlign="center">{item.name}</Typography>
-            </MenuItem>
-        ))}
+      {navigationItems.map(item => (
+        <MenuItem
+          key={item.path}
+          component={NavLink}
+          to={item.path}
+          sx={{
+            '&.active': {
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            },
+          }}
+        >
+          <Typography textAlign="center">{item.name}</Typography>
+        </MenuItem>
+      ))}
     </Menu>
-));
+  );
+});
 
 MobileNavMenu.displayName = 'MobileNavMenu';
 
 /**
  * Props for the DesktopNavMenu component
  */
-interface DesktopNavMenuProps {
-    onNavigate: (path: string) => void;
-    currentPath: string;
-}
+interface DesktopNavMenuProps {}
 
 /**
  * Desktop navigation menu component
  */
-const DesktopNavMenu = memo<DesktopNavMenuProps>(({ onNavigate, currentPath }) => (
+const DesktopNavMenu = memo<DesktopNavMenuProps>(() => {
+  const { t } = useTranslation();
+  const navigationItems = getNavigationItems(t);
+
+  return (
     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-        {navigationItems.map((item) => (
-            <Button
-                key={item.name}
-                component={NavLink}
-                to={item.path}
-                sx={{
-                    my: 2, 
-                    color: 'white', 
-                    display: 'block',
-                    '&.active': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                    },
-                }}
-            >
-                {item.name}
-            </Button>
-        ))}
+      {navigationItems.map(item => (
+        <Button
+          key={item.path}
+          component={NavLink}
+          to={item.path}
+          sx={{
+            my: 2,
+            color: 'white',
+            display: 'block',
+            '&.active': {
+              backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            },
+          }}
+        >
+          {item.name}
+        </Button>
+      ))}
     </Box>
-));
+  );
+});
 
 DesktopNavMenu.displayName = 'DesktopNavMenu';
 
@@ -141,67 +158,194 @@ DesktopNavMenu.displayName = 'DesktopNavMenu';
  * Provides navigation between different pages
  */
 const Header = memo(() => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { mode, toggleTheme } = useAppTheme();
+  const { t, i18n } = useTranslation();
+  const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
+  const [languageMenuAnchor, setLanguageMenuAnchor] = useState<null | HTMLElement>(null);
+  const [searchValue, setSearchValue] = useState('');
 
-    // Event handlers with useCallback to prevent unnecessary re-renders
-    const handleOpenMobileMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
-        setMobileMenuAnchor(event.currentTarget);
-    }, []);
+  // Event handlers with useCallback to prevent unnecessary re-renders
+  const handleOpenMobileMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    setMobileMenuAnchor(event.currentTarget);
+  }, []);
 
-    const handleCloseMobileMenu = useCallback(() => {
-        setMobileMenuAnchor(null);
-    }, []);
+  const handleCloseMobileMenu = useCallback(() => {
+    setMobileMenuAnchor(null);
+  }, []);
 
-    const handleNavigate = useCallback((path: string) => {
-        navigate(path);
-        handleCloseMobileMenu();
-    }, [navigate, handleCloseMobileMenu]);
+  const handleOpenLanguageMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    setLanguageMenuAnchor(event.currentTarget);
+  }, []);
 
-    return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    {/* Desktop Logo */}
-                    <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-                        <Logo />
-                    </Box>
+  const handleCloseLanguageMenu = useCallback(() => {
+    setLanguageMenuAnchor(null);
+  }, []);
 
-                    {/* Mobile Menu */}
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
-                        <IconButton
-                            size="large"
-                            aria-label="navigation menu"
-                            aria-controls="mobile-nav-menu"
-                            aria-haspopup="true"
-                            onClick={handleOpenMobileMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <MobileNavMenu 
-                            anchorEl={mobileMenuAnchor}
-                            open={Boolean(mobileMenuAnchor)}
-                            onClose={handleCloseMobileMenu}
-                            onNavigate={handleNavigate}
-                        />
-                    </Box>
+  const handleLanguageChange = useCallback(
+    (language: string) => {
+      i18n.changeLanguage(language);
+      handleCloseLanguageMenu();
+    },
+    [i18n, handleCloseLanguageMenu]
+  );
 
-                    {/* Mobile Logo */}
-                    <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexGrow: 1 }}>
-                        <Logo />
-                    </Box>
+  const handleNavigate = useCallback(
+    (path: string) => {
+      navigate(path);
+      handleCloseMobileMenu();
+    },
+    [navigate, handleCloseMobileMenu]
+  );
 
-                    {/* Desktop Menu */}
-                    <DesktopNavMenu 
-                        onNavigate={handleNavigate} 
-                        currentPath={location.pathname}
-                    />
-                </Toolbar>
-            </Container>
-        </AppBar>
-    );
+  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  }, []);
+
+  const handleSearchSubmit = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
+      if (searchValue.trim()) {
+        navigate(`/devices?search=${encodeURIComponent(searchValue.trim())}`);
+      }
+    },
+    [navigate, searchValue]
+  );
+
+  return (
+    <AppBar position="static" elevation={1}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters sx={{ minHeight: 64 }}>
+          {/* Desktop Logo */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <Logo />
+          </Box>
+
+          {/* Mobile Menu */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
+            <IconButton
+              size="large"
+              aria-label={t('header.navigationMenu')}
+              aria-controls="mobile-nav-menu"
+              aria-haspopup="true"
+              onClick={handleOpenMobileMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <MobileNavMenu
+              anchorEl={mobileMenuAnchor}
+              open={Boolean(mobileMenuAnchor)}
+              onClose={handleCloseMobileMenu}
+            />
+          </Box>
+
+          {/* Mobile Logo */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexGrow: 1 }}>
+            <Logo />
+          </Box>
+
+          {/* Desktop Menu */}
+          <DesktopNavMenu />
+
+          {/* Search Bar - Desktop only */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, mx: 2 }}>
+            <form onSubmit={handleSearchSubmit}>
+              <TextField
+                size="small"
+                placeholder={t('header.searchPlaceholder')}
+                value={searchValue}
+                onChange={handleSearchChange}
+                sx={{
+                  width: 250,
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    '& fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.8)',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    color: 'white',
+                    '&::placeholder': {
+                      color: 'rgba(255, 255, 255, 0.7)',
+                      opacity: 1,
+                    },
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </form>
+          </Box>
+
+          {/* Action Icons */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Language Switcher */}
+            <Tooltip title={t('settings.language.title')}>
+              <IconButton onClick={handleOpenLanguageMenu} color="inherit" aria-label="language">
+                <LanguageIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={languageMenuAnchor}
+              open={Boolean(languageMenuAnchor)}
+              onClose={handleCloseLanguageMenu}
+            >
+              <MenuItem onClick={() => handleLanguageChange('en')}>
+                {t('settings.language.english')}
+              </MenuItem>
+              <MenuItem onClick={() => handleLanguageChange('fr')}>
+                {t('settings.language.french')}
+              </MenuItem>
+            </Menu>
+
+            {/* Theme Toggle */}
+            <Tooltip
+              title={
+                mode === 'light' ? t('header.switchToDarkMode') : t('header.switchToLightMode')
+              }
+            >
+              <IconButton onClick={toggleTheme} color="inherit" aria-label="toggle theme">
+                {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+              </IconButton>
+            </Tooltip>
+
+            {/* Notifications */}
+            <Tooltip title={t('header.notifications')}>
+              <IconButton color="inherit" aria-label="notifications">
+                <Badge badgeContent={0} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
+            {/* Quick Settings */}
+            <Tooltip title={t('navigation.settings')}>
+              <IconButton
+                color="inherit"
+                aria-label="settings"
+                onClick={() => navigate('/settings')}
+              >
+                <SettingsIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
+  );
 });
 
 Header.displayName = 'Header';

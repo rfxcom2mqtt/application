@@ -1,14 +1,10 @@
-import { Server, Socket, Namespace } from "socket.io";
-import { v4 as uuidv4 } from "uuid";
-import { ProxyConfig } from "../utils/utils";
+import { Server, Socket, Namespace } from 'socket.io';
+import { v4 as uuidv4 } from 'uuid';
+import { ProxyConfig } from '../utils/utils';
 
-import {
-  loggerFactory,
-  LogEventTransport,
-  LogEventListener,
-} from "../utils/logger";
+import { loggerFactory, LogEventTransport, LogEventListener } from '../utils/logger';
 
-const logger = loggerFactory.getLogger("WEBSOCKET");
+const logger = loggerFactory.getLogger('WEBSOCKET');
 
 export default class WebSocketService implements LogEventListener {
   private messages = new Set();
@@ -18,33 +14,33 @@ export default class WebSocketService implements LogEventListener {
   constructor() {}
 
   init(server: any) {
-    logger.info("start init websocket");
+    logger.info('start init websocket');
     //initialize the WebSocket server instance
-    this.sockets = new Server(server, { path: "/socket.io" }).of(
-      ProxyConfig.getSocketNamespace(),
+    this.sockets = new Server(server, { path: '/socket.io' }).of(
+      ProxyConfig.getSocketNamespace()
     )!!;
 
     loggerFactory.addTransport(new LogEventTransport(this));
 
-    this.sockets.on("connect", (socket: Socket) => {
+    this.sockets.on('connect', (socket: Socket) => {
       this.getAllLogs();
-      logger.info("connect " + JSON.stringify(socket.data) + " " + socket.id);
-      socket.on("getAllLogs", () => this.getAllLogs());
-      logger.info("init ws listener");
-      socket.on("ping", () => {
-        logger.info("ping");
+      logger.info('connect ' + JSON.stringify(socket.data) + ' ' + socket.id);
+      socket.on('getAllLogs', () => this.getAllLogs());
+      logger.info('init ws listener');
+      socket.on('ping', () => {
+        logger.info('ping');
       });
     });
 
-    logger.info("init websocket started");
+    logger.info('init websocket started');
   }
 
   sendLog(message) {
-    this.sockets?.emit("log", message);
+    this.sockets?.emit('log', message);
   }
 
   getAllLogs() {
-    this.messages.forEach((message) => this.sendLog(message));
+    this.messages.forEach(message => this.sendLog(message));
   }
 
   onLog(value) {
@@ -57,7 +53,7 @@ export default class WebSocketService implements LogEventListener {
     };
     this.messages.add(logEvent);
     setImmediate(() => {
-      this.sockets?.emit("logged", value);
+      this.sockets?.emit('logged', value);
     });
 
     // Send the log message via Socket.IO
@@ -65,6 +61,6 @@ export default class WebSocketService implements LogEventListener {
   }
 
   disconnect() {
-    logger.info("disconnect");
+    logger.info('disconnect');
   }
 }

@@ -1,15 +1,15 @@
-import equals from "fast-deep-equal";
-import fs from "fs";
-import yaml from "js-yaml";
-import { KeyValue } from "../../core/models";
-import { logger } from "../../utils/logger";
+import equals from 'fast-deep-equal';
+import fs from 'fs';
+import yaml from 'js-yaml';
+import { KeyValue } from '../../core/models';
+import { logger } from '../../utils/logger';
 
 function read(file: string): KeyValue {
   try {
-    const result = yaml.load(fs.readFileSync(file, "utf8"));
+    const result = yaml.load(fs.readFileSync(file, 'utf8'));
     return (result as KeyValue) ?? {};
   } catch (error: any) {
-    if (error.name === "YAMLException") {
+    if (error.name === 'YAMLException') {
       error.file = file;
     }
 
@@ -23,12 +23,12 @@ function readIfExists(file: string, default_?: KeyValue): KeyValue | undefined {
 
 function writeIfChanged(file: string, content: KeyValue): boolean {
   const before = readIfExists(file);
-  delete content["args"];
-  delete content["envId"];
-  delete content["ENVID"];
-  delete content["timestamp"];
+  delete content['args'];
+  delete content['envId'];
+  delete content['ENVID'];
+  delete content['timestamp'];
   if (!equals(before, content)) {
-    logger.info("save config file");
+    logger.info('save config file');
     fs.writeFileSync(file, yaml.dump(content));
     return true;
   }

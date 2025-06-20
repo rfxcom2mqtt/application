@@ -1,8 +1,8 @@
-import { QoS } from "mqtt-packet";
-import { settingsService } from "../../config/settings";
-import { IMqtt } from "../../core/services/mqtt.service";
-import { MockMqtt } from "./MockMqtt";
-import Mqtt from "./Mqtt";
+import { QoS } from 'mqtt-packet';
+import { settingsService } from '../../config/settings';
+import { IMqtt } from '../../core/services/mqtt.service';
+import { MockMqtt } from './MockMqtt';
+import Mqtt from './Mqtt';
 
 export interface MQTTOptions {
   qos?: QoS;
@@ -25,7 +25,5 @@ export interface MqttConnectionConfig {
 }
 
 export function getMqttInstance(): IMqtt {
-  return settingsService.get().mqtt.server === "mock"
-    ? new MockMqtt()
-    : new Mqtt();
+  return settingsService.get().mqtt.server === 'mock' ? new MockMqtt() : new Mqtt();
 }

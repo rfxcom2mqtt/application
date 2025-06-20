@@ -71,3 +71,10 @@ pnpm --filter @rfxcom2mqtt/frontend build
 
 - Backend: Apache-2.0
 - Frontend: GPL-3.0
+
+
+ docker build -t sguernion/rfxcom2mqtt:1.1.0-dev .
+
+ docker buildx build --platform linux/arm64 -t sguernion/rfxcom2mqtt:1.1.0-dev .
+ docker buildx build --platform linux/arm/v7 -t sguernion/rfxcom2mqtt:1.1.0-dev --push .
+ docker buildx build --platform linux/amd64,linux/arm64 -t sguernion/rfxcom2mqtt:1.1.0-dev --push .

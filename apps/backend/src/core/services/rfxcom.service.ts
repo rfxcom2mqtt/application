@@ -1,5 +1,5 @@
-import { SettingDevice } from "src/config/settings";
-import { RfxcomEvent, RfxcomInfo } from "../models/rfxcom";
+import { SettingDevice } from '../../config/settings';
+import { RfxcomEvent, RfxcomInfo } from '../models/rfxcom';
 
 export interface OnStatusCallback {
   (coordinatorInfo: RfxcomInfo): void;
@@ -31,7 +31,7 @@ export default interface IRfxcom {
     deviceType: string,
     entityName: string,
     payload: CommandPayload | string,
-    deviceConf?: SettingDevice,
+    deviceConf?: SettingDevice
   ): void;
   onDisconnect(callback: (evt: Record<string, unknown>) => void): void;
   subscribeProtocolsEvent(callback: RfxcomEventHandler): void;
@@ -41,6 +41,6 @@ export default interface IRfxcom {
     deviceType: string,
     subTypeValue: string,
     command: string | undefined,
-    entityName: string,
+    entityName: string
   ): void;
 }

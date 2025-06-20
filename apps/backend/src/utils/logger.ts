@@ -1,5 +1,5 @@
-import winston, { createLogger, transports, format } from "winston";
-import Transport = require("winston-transport");
+import winston, { createLogger, transports, format } from 'winston';
+import Transport = require('winston-transport');
 
 /**
  * Interface for log event listeners
@@ -15,12 +15,12 @@ export interface LogEventListener {
 /**
  * Supported log levels
  */
-export type LogLevel = "warn" | "debug" | "info" | "error";
+export type LogLevel = 'warn' | 'debug' | 'info' | 'error';
 
 /**
  * Winston-specific log levels
  */
-type WinstonLogLevel = "warning" | "debug" | "info" | "error";
+type WinstonLogLevel = 'warning' | 'debug' | 'info' | 'error';
 
 /**
  * Converts application log level to Winston log level
@@ -28,31 +28,27 @@ type WinstonLogLevel = "warning" | "debug" | "info" | "error";
  * @returns The corresponding Winston log level
  */
 const logToWinstonLevel = (level: LogLevel): WinstonLogLevel =>
-  level === "warn" ? "warning" : level;
+  level === 'warn' ? 'warning' : level;
 
 /**
  * Converts Winston log level to application log level
  * @param level The Winston log level
  * @returns The corresponding application log level
  */
-const winstonToLevel = (level: WinstonLogLevel): LogLevel =>
-  level === "warning" ? "warn" : level;
+const winstonToLevel = (level: WinstonLogLevel): LogLevel => (level === 'warning' ? 'warn' : level);
 
 /**
  * Custom Winston transport that forwards logs to a LogEventListener
  */
 export class LogEventTransport extends Transport {
   private logEventListener: LogEventListener;
-  
+
   /**
    * Creates a new LogEventTransport
    * @param logEventListener The listener to forward logs to
    * @param options Transport options
    */
-  constructor(
-    logEventListener: LogEventListener,
-    options?: Transport.TransportStreamOptions,
-  ) {
+  constructor(logEventListener: LogEventListener, options?: Transport.TransportStreamOptions) {
     super(options);
     this.logEventListener = logEventListener;
   }
@@ -83,16 +79,16 @@ export class Logger {
   constructor(name: string) {
     this.name = name;
     this.transportsToUse = [new transports.Console()];
-    
+
     this.logger = createLogger({
       transports: this.transportsToUse,
       format: format.combine(
         format.label({ label: name }),
-        format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), // Using 24-hour format
-        format.printf((info) => {
+        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), // Using 24-hour format
+        format.printf(info => {
           const level = info.level.toUpperCase();
           return `[${info.timestamp}][${info.label}] ${level}: ${info.message}`;
-        }),
+        })
       ),
     });
   }
@@ -177,7 +173,7 @@ export class Logger {
 class LoggerFactory {
   private loggers: Map<string, Logger> = new Map();
   private default?: Logger;
-  private readonly DEFAULT_LOGGER_NAME = "GATEWAY";
+  private readonly DEFAULT_LOGGER_NAME = 'GATEWAY';
 
   /**
    * Sets the log level for all loggers
@@ -203,17 +199,17 @@ class LoggerFactory {
 
     // Check if logger already exists
     let logger = this.loggers.get(name);
-    
+
     // Create new logger if it doesn't exist
     if (!logger) {
       logger = new Logger(name);
       this.loggers.set(name, logger);
-      
+
       if (this.default) {
         this.default.debug(`Created new logger: ${name}`);
       }
     }
-    
+
     return logger;
   }
 

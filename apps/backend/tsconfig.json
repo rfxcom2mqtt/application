@@ -11,11 +11,12 @@
     "noImplicitAny": false,
     "noImplicitThis": true,
     "outDir": "dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "allowJs": true,
     "rootDir": "src",
     "experimentalDecorators": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "isolatedModules": true
   },
   "include": [
     "src/**/*.ts"
@@ -23,6 +24,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ],
-  "baseUrl": "./src"
+  ]
 }

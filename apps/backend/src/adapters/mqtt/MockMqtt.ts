@@ -1,8 +1,8 @@
-import { settingsService } from "../../config/settings";
-import { Topic } from "../../core/models/mqtt";
-import { MqttEventListener } from "../../core/services/mqtt.service";
-import { IMqtt } from "../../core/services/mqtt.service";
-import { MQTTOptions } from ".";
+import { settingsService } from '../../config/settings';
+import { Topic } from '../../core/models/mqtt';
+import { MqttEventListener } from '../../core/services/mqtt.service';
+import { IMqtt } from '../../core/services/mqtt.service';
+import { MQTTOptions } from '.';
 
 export class MockMqtt implements IMqtt {
   public topics: Topic;
@@ -23,6 +23,6 @@ export class MockMqtt implements IMqtt {
     playload: any,
     callback: any,
     options: MQTTOptions = {},
-    base = settingsService.get().mqtt.base_topic,
+    base = settingsService.get().mqtt.base_topic
   ): void {}
 }

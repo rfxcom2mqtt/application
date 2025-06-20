@@ -1,16 +1,16 @@
-import fs from "fs";
-import objectAssignDeep from "object-assign-deep";
-import { settingsService } from "../../config/settings";
-import { loggerFactory } from "../../utils/logger";
-import { DeviceState, KeyValue, EntityState } from "../models";
+import fs from 'fs';
+import objectAssignDeep from 'object-assign-deep';
+import { settingsService } from '../../config/settings';
+import { loggerFactory } from '../../utils/logger';
+import { DeviceState, KeyValue, EntityState } from '../models';
 
-const logger = loggerFactory.getLogger("STORE");
+const logger = loggerFactory.getLogger('STORE');
 
 const saveInterval = 1000 * 60; // 1 minutes
 
 class StateStore {
   private state: { [s: string]: KeyValue } = {};
-  private file = (process.env.RFXCOM2MQTT_DATA ?? "/app/data/") + "state.json";
+  private file = (process.env.RFXCOM2MQTT_DATA ?? '/app/data/') + 'state.json';
   private timer?: NodeJS.Timeout = undefined;
   private saveInterval: number;
 
@@ -38,12 +38,10 @@ class StateStore {
   load(): void {
     if (fs.existsSync(this.file)) {
       try {
-        this.state = JSON.parse(fs.readFileSync(this.file, "utf8"));
+        this.state = JSON.parse(fs.readFileSync(this.file, 'utf8'));
         logger.debug(`Loaded state from file ${this.file}`);
       } catch (e) {
-        logger.debug(
-          `Failed to load state from file ${this.file} (corrupt file?)`,
-        );
+        logger.debug(`Failed to load state from file ${this.file} (corrupt file?)`);
       }
     } else {
       logger.debug(`Can't load state from file ${this.file} (doesn't exist)`);
@@ -55,7 +53,7 @@ class StateStore {
       logger.debug(`Saving state to file ${this.file}`);
       const json = JSON.stringify(this.state, null, 4);
       try {
-        fs.writeFileSync(this.file, json, "utf8");
+        fs.writeFileSync(this.file, json, 'utf8');
       } catch (e: any) {
         logger.error(`Failed to write state to '${this.file}' (${e.message})`);
       }
@@ -67,7 +65,7 @@ class StateStore {
   reset(): void {
     try {
       this.state = {};
-      fs.writeFileSync(this.file, "{}", "utf8");
+      fs.writeFileSync(this.file, '{}', 'utf8');
     } catch (e: any) {
       logger.error(`Failed to write devices to '${this.file}' (${e.message})`);
     }
@@ -83,13 +81,10 @@ class StateStore {
   }
 
   getByDeviceIdAndUnitCode(id: string, unitCode?: number): KeyValue {
-    logger.debug(`get entities of device : ` + id + "." + unitCode);
+    logger.debug(`get entities of device : ` + id + '.' + unitCode);
 
     for (const entity in this.state) {
-      if (
-        this.state[entity].id === id &&
-        this.state[entity].unitCode === "" + unitCode
-      ) {
+      if (this.state[entity].id === id && this.state[entity].unitCode === '' + unitCode) {
         return this.state[entity];
       }
     }
@@ -140,8 +135,7 @@ class StateStore {
 
 export class DeviceStore {
   private devices: { [s: string | number]: DeviceState } = {};
-  private file =
-    (process.env.RFXCOM2MQTT_DATA ?? "/app/data/") + "devices.json";
+  private file = (process.env.RFXCOM2MQTT_DATA ?? '/app/data/') + 'devices.json';
   private timer?: NodeJS.Timeout = undefined;
   private saveInterval: number;
 
@@ -169,12 +163,10 @@ export class DeviceStore {
   load(): void {
     if (fs.existsSync(this.file)) {
       try {
-        this.devices = JSON.parse(fs.readFileSync(this.file, "utf8"));
+        this.devices = JSON.parse(fs.readFileSync(this.file, 'utf8'));
         logger.debug(`Loaded devices from file ${this.file}`);
       } catch (e) {
-        logger.debug(
-          `Failed to load devices from file ${this.file} (corrupt file?)`,
-        );
+        logger.debug(`Failed to load devices from file ${this.file} (corrupt file?)`);
       }
     } else {
       logger.debug(`Can't load devices from file ${this.file} (doesn't exist)`);
@@ -184,7 +176,7 @@ export class DeviceStore {
   reset(): void {
     try {
       this.devices = {};
-      fs.writeFileSync(this.file, "{}", "utf8");
+      fs.writeFileSync(this.file, '{}', 'utf8');
     } catch (e: any) {
       logger.error(`Failed to write devices to '${this.file}' (${e.message})`);
     }
@@ -195,11 +187,9 @@ export class DeviceStore {
       logger.debug(`Saving devices to file ${this.file}`);
       const json = JSON.stringify(this.devices, null, 4);
       try {
-        fs.writeFileSync(this.file, json, "utf8");
+        fs.writeFileSync(this.file, json, 'utf8');
       } catch (e: any) {
-        logger.error(
-          `Failed to write devices to '${this.file}' (${e.message})`,
-        );
+        logger.error(`Failed to write devices to '${this.file}' (${e.message})`);
       }
     } else {
       logger.debug(`Not saving devices`);
@@ -221,7 +211,7 @@ export class DeviceStore {
 
   set(id: string, update: DeviceState, reason?: string): DeviceState {
     logger.debug(`update device state : ` + id);
-    const fromState = this.devices[id] || new DeviceState(id, "");
+    const fromState = this.devices[id] || new DeviceState(id, '');
     const toState = objectAssignDeep({}, fromState, update);
     const newCache = { ...toState } as DeviceState;
     this.devices[id] = newCache;

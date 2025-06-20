@@ -1,9 +1,9 @@
 export class RfxcomInfo {
   receiverTypeCode: number = 0;
-  receiverType: string = "";
-  hardwareVersion: string = "";
+  receiverType: string = '';
+  hardwareVersion: string = '';
   firmwareVersion: number = 0;
-  firmwareType: string = "";
+  firmwareType: string = '';
   enabledProtocols: string[] = [];
 }
 

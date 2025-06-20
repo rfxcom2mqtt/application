@@ -1,0 +1,258 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "refresh": "Refresh",
+    "search": "Search",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "total": "Total",
+    "online": "Online",
+    "offline": "Offline",
+    "all": "All",
+    "none": "None",
+    "unknown": "Unknown",
+    "retry": "Retry"
+  },
+  "navigation": {
+    "informations": "Informations",
+    "devices": "Devices",
+    "settings": "Settings",
+    "journals": "Journals"
+  },
+  "header": {
+    "appName": "Rfxcom2Mqtt",
+    "searchPlaceholder": "Search devices...",
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "notifications": "Notifications",
+    "navigationMenu": "navigation menu"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong.",
+    "tryRefreshing": "Please try refreshing the page. If the problem persists, please contact support.",
+    "pageNotFound": "404 - Page Not Found",
+    "pageNotFoundDescription": "The page you are looking for does not exist."
+  },
+  "devices": {
+    "title": "Devices",
+    "subtitle": "Manage and monitor your connected devices",
+    "discoverDevices": "Discover Devices",
+    "searchDevices": "Search devices...",
+    "foundDevices": "Found {{count}} device",
+    "foundDevices_plural": "Found {{count}} devices",
+    "matchingSearch": "matching \"{{searchTerm}}\"",
+    "ofType": "of type \"{{filterType}}\"",
+    "noDevicesFound": "No devices found",
+    "noDevicesFoundDescription": "No devices match your current filters.",
+    "clearFilters": "Clear Filters",
+    "viewMode": {
+      "grid": "Grid View",
+      "list": "List View"
+    },
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "unknown": "Unknown"
+    },
+    "actions": {
+      "resetState": "Reset State",
+      "resetDevices": "Reset Devices"
+    }
+  },
+  "device": {
+    "title": "Device",
+    "subtitle": "{{count}} entities • {{type}}",
+    "loading": "Loading Device...",
+    "loadingSubtitle": "Please wait while device information is loaded",
+    "notFound": "Device Not Found",
+    "notFoundSubtitle": "The requested device could not be found",
+    "notFoundMessage": "Device not found or failed to load.",
+    "actions": {
+      "rename": "Rename",
+      "renameDevice": "Rename device",
+      "renameSensor": "Rename sensor",
+      "renameSwitch": "Rename switch"
+    },
+    "debug": {
+      "title": "Raw State (Debug)"
+    }
+  },
+  "deviceInfo": {
+    "title": "Device Information",
+    "name": "Name",
+    "originalName": "Original Name",
+    "rfxcomId": "RFXCOM ID",
+    "manufacturer": "Manufacturer",
+    "type": "Type",
+    "subtype": "Subtype",
+    "entities": "Entities",
+    "totalEntities": "{{count}} total entities",
+    "notApplicable": "N/A",
+    "quickStats": "Quick Stats",
+    "sensors": "Sensors",
+    "switches": "Switches",
+    "binarySensors": "Binary Sensors",
+    "covers": "Covers",
+    "selects": "Selects",
+    "noEntities": "No entities available for this device"
+  },
+  "deviceHeader": {
+    "entitiesCount": "{{count}} entities",
+    "refreshData": "Refresh device data",
+    "goBack": "Go back"
+  },
+  "deviceCard": {
+    "deviceStatus": "Device is {{status}}",
+    "moreActions": "More actions",
+    "unitCode": "Unit Code",
+    "lastSeen": "Last seen: {{time}}",
+    "viewDetails": "View Details",
+    "quickToggle": "Quick toggle",
+    "remove": "Remove"
+  },
+  "sensor": {
+    "id": "ID"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Configure your RFXcom2MQTT system settings",
+    "theme": {
+      "title": "Theme",
+      "description": "Choose your preferred theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Select your preferred language",
+      "english": "English",
+      "french": "Français"
+    },
+    "advanced": {
+      "title": "Advanced Settings",
+      "description": "Advanced configuration options"
+    },
+    "tabs": {
+      "rfxcom": {
+        "label": "RFXcom",
+        "description": "Configure RFXcom device settings"
+      },
+      "mqtt": {
+        "label": "MQTT",
+        "description": "Configure MQTT broker connection"
+      },
+      "frontend": {
+        "label": "Frontend",
+        "description": "Configure web interface settings"
+      },
+      "homeAssistant": {
+        "label": "Home Assistant",
+        "description": "Configure Home Assistant integration"
+      },
+      "advanced": {
+        "label": "Advanced",
+        "description": "Advanced system settings"
+      }
+    },
+    "actions": {
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "reset": "Reset",
+      "unsavedChanges": "You have unsaved changes"
+    },
+    "messages": {
+      "saveSuccess": "Settings saved successfully",
+      "saveError": "Failed to save settings. Please try again.",
+      "loadError": "Failed to load settings. Please refresh the page.",
+      "changesDiscarded": "Changes discarded",
+      "savingSettings": "Saving settings..."
+    }
+  },
+  "controller": {
+    "title": "Controller Information",
+    "subtitle": "View controller status and information",
+    "loadError": "Failed to load controller information. Please try again later.",
+    "hardware": {
+      "title": "RFXCOM Hardware",
+      "subtitle": "Information about the RFXCOM controller hardware",
+      "protocols": "Protocols",
+      "firmwareType": "Firmware Type",
+      "firmwareVersion": "Firmware Version",
+      "hardwareVersion": "Hardware Version",
+      "receiverType": "Receiver Type",
+      "receiverCode": "Receiver Code"
+    },
+    "bridge": {
+      "title": "RFXCOM2MQTT Bridge",
+      "subtitle": "Information about the RFXCOM2MQTT bridge software",
+      "version": "Version",
+      "logLevel": "Log Level"
+    },
+    "restart": {
+      "button": "Restart Controller",
+      "confirmTitle": "Restart Controller?",
+      "confirmMessage": "Are you sure you want to restart the RFXCOM controller? This will temporarily interrupt communication with your devices.",
+      "success": "Controller restart initiated successfully",
+      "error": "Failed to restart controller"
+    }
+  },
+  "journals": {
+    "title": "System Journals",
+    "subtitle": "Real-time system logs and application events",
+    "connection": {
+      "connecting": "Connecting...",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "establishingConnection": "Establishing connection to server...",
+      "connectionFailed": "Connection Failed",
+      "noConnectionAvailable": "No Connection Available",
+      "checkNetworkConnection": "Please check your network connection and server status. The page will automatically reconnect when the server becomes available."
+    }
+  },
+  "toast": {
+    "deviceUpdated": "Device updated successfully",
+    "deviceDeleted": "Device deleted successfully",
+    "settingsSaved": "Settings saved successfully",
+    "errorOccurred": "An error occurred",
+    "connectionLost": "Connection lost",
+    "connectionRestored": "Connection restored"
+  },
+  "confirmDialog": {
+    "title": "Confirm Action",
+    "message": "Are you sure you want to perform this action?",
+    "deleteDevice": "Are you sure you want to delete this device?",
+    "resetState": "Are you sure you want to reset the state?",
+    "resetDevices": "Are you sure you want to reset all devices?",
+    "processing": "Processing..."
+  },
+  "emptyState": {
+    "noDevices": "No devices discovered",
+    "noDevicesDescription": "Your RFXcom2MQTT system hasn't discovered any devices yet. Start by scanning for devices or check your RFXcom connection.",
+    "noResults": "No matching devices found",
+    "noResultsDescription": "Try adjusting your search criteria or filters.",
+    "startDiscovery": "Start Discovery",
+    "clearSearch": "Clear Search",
+    "suggestions": {
+      "title": "Suggestions:",
+      "tryDifferentTerms": "Try different search terms",
+      "clearFilters": "Clear filters to see all devices",
+      "checkSpelling": "Check your spelling",
+      "ensureConnection": "Ensure your RFXcom device is connected",
+      "checkPowered": "Check that devices are powered on and in range",
+      "triggerManually": "Try triggering devices manually to help discovery",
+      "verifyConfig": "Verify RFXcom configuration settings"
+    }
+  }
+}

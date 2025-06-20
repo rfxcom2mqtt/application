@@ -1,15 +1,15 @@
-import { Router } from "express";
-import expressStaticGzip from "express-static-gzip";
-import fs from "fs";
-import path from "path";
-import serverStatic from "serve-static";
-import frontend from "@rfxcom2mqtt/frontend";
-import { loggerFactory } from "../utils/logger";
-import { ProxyConfig } from "../utils/utils";
+import { Router } from 'express';
+import expressStaticGzip from 'express-static-gzip';
+import fs from 'fs';
+import path from 'path';
+import serverStatic from 'serve-static';
+import frontend from '@rfxcom2mqtt/frontend';
+import { loggerFactory } from '../utils/logger';
+import { ProxyConfig } from '../utils/utils';
 
 // @ts-ignore
 
-const logger = loggerFactory.getLogger("API");
+const logger = loggerFactory.getLogger('API');
 
 export default class Frontend {
   public router: Router;
@@ -23,15 +23,11 @@ export default class Frontend {
     this.router = Router();
 
     let staticFrontend;
-    if (process.env.PROFILE === "development") {
-      logger.debug("display local developement frontend build");
-      const buildPath = "../../../frontend/dist/";
+    if (process.env.PROFILE === 'development') {
+      logger.debug('display local developement frontend build');
+      const buildPath = '../../../frontend/dist/';
       const publicFiles = path.join(__dirname, buildPath);
-      fs.writeFileSync(
-        path.join(publicFiles, "config.js"),
-        this.getFrontEndConfig(),
-        "utf8",
-      );
+      fs.writeFileSync(path.join(publicFiles, 'config.js'), this.getFrontEndConfig(), 'utf8');
       this.listPublicFiles(publicFiles);
       staticFrontend = serverStatic(publicFiles);
       this.pathStatic = publicFiles;
@@ -39,14 +35,14 @@ export default class Frontend {
       frontend.setConfig(this.getFrontEndConfig());
       staticFrontend = expressStaticGzip(frontend.getPath(), {
         enableBrotli: true,
-        index: "index.html",
+        index: 'index.html',
         customCompressions: [
           {
-            encodingName: "deflate",
-            fileExtension: "zz",
+            encodingName: 'deflate',
+            fileExtension: 'zz',
           },
         ],
-        orderPreference: ["br", "gz"],
+        orderPreference: ['br', 'gz'],
       });
       this.pathStatic = frontend.getPath();
     }
@@ -62,7 +58,7 @@ export default class Frontend {
       "window.config = { basePath: '" +
       ProxyConfig.getBasePath() +
       "', publicPath: '" +
-      (process.env.API_PUBLIC_URL ? process.env.API_PUBLIC_URL : "") +
+      (process.env.API_PUBLIC_URL ? process.env.API_PUBLIC_URL : '') +
       "', wsNamespace: '" +
       ProxyConfig.getSocketNamespace() +
       "',};"
@@ -73,7 +69,7 @@ export default class Frontend {
     fs.readdir(directoryPath, function (err, files) {
       //handling error
       if (err) {
-        return logger.info("Unable to scan directory: " + err);
+        return logger.info('Unable to scan directory: ' + err);
       }
       //listing all files using forEach
       files.forEach(function (file) {

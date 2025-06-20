@@ -1,17 +1,16 @@
-import fs from "fs";
-import * as objectAssignDeepModule from "object-assign-deep";
-import path from "path";
-import load from "./config-loader";
-import { KeyValue } from "../../core/models";
-import { logger, loggerFactory } from "../../utils/logger";
-import yaml from "./yaml";
+import fs from 'fs';
+import * as objectAssignDeepModule from 'object-assign-deep';
+import path from 'path';
+import load from './config-loader';
+import { KeyValue } from '../../core/models';
+import { logger, loggerFactory } from '../../utils/logger';
+import yaml from './yaml';
 
-const objectAssignDeep =
-  objectAssignDeepModule.default || objectAssignDeepModule;
+const objectAssignDeep = objectAssignDeepModule.default || objectAssignDeepModule;
 
 type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> };
 
-export type LogLevel = "error" | "warn" | "info" | "debug";
+export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 export interface HealthcheckConfig {
   readonly enabled: boolean;
   readonly cron: string;
@@ -99,8 +98,8 @@ function parseValueRef(text: string): { filename: string; key: string } | null {
   if (match) {
     let filename = match[1];
     // This is mainly for backward compatibility.
-    if (!filename.endsWith(".yaml") && !filename.endsWith(".yml")) {
-      filename += ".yaml";
+    if (!filename.endsWith('.yaml') && !filename.endsWith('.yml')) {
+      filename += '.yaml';
     }
     return { filename, key: match[2] };
   } else {
@@ -135,13 +134,13 @@ class SettingsService {
     this._settingsWithDefaults = objectAssignDeep(
       {},
       defaults,
-      this.getFileSettings(file),
+      this.getFileSettings(file)
     ) as Settings;
     applyEnvironmentVariables(this._settingsWithDefaults);
     applySecretVariables(this._settingsWithDefaults);
 
     loggerFactory.setLevel(this._settingsWithDefaults!!.loglevel);
-    logger.info("configuration loaded from path : " + file);
+    logger.info('configuration loaded from path : ' + file);
   }
 
   set(path: string[], value: string | number | boolean | KeyValue): void {
@@ -169,9 +168,7 @@ class SettingsService {
       return;
     }
 
-    return this._settingsWithDefaults!!.devices.find(
-      (dev: SettingDevice) => dev.id === deviceId,
-    );
+    return this._settingsWithDefaults!!.devices.find((dev: SettingDevice) => dev.id === deviceId);
   }
 
   apply(newSettings: Record<string, unknown>) {
@@ -179,10 +176,7 @@ class SettingsService {
 
     const _settings = this._settingsWithDefaults;
     /* eslint-disable-line */ // @ts-ignore
-    this._settingsWithDefaults = objectAssignDeepModule.noMutate(
-      _settings,
-      newSettings,
-    );
+    this._settingsWithDefaults = objectAssignDeepModule.noMutate(_settings, newSettings);
 
     this.write();
   }
@@ -193,10 +187,10 @@ class SettingsService {
     let devices: SettingDevice[] = [];
     if (this._settingsWithDefaults?.devices != undefined) {
       devices = this._settingsWithDefaults?.devices;
-      logger.info("config device " + devices.length);
+      logger.info('config device ' + devices.length);
       for (const index in devices) {
         const device: SettingDevice = devices[index];
-        logger.info("override device " + newSettings.id);
+        logger.info('override device ' + newSettings.id);
         if (device.id === newSettings.id) {
           found = true;
           if (newSettings.name !== undefined) {
@@ -207,10 +201,7 @@ class SettingsService {
             for (const indexU in device.units) {
               const unit: Units = device.units[indexU];
               logger.info(
-                "search unit code " +
-                  newSettings.units[0].unitCode +
-                  "==" +
-                  unit.unitCode,
+                'search unit code ' + newSettings.units[0].unitCode + '==' + unit.unitCode
               );
               if (unit.unitCode === newSettings.units[0].unitCode) {
                 foundUnit = true;
@@ -220,7 +211,7 @@ class SettingsService {
               }
             }
             if (!foundUnit) {
-              logger.info("push unit code " + newSettings.units[0].unitCode);
+              logger.info('push unit code ' + newSettings.units[0].unitCode);
               device.units?.push(newSettings.units[0]);
             }
           }
@@ -246,19 +237,15 @@ class SettingsService {
 
     // In case the setting is defined in a separate file (e.g. !secret network_key) update it there.
     for (const path of [
-      ["mqtt", "server"],
-      ["mqtt", "user"],
-      ["mqtt", "password"],
-      ["frontend", "auth_token"],
+      ['mqtt', 'server'],
+      ['mqtt', 'user'],
+      ['mqtt', 'password'],
+      ['frontend', 'auth_token'],
     ]) {
       if (actual[path[0]] && actual[path[0]][path[1]]) {
         const ref = this.parseValueRef(actual[path[0]][path[1]]);
         if (ref) {
-          yaml.updateIfChanged(
-            data.joinPath(ref.filename),
-            ref.key,
-            toWrite[path[0]][path[1]],
-          );
+          yaml.updateIfChanged(data.joinPath(ref.filename), ref.key, toWrite[path[0]][path[1]]);
           toWrite[path[0]][path[1]] = actual[path[0]][path[1]];
         }
       }
@@ -278,8 +265,8 @@ class SettingsService {
     if (match) {
       let filename = match[1];
       // This is mainly for backward compatibility.
-      if (!filename.endsWith(".yaml") && !filename.endsWith(".yml")) {
-        filename += ".yaml";
+      if (!filename.endsWith('.yaml') && !filename.endsWith('.yml')) {
+        filename += '.yaml';
       }
       return { filename, key: match[2] };
     } else {
@@ -297,10 +284,10 @@ class SettingsService {
 export const settingsService = new SettingsService();
 
 const defaults: RecursivePartial<Settings> = {
-  loglevel: "info",
+  loglevel: 'info',
   healthcheck: {
     enabled: true,
-    cron: "* * * * *",
+    cron: '* * * * *',
   },
   cacheState: {
     enable: true,
@@ -308,12 +295,12 @@ const defaults: RecursivePartial<Settings> = {
   },
   homeassistant: {
     discovery: true,
-    discovery_topic: "homeassistant",
-    discovery_device: "rfxcom2mqtt",
+    discovery_topic: 'homeassistant',
+    discovery_device: 'rfxcom2mqtt',
   },
   devices: [],
   mqtt: {
-    base_topic: "rfxcom2mqtt",
+    base_topic: 'rfxcom2mqtt',
     include_device_information: false,
     qos: 0,
     retain: true,
@@ -321,14 +308,14 @@ const defaults: RecursivePartial<Settings> = {
   rfxcom: {
     debug: true,
     receive: [
-      "temperaturehumidity1",
-      "homeconfort",
-      "lighting1",
-      "lighting2",
-      "lighting3",
-      "lighting4",
-      "remote",
-      "security1",
+      'temperaturehumidity1',
+      'homeconfort',
+      'lighting1',
+      'lighting2',
+      'lighting3',
+      'lighting4',
+      'remote',
+      'security1',
     ],
   },
   frontend: {
@@ -344,7 +331,7 @@ class DataPath {
     if (fs.existsSync(path.join(process.cwd(), 'config'))) {
       this.dataPath = path.join(process.cwd(), 'config/');
     } else {
-      this.dataPath = process.env.RFXCOM2MQTT_DATA ?? "/app/data/";
+      this.dataPath = process.env.RFXCOM2MQTT_DATA ?? '/app/data/';
     }
   }
 
@@ -357,7 +344,7 @@ class DataPath {
   }
 
   getConfigPath(): string {
-    return path.join(this.dataPath, "config.yml");
+    return path.join(this.dataPath, 'config.yml');
   }
 }
 const data = new DataPath();
@@ -393,13 +380,13 @@ function applySecretVariables(settings: Partial<Settings>): void {
 
 function applyEnvironmentVariables(settings: Partial<Settings>): void {
   const mqttEnvVars = [
-    { env: "MQTT_SERVER", props: "server" },
-    { env: "MQTT_USERNAME", props: "username" },
-    { env: "MQTT_PASSWORD", props: "password" },
-    { env: "MQTT_CLIENT_ID", props: "client_id" },
+    { env: 'MQTT_SERVER', props: 'server' },
+    { env: 'MQTT_USERNAME', props: 'username' },
+    { env: 'MQTT_PASSWORD', props: 'password' },
+    { env: 'MQTT_CLIENT_ID', props: 'client_id' },
   ];
 
-  mqttEnvVars.forEach((envEntry) => {
+  mqttEnvVars.forEach(envEntry => {
     if (process.env[envEntry.env]) {
       if (settings.mqtt !== undefined) {
         // @ts-ignore
@@ -408,9 +395,9 @@ function applyEnvironmentVariables(settings: Partial<Settings>): void {
     }
   });
 
-  const rfxcomEnvVars = [{ env: "RFXCOM_USB_DEVICE", props: "usbport" }];
+  const rfxcomEnvVars = [{ env: 'RFXCOM_USB_DEVICE', props: 'usbport' }];
 
-  rfxcomEnvVars.forEach((envEntry) => {
+  rfxcomEnvVars.forEach(envEntry => {
     if (process.env[envEntry.env]) {
       // @ts-ignore
       settings.rfxcom[envEntry.props] = process.env[envEntry.env];
@@ -418,13 +405,13 @@ function applyEnvironmentVariables(settings: Partial<Settings>): void {
   });
 
   const frontnvVars = [
-    { env: "FRONTEND_ENABLED", props: "enabled" },
-    { env: "FRONTEND_AUTH_TOKEN", props: "authToken" },
-    { env: "FRONTEND_PORT", props: "port" },
-    { env: "FRONTEND_HOST", props: "host" },
+    { env: 'FRONTEND_ENABLED', props: 'enabled' },
+    { env: 'FRONTEND_AUTH_TOKEN', props: 'authToken' },
+    { env: 'FRONTEND_PORT', props: 'port' },
+    { env: 'FRONTEND_HOST', props: 'host' },
   ];
 
-  frontnvVars.forEach((envEntry) => {
+  frontnvVars.forEach(envEntry => {
     if (process.env[envEntry.env]) {
       // @ts-ignore
       settings.frontend[envEntry.props] = process.env[envEntry.env];
