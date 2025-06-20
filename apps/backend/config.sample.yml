@@ -20,6 +20,34 @@ mqtt:
   qos: 0
   retain: false
 
+frontend:
+  enabled: true
+  port: 8080
+  host: '0.0.0.0'
+  authToken: ''
+  sslCert: ''
+  sslKey: ''
+  oauth2:
+    enabled: false
+    provider: 'generic'
+    clientId: '<YOUR_OAUTH2_CLIENT_ID>'
+    clientSecret: '<YOUR_OAUTH2_CLIENT_SECRET>'
+    authorizationURL: 'https://your-oauth-provider.com/oauth/authorize'
+    tokenURL: 'https://your-oauth-provider.com/oauth/token'
+    userInfoURL: 'https://your-oauth-provider.com/oauth/userinfo'
+    scope:
+      - 'openid'
+      - 'profile'
+      - 'email'
+    callbackURL: 'http://localhost:8080/auth/callback'
+    sessionSecret: '<RANDOM_SESSION_SECRET>'
+    allowedUsers:
+      - 'user@example.com'
+      - 'admin@example.com'
+    allowedDomains:
+      - 'example.com'
+      - 'mycompany.com'
+
 rfxcom:
   usbport: /dev/ttyUSB0
   debug: false

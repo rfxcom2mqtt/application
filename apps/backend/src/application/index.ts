@@ -1,19 +1,20 @@
-import cookieParser from 'cookie-parser';
-import express, { Request, Response, NextFunction } from 'express';
-import * as core from 'express-serve-static-core';
-import fs from 'fs';
-import { StatusCodes } from 'http-status-codes';
-import cors from 'cors';
-import Discovery from '../adapters/discovery';
-import { settingsService } from '../config/settings';
-import { BridgeInfo } from '../core/models';
-import StateStore, { DeviceStore } from '../core/store/state';
-import { loggerFactory } from '../utils/logger';
-import Api from './api/index';
-import Frontend from './Frontend';
-import WebSocketService from './WebSocketService';
+import cookieParser from "cookie-parser";
+import express, { Request, Response, NextFunction } from "express";
+import * as core from "express-serve-static-core";
+import fs from "fs";
+import { StatusCodes } from "http-status-codes";
+import cors from "cors";
+import Discovery from "../adapters/discovery";
+import { settingsService } from "../config/settings";
+import { BridgeInfo } from "../core/models";
+import StateStore, { DeviceStore } from "../core/store/state";
+import { loggerFactory } from "../utils/logger";
+import Api from "./api/index";
+import Frontend from "./Frontend";
+import WebSocketService from "./WebSocketService";
+import { OAuth2Service } from "./auth/OAuth2Service";
 
-const logger = loggerFactory.getLogger('API');
+const logger = loggerFactory.getLogger("API");
 
 export default class Server {
   private server?: core.Express;
@@ -22,6 +23,7 @@ export default class Server {
   private api?: Api;
   private frontend: Frontend;
   private websocketSrv: WebSocketService;
+  private oauth2Service?: OAuth2Service;
 
   constructor() {
     this.frontend = new Frontend();
@@ -93,16 +95,52 @@ export default class Server {
     this.server.use(express.urlencoded({ extended: true }));
     this.server.use(cookieParser());
 
-    // Enable CORS for all environments
-    logger.info('Enabling CORS');
-    this.server.use(
-      cors({
-        origin: 'http://localhost:3010', // React dev server
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-      })
-    );
+    // Initialize OAuth2 if enabled
+    const config = settingsService.get();
+    if (config.frontend.oauth2?.enabled) {
+      try {
+        logger.info("Initializing OAuth2 authentication");
+        this.oauth2Service = new OAuth2Service();
+        
+        // Configure session middleware for OAuth2
+        this.server.use(session({
+          secret: config.frontend.oauth2.sessionSecret,
+          resave: false,
+          saveUninitialized: false,
+          cookie: {
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+          }
+        }));
+
+        // Initialize Passport
+        this.server.use(passport.initialize());
+        this.server.use(passport.session());
+
+        // Add OAuth2 authentication routes
+        this.server.use('/auth', this.oauth2Service.getAuthRoutes());
+        
+        logger.info("OAuth2 authentication initialized successfully");
+      } catch (error) {
+        logger.error(`Failed to initialize OAuth2: ${error instanceof Error ? error.message : String(error)}`);
+        // Continue without OAuth2 if initialization fails
+      }
+    }
+
+    // Authentication middleware for API routes
+    const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+      if (this.oauth2Service?.isEnabled()) {
+        // Use OAuth2 authentication
+        this.oauth2Service.requireAuth(req as AuthenticatedRequest, res, next);
+      } else {
+        // Use legacy token authentication
+        this.authenticate(req, res, next);
+      }
+    };
+
+    // Register API routes with authentication
+    this.server.use("/api", authMiddleware);
 
     // First register API routes
     this.server.use('/api', (req: Request, res: Response, next: NextFunction) => {

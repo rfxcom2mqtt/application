@@ -1,6 +1,7 @@
-import { ConfigurationError } from '../../utils/errorHandling';
-import { logger } from '../../utils/logger';
-import { LogLevel, SettingMqtt } from '.';
+import { ConfigurationError } from "../../utils/errorHandling";
+import { logger } from "../../utils/logger";
+import { LogLevel, SettingMqtt, SettingOAuth2 } from ".";
+
 
 /**
  * Validates MQTT configuration
@@ -138,6 +139,84 @@ export function validateFilePath(path: string, description: string): string {
 }
 
 /**
+ * Validates OAuth2 configuration
+ */
+export function validateOAuth2Config(config: Partial<SettingOAuth2>): SettingOAuth2 {
+  const errors: string[] = [];
+
+  if (!config.provider) {
+    errors.push("OAuth2 provider is required");
+  }
+
+  if (!config.clientId) {
+    errors.push("OAuth2 clientId is required");
+  }
+
+  if (!config.clientSecret) {
+    errors.push("OAuth2 clientSecret is required");
+  }
+
+  if (!config.authorizationURL) {
+    errors.push("OAuth2 authorizationURL is required");
+  }
+
+  if (!config.tokenURL) {
+    errors.push("OAuth2 tokenURL is required");
+  }
+
+  if (!config.callbackURL) {
+    errors.push("OAuth2 callbackURL is required");
+  }
+
+  if (!config.sessionSecret) {
+    errors.push("OAuth2 sessionSecret is required");
+  }
+
+  // Validate URLs
+  const urlFields = ['authorizationURL', 'tokenURL', 'userInfoURL', 'callbackURL'];
+  urlFields.forEach(field => {
+    const url = config[field as keyof SettingOAuth2] as string;
+    if (url && !isValidURL(url)) {
+      errors.push(`OAuth2 ${field} must be a valid URL`);
+    }
+  });
+
+  if (errors.length > 0) {
+    throw new ConfigurationError(
+      `Invalid OAuth2 configuration: ${errors.join(", ")}`,
+      { errors, config },
+    );
+  }
+
+  return {
+    enabled: config.enabled || false,
+    provider: config.provider!,
+    clientId: config.clientId!,
+    clientSecret: config.clientSecret!,
+    authorizationURL: config.authorizationURL!,
+    tokenURL: config.tokenURL!,
+    userInfoURL: config.userInfoURL,
+    scope: config.scope || ['openid', 'profile', 'email'],
+    callbackURL: config.callbackURL!,
+    sessionSecret: config.sessionSecret!,
+    allowedUsers: config.allowedUsers,
+    allowedDomains: config.allowedDomains,
+  };
+}
+
+/**
+ * Validates if a string is a valid URL
+ */
+function isValidURL(string: string): boolean {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+/**
  * Validates complete application configuration
  */
 export function validateApplicationConfig(config: any): any {
@@ -170,8 +249,19 @@ export function validateApplicationConfig(config: any): any {
       if (config.frontend.enabled && config.frontend.port) {
         validatePort(config.frontend.port, 'Frontend port');
       }
-      validatedConfig.frontend = config.frontend;
-      logger.debug('Frontend configuration validated successfully');
+      
+      // Validate OAuth2 configuration if enabled
+      if (config.frontend.oauth2?.enabled) {
+        validatedConfig.frontend = {
+          ...config.frontend,
+          oauth2: validateOAuth2Config(config.frontend.oauth2)
+        };
+        logger.debug("OAuth2 configuration validated successfully");
+      } else {
+        validatedConfig.frontend = config.frontend;
+      }
+      
+      logger.debug("Frontend configuration validated successfully");
     }
 
     // Validate SSL certificate paths if provided
@@ -201,12 +291,27 @@ export function validateApplicationConfig(config: any): any {
 export function sanitizeConfigForLogging(config: any): any {
   const sanitized = JSON.parse(JSON.stringify(config));
 
-  // Remove sensitive fields
+  // Remove sensitive MQTT fields
   if (sanitized.mqtt?.password) {
     sanitized.mqtt.password = '***';
   }
   if (sanitized.mqtt?.username) {
     sanitized.mqtt.username = '***';
+  }
+
+  // Remove sensitive frontend fields
+  if (sanitized.frontend?.authToken) {
+    sanitized.frontend.authToken = "***";
+  }
+
+  // Remove sensitive OAuth2 fields
+  if (sanitized.frontend?.oauth2) {
+    if (sanitized.frontend.oauth2.clientSecret) {
+      sanitized.frontend.oauth2.clientSecret = "***";
+    }
+    if (sanitized.frontend.oauth2.sessionSecret) {
+      sanitized.frontend.oauth2.sessionSecret = "***";
+    }
   }
 
   return sanitized;

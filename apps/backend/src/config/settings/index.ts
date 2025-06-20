@@ -38,6 +38,22 @@ export interface SettingFrontend {
   port: number;
   sslCert: string;
   sslKey: string;
+  oauth2?: SettingOAuth2;
+}
+
+export interface SettingOAuth2 {
+  enabled: boolean;
+  provider: string;
+  clientId: string;
+  clientSecret: string;
+  authorizationURL: string;
+  tokenURL: string;
+  userInfoURL?: string;
+  scope?: string[];
+  callbackURL: string;
+  sessionSecret: string;
+  allowedUsers?: string[];
+  allowedDomains?: string[];
 }
 
 export interface SettingMqtt {
