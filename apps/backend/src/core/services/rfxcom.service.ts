@@ -1,5 +1,6 @@
 import { SettingDevice } from '../../config/settings';
-import { RfxcomEvent, RfxcomInfo } from '../models/rfxcom';
+import { RfxcomEvent } from '../models/rfxcom';
+import { RfxcomInfo } from '../models';
 
 export interface OnStatusCallback {
   (coordinatorInfo: RfxcomInfo): void;

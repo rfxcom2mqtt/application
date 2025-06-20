@@ -8,9 +8,9 @@ import IRfxcom, {
   RfxcomEventHandler,
   StatusCallback,
 } from '../../core/services/rfxcom.service';
+import { RfxcomInfo } from '../../core/models';
 
 import {
-  RfxcomInfo,
   Lighting2Event,
   Lighting4Event,
   Lighting1Event,

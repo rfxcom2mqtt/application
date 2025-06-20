@@ -10,6 +10,7 @@
         "node": "^24"
     },
     "dependencies": {
+        "@rfxcom2mqtt/shared": "workspace:*",
         "@rfxcom2mqtt/frontend": "workspace:*",
         "@types/express": "^4.17.21",
         "cookie-parser": "^1.4.5",

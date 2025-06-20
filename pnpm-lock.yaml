@@ -29,6 +29,9 @@ importers:
       '@rfxcom2mqtt/frontend':
         specifier: workspace:*
         version: file:apps/frontend(@mui/system@5.17.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(eslint@9.29.0(jiti@1.21.7))(ts-node@10.9.2(@types/node@20.19.1)(typescript@5.8.3))
+      '@rfxcom2mqtt/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.23
@@ -195,6 +198,9 @@ importers:
       '@mui/x-data-grid':
         specifier: ^7.3.0
         version: 7.29.6(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@mui/material@5.17.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mui/system@5.17.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@rfxcom2mqtt/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@testing-library/jest-dom':
         specifier: ^6.4.2
         version: 6.6.3
@@ -280,6 +286,28 @@ importers:
       vitest:
         specifier: ^1.4.0
         version: 1.6.1(@types/node@20.19.1)(jsdom@24.1.3)(terser@5.42.0)
+
+  packages/shared:
+    dependencies:
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.67
+    devDependencies:
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.19.1
+      eslint:
+        specifier: ^9.0.0
+        version: 9.29.0(jiti@1.21.7)
+      prettier:
+        specifier: ^3.2.5
+        version: 3.5.3
+      typescript:
+        specifier: ^5.4.5
+        version: 5.8.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@20.19.1)(jsdom@24.1.3)(terser@5.42.0)
 
 packages:
 
@@ -1892,6 +1920,10 @@ packages:
 
   '@rfxcom2mqtt/frontend@file:apps/frontend':
     resolution: {directory: apps/frontend, type: directory}
+    engines: {node: '>=24'}
+
+  '@rfxcom2mqtt/shared@file:packages/shared':
+    resolution: {directory: packages/shared, type: directory}
     engines: {node: '>=24'}
 
   '@rolldown/pluginutils@1.0.0-beta.11':
@@ -8246,6 +8278,9 @@ packages:
     resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
     engines: {node: '>=12.20'}
 
+  zod@3.25.67:
+    resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
+
 snapshots:
 
   '@adobe/css-tools@4.4.3': {}
@@ -10202,6 +10237,7 @@ snapshots:
       '@mui/material': 5.17.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mui/styles': 5.17.1(@types/react@18.3.23)(react@18.3.1)
       '@mui/x-data-grid': 7.29.6(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@mui/material@5.17.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mui/system@5.17.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@rfxcom2mqtt/shared': file:packages/shared
       '@testing-library/jest-dom': 6.6.3
       '@testing-library/react': 15.0.7(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/jest': 29.5.14
@@ -10256,6 +10292,10 @@ snapshots:
       - webpack-cli
       - webpack-hot-middleware
       - webpack-plugin-serve
+
+  '@rfxcom2mqtt/shared@file:packages/shared':
+    dependencies:
+      zod: 3.25.67
 
   '@rolldown/pluginutils@1.0.0-beta.11': {}
 
@@ -17982,3 +18022,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.2.1: {}
+
+  zod@3.25.67: {}

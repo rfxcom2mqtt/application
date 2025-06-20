@@ -1,9 +1,9 @@
 import {
-  RfxcomInfo,
   Lighting2Event,
   Lighting1Event,
   Lighting6Event,
 } from '../../core/models/rfxcom';
+import { RfxcomInfo } from '../../core/models';
 
 describe('RFXCOM Model', () => {
   describe('RfxcomInfo class', () => {

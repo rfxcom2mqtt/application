@@ -4,7 +4,6 @@ import { loggerFactory } from '../../utils/logger';
 import MockRfxcom from './Mock';
 
 import {
-  RfxcomInfo,
   RfxcomEvent,
   Lighting2Event,
   Lighting4Event,
@@ -22,6 +21,7 @@ import IRfxcom, {
   RfxcomEventHandler,
   StatusCallback,
 } from '../../core/services/rfxcom.service';
+import { RfxcomInfo } from '../../core/models';
 
 const logger = loggerFactory.getLogger('RFXCOM');
 

@@ -2,7 +2,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import BridgeDiscovery from './BridgeDiscovery';
 import { settingsService } from '../../config/settings';
 import { BridgeInfo } from '../../core/models';
-import { RfxcomInfo } from '../../core/models/rfxcom';
+import { RfxcomInfo } from '../../core/models';
 import { loggerFactory, logger } from '../../utils/logger';
 
 // Mock dependencies

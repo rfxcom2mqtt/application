@@ -7,9 +7,7 @@ import { SettingDevice, settingsService } from '../config/settings';
 import { BRIDGE_ACTIONS, DEVICE_TYPES } from '../constants';
 import { logger } from '../utils/logger';
 import utils from '../utils/utils';
-import { BridgeInfo, DeviceStateStore, Action } from './models';
-import { MQTTMessage } from './models/mqtt';
-import { RfxcomInfo } from './models/rfxcom';
+import { BridgeInfoClass, DeviceStateStore, Action, MQTTMessage, RfxcomInfo } from '@rfxcom2mqtt/shared';
 import { IMqtt, MqttEventListener } from './services/mqtt.service';
 import IRfxcom from './services/rfxcom.service';
 import State, { DeviceStore } from './store/state';
@@ -56,7 +54,7 @@ export default class Controller implements MqttEventListener {
   private server?: Server;
   protected state?: State;
   protected device?: DeviceStore;
-  protected bridgeInfo = new BridgeInfo();
+  protected bridgeInfo = new BridgeInfoClass();
 
   private exitCallback: ExitCallback;
 

@@ -1,7 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import MockRfxcom from './Mock';
 import { settingsService } from '../../config/settings';
-import { RfxcomInfo } from '../../core/models/rfxcom';
+import { RfxcomInfo } from '../../core/models';
 
 // Mock the settings service
 vi.mock('../../config/settings', () => ({

@@ -1,12 +1,3 @@
-export class RfxcomInfo {
-  receiverTypeCode: number = 0;
-  receiverType: string = '';
-  hardwareVersion: string = '';
-  firmwareVersion: number = 0;
-  firmwareType: string = '';
-  enabledProtocols: string[] = [];
-}
-
 export interface RfxcomEvent {
   id: string;
   deviceName?: string; // computed value
