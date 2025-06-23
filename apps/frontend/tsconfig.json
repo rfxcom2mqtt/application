@@ -14,7 +14,14 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@shared/*": ["../../packages/shared/src/*"],
+      "@backend/*": ["../backend/src/*"],
+      "@frontend/*": ["./src/*"],
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "src"

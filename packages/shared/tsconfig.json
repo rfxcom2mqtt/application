@@ -7,7 +7,13 @@
     "declarationMap": true,
     "sourceMap": true,
     "composite": true,
-    "incremental": true
+    "incremental": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@shared/*": ["./src/*"],
+      "@backend/*": ["../../apps/backend/src/*"],
+      "@frontend/*": ["../../apps/frontend/src/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]

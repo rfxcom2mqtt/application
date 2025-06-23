@@ -16,14 +16,24 @@
     "experimentalDecorators": true,
     "noImplicitReturns": true,
     "isolatedModules": true,
-    "types": ["vitest/globals", "node"]
+    "types": ["vitest/globals", "node"],
+    "paths": {
+      "@shared/*": ["../../packages/shared/src/*"],
+      "@backend/*": ["./src/*"],
+      "@frontend/*": ["../frontend/src/*"]
+    }
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/test/**/*",
+    "**/tests/**/*"
   ]
 }
