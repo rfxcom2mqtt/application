@@ -161,6 +161,10 @@
         "label": "Home Assistant",
         "description": "Configurer l'intégration Home Assistant"
       },
+      "prometheus": {
+        "label": "Prometheus",
+        "description": "Configurer la collecte de métriques Prometheus"
+      },
       "advanced": {
         "label": "Avancé",
         "description": "Paramètres système avancés"
@@ -178,6 +182,65 @@
       "loadError": "Échec du chargement des paramètres. Veuillez actualiser la page.",
       "changesDiscarded": "Modifications annulées",
       "savingSettings": "Enregistrement des paramètres..."
+    },
+    "prometheus": {
+      "title": "Métriques Prometheus",
+      "description": "Configurez la collecte de métriques Prometheus pour surveiller les performances et la santé de votre pont RFXCOM2MQTT.",
+      "enabled": {
+        "label": "Activer les métriques Prometheus",
+        "description": "Active la collecte et l'exposition des métriques au format Prometheus"
+      },
+      "port": {
+        "label": "Port du serveur de métriques",
+        "description": "Port sur lequel le serveur de métriques Prometheus écoute (par défaut: 9090)"
+      },
+      "host": {
+        "label": "Adresse d'écoute",
+        "description": "Adresse IP sur laquelle le serveur de métriques écoute (0.0.0.0 pour toutes les interfaces)"
+      },
+      "path": {
+        "label": "Chemin des métriques",
+        "description": "Chemin HTTP pour accéder aux métriques (par défaut: /metrics)"
+      },
+      "endpoints": {
+        "title": "Points d'accès disponibles",
+        "metrics": "Point d'accès des métriques",
+        "health": "Point d'accès de santé"
+      },
+      "security": {
+        "title": "Considérations de sécurité",
+        "description": "Le serveur de métriques expose des données opérationnelles. Considérez restreindre l'accès via des règles de pare-feu ou un proxy inverse avec authentification."
+      },
+      "metrics": {
+        "title": "Métriques disponibles",
+        "description": "Les métriques suivantes sont collectées et exposées :",
+        "categories": {
+          "mqtt": "Métriques MQTT",
+          "rfxcom": "Métriques RFXCOM",
+          "application": "Métriques d'application",
+          "system": "Métriques système"
+        },
+        "mqtt": {
+          "messages": "Compteurs de messages (entrants/sortants, par type, succès/erreur)",
+          "connection": "Statut de connexion MQTT",
+          "duration": "Durée des opérations de publication"
+        },
+        "rfxcom": {
+          "messages": "Compteurs de messages RFXCOM par type d'appareil",
+          "connection": "Statut de connexion RFXCOM",
+          "devices": "Nombre d'appareils découverts par type"
+        },
+        "application": {
+          "http": "Compteurs et durée des requêtes HTTP",
+          "uptime": "Temps de fonctionnement du pont",
+          "devices": "Nombre d'appareils actifs"
+        },
+        "system": {
+          "cpu": "Utilisation CPU (utilisateur/système)",
+          "memory": "Utilisation mémoire (heap, résidente)",
+          "gc": "Métriques de garbage collection"
+        }
+      }
     }
   },
   "controller": {

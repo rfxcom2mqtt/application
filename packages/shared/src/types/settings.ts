@@ -18,6 +18,7 @@ export interface Settings {
   mqtt: SettingMqtt;
   rfxcom: SettingRfxcom;
   frontend: SettingFrontend;
+  prometheus: SettingPrometheus;
 }
 
 export interface SettingFrontend {
@@ -73,6 +74,13 @@ export interface SettingDevice {
   units?: Units[];
   options?: string[];
   repetitions?: number;
+}
+
+export interface SettingPrometheus {
+  enabled: boolean;
+  port: number;
+  host: string;
+  path: string;
 }
 
 export interface Units {

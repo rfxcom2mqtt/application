@@ -19,6 +19,7 @@ import {
   Wifi as MqttIcon,
   Web as FrontendIcon,
   Home as HomeAssistantIcon,
+  Timeline as PrometheusIcon,
   Settings as AdvancedIcon,
   Save as SaveIcon,
   Refresh as RefreshIcon,
@@ -30,11 +31,13 @@ import {
   SettingFrontend,
   SettingHass,
   SettingRfxcom,
+  SettingPrometheus,
 } from '../../models/shared';
 import SettingRfxcomEditor from '../../components/settings/SettingRfxcomEditor';
 import MqttSettings from '../../components/settings/MqttSettings';
 import FrontendSettings from '../../components/settings/FrontendSettings';
 import HomeassistantSettings from '../../components/settings/HomeassistantSettings';
+import PrometheusSettings from '../../components/settings/PrometheusSettings';
 import AdvancedSettings from '../../components/settings/AdvancedSettings';
 import PageContainer from '../../components/common/PageContainer';
 import { useToast } from '../../components/common/Toast';
@@ -96,6 +99,11 @@ function SettingsPage() {
       description: t('settings.tabs.homeAssistant.description'),
     },
     {
+      label: t('settings.tabs.prometheus.label'),
+      icon: <PrometheusIcon />,
+      description: t('settings.tabs.prometheus.description'),
+    },
+    {
       label: t('settings.tabs.advanced.label'),
       icon: <AdvancedIcon />,
       description: t('settings.tabs.advanced.description'),
@@ -147,6 +155,14 @@ function SettingsPage() {
   const handleHomeassistantChange = (homeassistant: SettingHass) => {
     if (settings) {
       const newSettings = { ...settings, homeassistant };
+      setSettings(newSettings);
+      setHasChanges(checkForChanges(newSettings));
+    }
+  };
+
+  const handlePrometheusChange = (prometheus: SettingPrometheus) => {
+    if (settings) {
+      const newSettings = { ...settings, prometheus };
       setSettings(newSettings);
       setHasChanges(checkForChanges(newSettings));
     }
@@ -305,6 +321,9 @@ function SettingsPage() {
               />
             </TabPanel>
             <TabPanel value={tabValue} index={4}>
+              <PrometheusSettings settings={settings.prometheus} onChange={handlePrometheusChange} />
+            </TabPanel>
+            <TabPanel value={tabValue} index={5}>
               <AdvancedSettings logLevel={settings.loglevel} onChange={handleLogLevelChange} />
             </TabPanel>
           </Box>

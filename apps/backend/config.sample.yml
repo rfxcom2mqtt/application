@@ -1,17 +1,10 @@
+# RFXCOM2MQTT Configuration Sample
+# Copy this file to config.yml and modify as needed
 
-loglevel: 'info'
-healthcheck:
-  enabled: true
-  cron: '*/5 * * * *'
-cacheState:
-  enable: true,
-  saveInterval: 5
+# Logging level (error, warn, info, debug)
+loglevel: info
 
-homeassistant:
-  discovery: true
-  discovery_topic: homeassistant
-  discovery_device: rfxcom2mqtt
-
+# MQTT broker configuration
 mqtt:
   base_topic: rfxcom2mqtt
   server: tcp://<IP ADDRESS>
@@ -20,6 +13,7 @@ mqtt:
   qos: 0
   retain: false
 
+# RFXCOM device configuration
 rfxcom:
   usbport: /dev/ttyUSB0
   debug: false
@@ -47,6 +41,11 @@ rfxcom:
     - remote
     - security1
 
+# Home Assistant integration
+homeassistant:
+  discovery: true
+  discovery_topic: homeassistant
+  discovery_device: rfxcom2mqtt
   devices:
     - id: '0x5C02'
       friendlyName: 'Bathroom Temp & Hum'
@@ -78,7 +77,6 @@ rfxcom:
           name: 'Light4'
           friendlyName: 'Garden'
       type: 'lighting2'
-
     - id: '0x3D090F'
       name: 'Switch1'
       command: 'on'
@@ -89,3 +87,32 @@ rfxcom:
       command: 'off'
       friendlyName: 'Living Room Lights off'
       type: 'lighting4'
+
+
+# Frontend web interface
+frontend:
+  enabled: true
+  port: 8080
+  host: 0.0.0.0
+  authToken: # Optional authentication token
+  sslCert: # Optional SSL certificate path
+  sslKey: # Optional SSL key path
+
+
+# Prometheus metrics collection
+prometheus:
+  enabled: true
+  port: 9090
+  host: 0.0.0.0
+  path: /metrics
+
+
+# Health check configuration
+healthcheck:
+  enabled: true
+  cron: "*/5 * * * *" # Every 5 minutes
+
+# State caching
+cacheState:
+  enable: true
+  saveInterval: 1 # minutes

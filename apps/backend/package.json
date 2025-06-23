@@ -11,8 +11,8 @@
         "pnpm": ">=9"
     },
     "dependencies": {
-        "@rfxcom2mqtt/shared": "workspace:*",
         "@rfxcom2mqtt/frontend": "workspace:*",
+        "@rfxcom2mqtt/shared": "workspace:*",
         "@types/express": "^5.0.3",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
@@ -27,6 +27,7 @@
         "node-config-yaml": "^0.1.4",
         "node-cron": "^4.1.1",
         "object-assign-deep": "^0.4.0",
+        "prom-client": "^15.1.3",
         "rfxcom": "^2.6.0",
         "rimraf": "^6.0.1",
         "semver": "^7.6.3",

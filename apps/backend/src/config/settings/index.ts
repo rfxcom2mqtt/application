@@ -29,6 +29,7 @@ export interface Settings {
   mqtt: SettingMqtt;
   rfxcom: SettingRfxcom;
   frontend: SettingFrontend;
+  prometheus: SettingPrometheus;
 }
 
 export interface SettingFrontend {
@@ -86,6 +87,13 @@ export interface SettingDevice {
   options?: string[];
   repetitions?: number;
   blindsMode?: string;
+}
+
+export interface SettingPrometheus {
+  enabled: boolean;
+  port: number;
+  host: string;
+  path: string;
 }
 
 export interface Units {
@@ -321,6 +329,12 @@ const defaults: RecursivePartial<Settings> = {
   frontend: {
     enabled: false,
   },
+  prometheus: {
+    enabled: false,
+    port: 9090,
+    host: '0.0.0.0',
+    path: '/metrics',
+  },
 };
 
 class DataPath {
@@ -415,6 +429,22 @@ function applyEnvironmentVariables(settings: Partial<Settings>): void {
     if (process.env[envEntry.env]) {
       // @ts-ignore
       settings.frontend[envEntry.props] = process.env[envEntry.env];
+    }
+  });
+
+  const prometheusEnvVars = [
+    { env: 'PROMETHEUS_ENABLED', props: 'enabled' },
+    { env: 'PROMETHEUS_PORT', props: 'port' },
+    { env: 'PROMETHEUS_HOST', props: 'host' },
+    { env: 'PROMETHEUS_PATH', props: 'path' },
+  ];
+
+  prometheusEnvVars.forEach(envEntry => {
+    if (process.env[envEntry.env]) {
+      if (settings.prometheus !== undefined) {
+        // @ts-ignore
+        settings.prometheus[envEntry.props] = process.env[envEntry.env];
+      }
     }
   });
 }
