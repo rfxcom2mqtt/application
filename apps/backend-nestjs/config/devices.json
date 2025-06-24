@@ -1,0 +1,698 @@
+{
+  "0x011Bmocked_device2": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_0x011Bmocked_device2",
+      "rfxcom2mqtt_AC_011Bmocked_device2"
+    ],
+    "name": "AC_011Bmocked_device2",
+    "id": "0x011Bmocked_device2",
+    "originalName": "AC_011Bmocked_device2",
+    "type": "lighting2",
+    "subtype": 0,
+    "subTypeValue": "AC",
+    "entities": [
+      "AC_011Bmocked_device2_1",
+      "AC_011Bmocked_device2_2"
+    ],
+    "sensors": {
+      "0x011Bmocked_device2_linkquality": {
+        "id": "0x011Bmocked_device2_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality",
+        "enabled_by_default": false,
+        "entity_category": "diagnostic",
+        "icon": "mdi:signal",
+        "state_class": "measurement",
+        "unit_of_measurement": "dBm"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {
+      "AC_011Bmocked_device2_1": {
+        "id": "AC_011Bmocked_device2_1",
+        "name": "AC_notuse_1",
+        "originalName": "AC_011Bmocked_device2 1",
+        "unit": "1",
+        "value_on": "On",
+        "value_off": "Off",
+        "description": "On/off state of the switch",
+        "property": "command",
+        "type": "binary"
+      },
+      "AC_011Bmocked_device2_2": {
+        "id": "AC_011Bmocked_device2_2",
+        "name": "0x011Bmocked_device2 2",
+        "originalName": "AC_011Bmocked_device2 2",
+        "unit": "2",
+        "value_on": "On",
+        "value_off": "Off",
+        "description": "On/off state of the switch",
+        "property": "command",
+        "type": "binary"
+      }
+    }
+  },
+  "temphumbaro_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_temphumbaro_device",
+      "rfxcom2mqtt_THB1_temphumbaro_device"
+    ],
+    "name": "THB1_temphumbaro_device",
+    "id": "temphumbaro_device",
+    "originalName": "THB1_temphumbaro_device",
+    "type": "tempHumBaro1",
+    "subtype": 1,
+    "subTypeValue": "THB1",
+    "entities": [
+      "THB1_temphumbaro_device"
+    ],
+    "sensors": {
+      "temphumbaro_device_linkquality": {
+        "id": "temphumbaro_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality",
+        "enabled_by_default": false,
+        "entity_category": "diagnostic",
+        "icon": "mdi:signal",
+        "state_class": "measurement",
+        "unit_of_measurement": "dBm"
+      },
+      "temphumbaro_device_battery": {
+        "id": "temphumbaro_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery",
+        "device_class": "battery",
+        "entity_category": "diagnostic",
+        "state_class": "measurement",
+        "unit_of_measurement": "%"
+      },
+      "temphumbaro_device_humidity": {
+        "id": "temphumbaro_device_humidity",
+        "name": "Humidity",
+        "description": "Measured relative humidity",
+        "property": "humidity",
+        "type": "humidity",
+        "device_class": "humidity",
+        "state_class": "measurement",
+        "icon": "mdi:humidity",
+        "unit_of_measurement": "%"
+      },
+      "temphumbaro_device_temperature": {
+        "id": "temphumbaro_device_temperature",
+        "name": "Temperature",
+        "description": "Measured temperature value",
+        "property": "temperature",
+        "type": "temperature",
+        "device_class": "temperature",
+        "state_class": "measurement",
+        "icon": "mdi:temperature-celsius",
+        "unit_of_measurement": "°C"
+      },
+      "temphumbaro_device_barometer": {
+        "id": "temphumbaro_device_barometer",
+        "name": "Barometer",
+        "description": "The measured atmospheric pressure",
+        "property": "barometer",
+        "type": "pressure",
+        "device_class": "atmospheric_pressure",
+        "state_class": "measurement",
+        "unit_of_measurement": "hPa"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "temphum_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_temphum_device",
+      "rfxcom2mqtt_TH1_temphum_device"
+    ],
+    "name": "TH1_temphum_device",
+    "id": "temphum_device",
+    "originalName": "TH1_temphum_device",
+    "type": "temperatureHumidity1",
+    "subtype": 1,
+    "subTypeValue": "TH1",
+    "entities": [
+      "TH1_temphum_device"
+    ],
+    "sensors": {
+      "temphum_device_linkquality": {
+        "id": "temphum_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality",
+        "enabled_by_default": false,
+        "entity_category": "diagnostic",
+        "icon": "mdi:signal",
+        "state_class": "measurement",
+        "unit_of_measurement": "dBm"
+      },
+      "temphum_device_battery": {
+        "id": "temphum_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery",
+        "device_class": "battery",
+        "entity_category": "diagnostic",
+        "state_class": "measurement",
+        "unit_of_measurement": "%"
+      },
+      "temphum_device_humidity": {
+        "id": "temphum_device_humidity",
+        "name": "Humidity",
+        "description": "Measured relative humidity",
+        "property": "humidity",
+        "type": "humidity",
+        "device_class": "humidity",
+        "state_class": "measurement",
+        "icon": "mdi:humidity",
+        "unit_of_measurement": "%"
+      },
+      "temphum_device_temperature": {
+        "id": "temphum_device_temperature",
+        "name": "Temperature",
+        "description": "Measured temperature value",
+        "property": "temperature",
+        "type": "temperature",
+        "device_class": "temperature",
+        "state_class": "measurement",
+        "icon": "mdi:temperature-celsius",
+        "unit_of_measurement": "°C"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "temp_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_temp_device",
+      "rfxcom2mqtt_TEMP1_temp_device"
+    ],
+    "name": "TEMP1_temp_device",
+    "id": "temp_device",
+    "originalName": "TEMP1_temp_device",
+    "type": "temperature1",
+    "subtype": 1,
+    "subTypeValue": "TEMP1",
+    "entities": [
+      "TEMP1_temp_device"
+    ],
+    "sensors": {
+      "temp_device_linkquality": {
+        "id": "temp_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality"
+      },
+      "temp_device_battery": {
+        "id": "temp_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery"
+      },
+      "temp_device_temperature": {
+        "id": "temp_device_temperature",
+        "name": "Temperature",
+        "description": "Measured temperature value",
+        "property": "temperature",
+        "type": "temperature"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "bbp1_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_bbp1_device",
+      "rfxcom2mqtt_MAVERICK_bbp1_device"
+    ],
+    "name": "MAVERICK_bbp1_device",
+    "id": "bbp1_device",
+    "originalName": "MAVERICK_bbp1_device",
+    "type": "bbq1",
+    "subtype": 1,
+    "subTypeValue": "MAVERICK",
+    "entities": [
+      "MAVERICK_bbp1_device"
+    ],
+    "sensors": {
+      "bbp1_device_linkquality": {
+        "id": "bbp1_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality"
+      },
+      "bbp1_device_battery": {
+        "id": "bbp1_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery"
+      },
+      "bbp1_device_temperature": {
+        "id": "bbp1_device_temperature",
+        "name": "Temperature",
+        "description": "Measured temperature value",
+        "property": "temperature",
+        "type": "temperature"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "uv1_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_uv1_device",
+      "rfxcom2mqtt_UV1_uv1_device"
+    ],
+    "name": "UV1_uv1_device",
+    "id": "uv1_device",
+    "originalName": "UV1_uv1_device",
+    "type": "uv1",
+    "subtype": 1,
+    "subTypeValue": "UV1",
+    "entities": [
+      "UV1_uv1_device"
+    ],
+    "sensors": {
+      "uv1_device_linkquality": {
+        "id": "uv1_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality"
+      },
+      "uv1_device_battery": {
+        "id": "uv1_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery"
+      },
+      "uv1_device_temperature": {
+        "id": "uv1_device_temperature",
+        "name": "Temperature",
+        "description": "Measured temperature value",
+        "property": "temperature",
+        "type": "temperature"
+      },
+      "uv1_device_uv": {
+        "id": "uv1_device_uv",
+        "name": "UV",
+        "description": "UV",
+        "property": "uv",
+        "type": "number"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "hum_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_hum_device",
+      "rfxcom2mqtt_HUM1_hum_device"
+    ],
+    "name": "HUM1_hum_device",
+    "id": "hum_device",
+    "originalName": "HUM1_hum_device",
+    "type": "humidity1",
+    "subtype": 1,
+    "subTypeValue": "HUM1",
+    "entities": [
+      "HUM1_hum_device"
+    ],
+    "sensors": {
+      "hum_device_linkquality": {
+        "id": "hum_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality"
+      },
+      "hum_device_battery": {
+        "id": "hum_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery"
+      },
+      "hum_device_humidity": {
+        "id": "hum_device_humidity",
+        "name": "Humidity",
+        "description": "Measured relative humidity",
+        "property": "humidity",
+        "type": "humidity"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "weight_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_weight_device",
+      "rfxcom2mqtt_WEIGHT1_weight_device"
+    ],
+    "name": "WEIGHT1_weight_device",
+    "id": "weight_device",
+    "originalName": "WEIGHT1_weight_device",
+    "type": "weight1",
+    "subtype": 1,
+    "subTypeValue": "WEIGHT1",
+    "entities": [
+      "WEIGHT1_weight_device"
+    ],
+    "sensors": {
+      "weight_device_linkquality": {
+        "id": "weight_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality"
+      },
+      "weight_device_battery": {
+        "id": "weight_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery"
+      },
+      "weight_device_weight": {
+        "id": "weight_device_weight",
+        "name": "Weight",
+        "description": "Weight",
+        "property": "weight",
+        "type": "weight"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "waterlevel_device": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_waterlevel_device",
+      "rfxcom2mqtt_TS_FT002_waterlevel_device"
+    ],
+    "name": "TS_FT002_waterlevel_device",
+    "id": "waterlevel_device",
+    "originalName": "TS_FT002_waterlevel_device",
+    "type": "waterlevel",
+    "subtype": 0,
+    "subTypeValue": "TS_FT002",
+    "entities": [
+      "TS_FT002_waterlevel_device"
+    ],
+    "sensors": {
+      "waterlevel_device_linkquality": {
+        "id": "waterlevel_device_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality",
+        "enabled_by_default": false,
+        "entity_category": "diagnostic",
+        "icon": "mdi:signal",
+        "state_class": "measurement",
+        "unit_of_measurement": "dBm"
+      },
+      "waterlevel_device_battery": {
+        "id": "waterlevel_device_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery",
+        "device_class": "battery",
+        "entity_category": "diagnostic",
+        "state_class": "measurement",
+        "unit_of_measurement": "%"
+      },
+      "waterlevel_device_temperature": {
+        "id": "waterlevel_device_temperature",
+        "name": "Temperature",
+        "description": "Measured temperature value",
+        "property": "temperature",
+        "type": "temperature",
+        "device_class": "temperature",
+        "state_class": "measurement",
+        "icon": "mdi:temperature-celsius",
+        "unit_of_measurement": "°C"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "0x011Cmocked_lighting1": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_0x011Cmocked_lighting1",
+      "rfxcom2mqtt_X10_011Cmocked_lighting1"
+    ],
+    "name": "X10_011Cmocked_lighting1",
+    "id": "0x011Cmocked_lighting1",
+    "originalName": "X10_011Cmocked_lighting1",
+    "type": "lighting1",
+    "subtype": 0,
+    "subTypeValue": "X10",
+    "entities": [
+      "X10_011Cmocked_lighting1_1",
+      "X10_011Cmocked_lighting1_2"
+    ],
+    "sensors": {
+      "0x011Cmocked_lighting1_linkquality": {
+        "id": "0x011Cmocked_lighting1_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality",
+        "enabled_by_default": false,
+        "entity_category": "diagnostic",
+        "icon": "mdi:signal",
+        "state_class": "measurement",
+        "unit_of_measurement": "dBm"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {
+      "X10_011Cmocked_lighting1_1": {
+        "id": "X10_011Cmocked_lighting1_1",
+        "name": "0x011Cmocked_lighting1 1",
+        "originalName": "X10_011Cmocked_lighting1 1",
+        "unit": "1",
+        "value_on": "On",
+        "value_off": "Off",
+        "description": "On/off state of the switch",
+        "property": "command",
+        "type": "binary"
+      },
+      "X10_011Cmocked_lighting1_2": {
+        "id": "X10_011Cmocked_lighting1_2",
+        "name": "0x011Cmocked_lighting1 2",
+        "originalName": "X10_011Cmocked_lighting1 2",
+        "unit": "2",
+        "value_on": "On",
+        "value_off": "Off",
+        "description": "On/off state of the switch",
+        "property": "command",
+        "type": "binary"
+      }
+    }
+  },
+  "0x011Dmocked_lighting5": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_0x011Dmocked_lighting5",
+      "rfxcom2mqtt_LIGHTWAVERF_011Dmocked_lighting5"
+    ],
+    "name": "LIGHTWAVERF_011Dmocked_lighting5",
+    "id": "0x011Dmocked_lighting5",
+    "originalName": "LIGHTWAVERF_011Dmocked_lighting5",
+    "type": "lighting5",
+    "subtype": 0,
+    "subTypeValue": "LIGHTWAVERF",
+    "entities": [
+      "LIGHTWAVERF_011Dmocked_lighting5_1",
+      "LIGHTWAVERF_011Dmocked_lighting5_2"
+    ],
+    "sensors": {
+      "0x011Dmocked_lighting5_linkquality": {
+        "id": "0x011Dmocked_lighting5_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {
+      "LIGHTWAVERF_011Dmocked_lighting5_1": {
+        "id": "LIGHTWAVERF_011Dmocked_lighting5_1",
+        "name": "0x011Dmocked_lighting5 1",
+        "originalName": "LIGHTWAVERF_011Dmocked_lighting5 1",
+        "unit": "1",
+        "value_on": "On",
+        "value_off": "Off",
+        "description": "On/off state of the switch",
+        "property": "command",
+        "type": "binary"
+      },
+      "LIGHTWAVERF_011Dmocked_lighting5_2": {
+        "id": "LIGHTWAVERF_011Dmocked_lighting5_2",
+        "name": "0x011Dmocked_lighting5 2",
+        "originalName": "LIGHTWAVERF_011Dmocked_lighting5 2",
+        "unit": "2",
+        "value_on": "On",
+        "value_off": "Off",
+        "description": "On/off state of the switch",
+        "property": "command",
+        "type": "binary"
+      }
+    }
+  },
+  "0x011Emocked_blinds1": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_0x011Emocked_blinds1",
+      "rfxcom2mqtt_BLINDS_T0_011Emocked_blinds1"
+    ],
+    "name": "BLINDS_T0_011Emocked_blinds1",
+    "id": "0x011Emocked_blinds1",
+    "originalName": "BLINDS_T0_011Emocked_blinds1",
+    "type": "blinds1",
+    "subtype": 0,
+    "subTypeValue": "BLINDS_T0",
+    "entities": [
+      "BLINDS_T0_011Emocked_blinds1_1",
+      "BLINDS_T0_011Emocked_blinds1_2"
+    ],
+    "sensors": {
+      "0x011Emocked_blinds1_linkquality": {
+        "id": "0x011Emocked_blinds1_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality"
+      },
+      "0x011Emocked_blinds1_battery": {
+        "id": "0x011Emocked_blinds1_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery"
+      }
+    },
+    "binarysensors": {},
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  },
+  "0x011Fmocked_security1": {
+    "manufacturer": "Rfxcom",
+    "via_device": "rfxcom2mqtt_bridge",
+    "identifiers": [
+      "rfxcom2mqtt_0x011Fmocked_security1",
+      "rfxcom2mqtt_X10_DOOR_011Fmocked_security1"
+    ],
+    "name": "X10_DOOR_011Fmocked_security1",
+    "id": "0x011Fmocked_security1",
+    "originalName": "X10_DOOR_011Fmocked_security1",
+    "type": "security1",
+    "subtype": 0,
+    "subTypeValue": "X10_DOOR",
+    "entities": [
+      "X10_DOOR_011Fmocked_security1"
+    ],
+    "sensors": {
+      "0x011Fmocked_security1_linkquality": {
+        "id": "0x011Fmocked_security1_linkquality",
+        "name": "Linkquality",
+        "description": "Link quality (signal strength)",
+        "property": "rssi",
+        "type": "linkquality",
+        "enabled_by_default": false,
+        "entity_category": "diagnostic",
+        "icon": "mdi:signal",
+        "state_class": "measurement",
+        "unit_of_measurement": "dBm"
+      },
+      "0x011Fmocked_security1_battery": {
+        "id": "0x011Fmocked_security1_battery",
+        "name": "Battery",
+        "description": "Remaining battery in %",
+        "property": "batteryLevel",
+        "type": "battery",
+        "device_class": "battery",
+        "entity_category": "diagnostic",
+        "state_class": "measurement",
+        "unit_of_measurement": "%"
+      }
+    },
+    "binarysensors": {
+      "X10_DOOR_011Fmocked_security1": {
+        "id": "X10_DOOR_011Fmocked_security1",
+        "name": "0x011Fmocked_security1",
+        "description": "0x011Fmocked_security1",
+        "property": "property",
+        "type": "todo",
+        "value_on": true,
+        "value_off": false
+      }
+    },
+    "selects": {},
+    "covers": {},
+    "switchs": {}
+  }
+}

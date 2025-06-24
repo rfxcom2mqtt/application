@@ -80,7 +80,7 @@ function Messages(props: MessagesProps) {
     return () => {
       socket.off('log', messageListener);
     };
-  }, [socket, isPaused]);
+  }, [socket.id, isPaused]); // Use socket.id instead of socket object to prevent unnecessary re-renders
 
   // Get unique labels for filter dropdown
   const uniqueLabels = useMemo(() => {

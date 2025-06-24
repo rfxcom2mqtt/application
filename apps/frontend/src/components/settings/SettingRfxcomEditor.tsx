@@ -9,32 +9,16 @@ interface RfxcomProps {
 }
 
 function SettingRfxcomEditor(props: RfxcomProps) {
-  const [state, setState] = React.useState<SettingRfxcom>();
-
-  React.useEffect(() => {
-    setState(props.settings);
-  }, [props.settings]);
-
-  React.useEffect(() => {
-    if (state !== undefined) {
-      props.handleChange(state);
-    }
-  }, [state, props]);
-
   const updateField = (field: keyof SettingRfxcom, value: string | boolean) => {
-    setState(prevState => (prevState ? { ...prevState, [field]: value } : undefined));
+    props.handleChange({ ...props.settings, [field]: value });
   };
-
-  if (!state) {
-    return null;
-  }
 
   return (
     <>
       <SettingField
         id="rfxcom-port"
         label="Port"
-        value={state.usbport}
+        value={props.settings.usbport}
         onChange={value => updateField('usbport', value)}
         helperText="Location of the adapter."
       />
@@ -42,7 +26,7 @@ function SettingRfxcomEditor(props: RfxcomProps) {
       <SettingSwitch
         id="rfxcom-debug"
         label="Debug"
-        checked={state.debug}
+        checked={props.settings.debug}
         onChange={checked => updateField('debug', checked)}
         helperText="Enable rfxcom debug"
       />

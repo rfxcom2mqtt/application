@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { SettingsService } from './settings.service';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -29,5 +29,25 @@ export class SettingsController {
       success: true,
       message: 'Settings updated successfully',
     };
+  }
+
+  @Delete('reset')
+  @ApiOperation({ summary: 'Reset settings to defaults' })
+  @ApiResponse({ status: 200, description: 'Settings reset successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async resetSettings(): Promise<{ success: boolean; message: string }> {
+    await this.settingsService.resetSettings();
+    return {
+      success: true,
+      message: 'Settings reset to defaults successfully',
+    };
+  }
+
+  @Get('schema')
+  @ApiOperation({ summary: 'Get settings schema' })
+  @ApiResponse({ status: 200, description: 'Settings schema' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getSettingsSchema(): Promise<any> {
+    return this.settingsService.getSettingsSchema();
   }
 }

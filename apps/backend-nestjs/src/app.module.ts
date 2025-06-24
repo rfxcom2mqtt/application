@@ -4,8 +4,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BridgeModule } from './application/api/bridge/bridge.module';
+import { BridgeModule as CoreBridgeModule } from './core/bridge/bridge.module';
 import { DeviceModule } from './application/api/device/device.module';
 import { SettingsModule } from './application/api/settings/settings.module';
+import { JournalModule as CoreJournalModule } from './core/journal/journal.module';
 import { MqttModule } from './infrastructure/mqtt/mqtt.module';
 import { RfxcomModule } from './infrastructure/rfxcom/rfxcom.module';
 import { DiscoveryModule } from './core/discovery/discovery.module';
@@ -27,6 +29,8 @@ import { configurationLoader } from './core/discovery/config/configuration';
     ScheduleModule.forRoot(),
 
     // Feature modules
+    CoreBridgeModule,
+    CoreJournalModule,
     BridgeModule,
     DeviceModule,
     SettingsModule,

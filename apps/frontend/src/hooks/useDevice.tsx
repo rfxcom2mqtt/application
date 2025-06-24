@@ -122,7 +122,7 @@ export function useDevice() {
     if (id) {
       refresh();
     }
-  }, [id, refresh]);
+  }, [id]); // Remove refresh from dependencies to prevent infinite loop
 
   return {
     device,

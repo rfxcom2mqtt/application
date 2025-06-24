@@ -16,9 +16,29 @@ export const logger = winston.createLogger({
   ],
 });
 
-// Logger factory for creating named loggers
+// Logger factory for creating named loggers with categories
 export const loggerFactory = {
-  getLogger: (name: string) => {
-    return logger.child({ component: name });
+  getLogger: (category: string) => {
+    return logger.child({ 
+      component: category,
+      category: category // Add category field for easier filtering
+    });
   },
 };
+
+// Pre-defined logger categories for consistency
+export const LoggerCategories = {
+  API: 'API',
+  WEBSOCKET: 'WEBSOCKET',
+  RFXCOM: 'RFXCOM',
+  MQTT: 'MQTT',
+  STORE: 'STORE',
+  JOURNAL: 'JOURNAL',
+  BRIDGE: 'BRIDGE',
+  DISCOVERY: 'DISCOVERY',
+  SETTINGS: 'SETTINGS',
+  PROMETHEUS: 'PROMETHEUS',
+  GATEWAY: 'GATEWAY',
+} as const;
+
+export type LoggerCategory = typeof LoggerCategories[keyof typeof LoggerCategories];

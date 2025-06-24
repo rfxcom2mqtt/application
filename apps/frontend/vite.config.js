@@ -10,13 +10,13 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8891',
         changeOrigin: true,
         secure: false
 
       },
       '/socket.io': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8891',
         changeOrigin: true,
         secure: false
       }

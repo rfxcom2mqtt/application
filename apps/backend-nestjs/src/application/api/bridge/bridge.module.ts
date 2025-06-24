@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { BridgeController } from './bridge.controller';
-import { BridgeService } from './bridge.service';
+import { BridgeModule as CoreBridgeModule } from '../../../core/bridge/bridge.module';
 import { RfxcomModule } from '../../../infrastructure/rfxcom/rfxcom.module';
 
 @Module({
-  imports: [RfxcomModule],
+  imports: [RfxcomModule, CoreBridgeModule],
   controllers: [BridgeController],
-  providers: [BridgeService],
-  exports: [BridgeService],
 })
 export class BridgeModule {}

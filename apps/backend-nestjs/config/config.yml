@@ -1,0 +1,60 @@
+loglevel: info
+cacheState:
+  enable: true
+  saveInterval: 1
+healthcheck:
+  enabled: true
+  cron: '* * * * *'
+homeassistant:
+  discovery: true
+  discovery_topic: homeassistant
+  discovery_device: rfxcom2mqtt
+devices: []
+mqtt:
+  base_topic: rfxcom2mqtt
+  include_device_information: false
+  qos: 0
+  retain: true
+  server: tcp://192.168.2.7
+  port: 1883
+  client_id: rfxcom2mqtt-nestjs
+  username: hassio
+  password: hassio3522
+rfxcom:
+  debug: true
+  receive:
+    - temperaturehumidity1
+    - homeconfort
+    - lighting1
+    - lighting2
+    - lighting3
+    - lighting4
+    - lighting5
+    - blinds1
+    - security1
+    - remote
+    - bbq1
+    - uv1
+    - humidity1
+    - weight1
+    - waterlevel
+  usbport: mock
+  transmit:
+    repeat: 1
+    lighting1: []
+    lighting2: []
+    lighting3: []
+    lighting4: []
+    lighting5: []
+frontend:
+  enabled: true
+  host: 0.0.0.0
+  port: 8891
+  authToken: ''
+  sslCert: ''
+  sslKey: ''
+prometheus:
+  enabled: false
+  port: 9090
+  host: 0.0.0.0
+  path: /metrics

@@ -77,7 +77,7 @@ function SettingsPage() {
   const { t } = useTranslation();
   const { showSuccess, showError, showInfo } = useToast();
 
-  const tabConfig = [
+  const tabConfig = React.useMemo(() => [
     {
       label: t('settings.tabs.rfxcom.label'),
       icon: <RouterIcon />,
@@ -108,7 +108,7 @@ function SettingsPage() {
       icon: <AdvancedIcon />,
       description: t('settings.tabs.advanced.description'),
     },
-  ];
+  ], [t]);
   const [settings, setSettings] = React.useState<Settings>();
   const [originalSettings, setOriginalSettings] = React.useState<Settings>();
   const [tabValue, setTabValue] = React.useState<number>(0);
@@ -121,18 +121,18 @@ function SettingsPage() {
   };
 
   const checkForChanges = React.useCallback(
-    (newSettings: Settings) => {
-      if (!originalSettings) return false;
-      return JSON.stringify(newSettings) !== JSON.stringify(originalSettings);
+    (newSettings: Settings, original: Settings | undefined) => {
+      if (!original) return false;
+      return JSON.stringify(newSettings) !== JSON.stringify(original);
     },
-    [originalSettings]
+    []
   );
 
   const handleRfxcomChange = (rfxcom: SettingRfxcom) => {
     if (settings) {
       const newSettings = { ...settings, rfxcom };
       setSettings(newSettings);
-      setHasChanges(checkForChanges(newSettings));
+      setHasChanges(checkForChanges(newSettings, originalSettings));
     }
   };
 
@@ -140,7 +140,7 @@ function SettingsPage() {
     if (settings) {
       const newSettings = { ...settings, mqtt };
       setSettings(newSettings);
-      setHasChanges(checkForChanges(newSettings));
+      setHasChanges(checkForChanges(newSettings, originalSettings));
     }
   };
 
@@ -148,7 +148,7 @@ function SettingsPage() {
     if (settings) {
       const newSettings = { ...settings, frontend };
       setSettings(newSettings);
-      setHasChanges(checkForChanges(newSettings));
+      setHasChanges(checkForChanges(newSettings, originalSettings));
     }
   };
 
@@ -156,7 +156,7 @@ function SettingsPage() {
     if (settings) {
       const newSettings = { ...settings, homeassistant };
       setSettings(newSettings);
-      setHasChanges(checkForChanges(newSettings));
+      setHasChanges(checkForChanges(newSettings, originalSettings));
     }
   };
 
@@ -164,7 +164,7 @@ function SettingsPage() {
     if (settings) {
       const newSettings = { ...settings, prometheus };
       setSettings(newSettings);
-      setHasChanges(checkForChanges(newSettings));
+      setHasChanges(checkForChanges(newSettings, originalSettings));
     }
   };
 
@@ -172,19 +172,19 @@ function SettingsPage() {
     if (settings) {
       const newSettings = { ...settings, loglevel };
       setSettings(newSettings);
-      setHasChanges(checkForChanges(newSettings));
+      setHasChanges(checkForChanges(newSettings, originalSettings));
     }
   };
 
-  const cancel = () => {
+  const cancel = React.useCallback(() => {
     if (originalSettings) {
       setSettings({ ...originalSettings });
       setHasChanges(false);
       showInfo(t('settings.messages.changesDiscarded'));
     }
-  };
+  }, [originalSettings, showInfo, t]);
 
-  const save = async () => {
+  const save = React.useCallback(async () => {
     if (settings) {
       setSaving(true);
       try {
@@ -198,7 +198,7 @@ function SettingsPage() {
         setSaving(false);
       }
     }
-  };
+  }, [settings, showSuccess, showError, t]);
 
   const getSettings = async () => {
     setLoading(true);
@@ -218,7 +218,7 @@ function SettingsPage() {
     getSettings();
   }, []);
 
-  const pageActions = (
+  const pageActions = React.useMemo(() => (
     <Stack direction="row" spacing={1}>
       <Button
         variant="outlined"
@@ -237,7 +237,7 @@ function SettingsPage() {
         {saving ? t('settings.actions.saving') : t('settings.actions.save')}
       </Button>
     </Stack>
-  );
+  ), [hasChanges, saving, t, cancel, save]);
 
   if (loading) {
     return (

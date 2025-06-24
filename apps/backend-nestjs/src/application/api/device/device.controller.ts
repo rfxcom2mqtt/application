@@ -28,6 +28,15 @@ export class DeviceController {
     return this.deviceService.getDevice(id);
   }
 
+  @Get(':id/state')
+  @ApiOperation({ summary: 'Get device state' })
+  @ApiResponse({ status: 200, description: 'Device state' })
+  @ApiResponse({ status: 404, description: 'Device not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getDeviceState(@Param('id') id: string): Promise<any[]> {
+    return this.deviceService.getDeviceState(id);
+  }
+
   @Post(':id/action')
   @ApiOperation({ summary: 'Execute device action' })
   @ApiResponse({ status: 200, description: 'Action executed successfully' })
@@ -42,6 +51,39 @@ export class DeviceController {
     return {
       success: true,
       message: `Device action executed successfully`,
+    };
+  }
+
+  @Post(':id/rename')
+  @ApiOperation({ summary: 'Rename device' })
+  @ApiResponse({ status: 200, description: 'Device renamed successfully' })
+  @ApiResponse({ status: 404, description: 'Device not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async renameDevice(
+    @Param('id') id: string,
+    @Body() body: { name: string }
+  ): Promise<{ success: boolean; message: string }> {
+    await this.deviceService.renameDevice(id, body.name);
+    return {
+      success: true,
+      message: `Device renamed successfully`,
+    };
+  }
+
+  @Post(':id/switch/:itemId/rename')
+  @ApiOperation({ summary: 'Rename device switch unit' })
+  @ApiResponse({ status: 200, description: 'Switch unit renamed successfully' })
+  @ApiResponse({ status: 404, description: 'Device not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async renameSwitchUnit(
+    @Param('id') deviceId: string,
+    @Param('itemId') itemId: string,
+    @Body() body: { name: string; unitCode: number }
+  ): Promise<{ success: boolean; message: string }> {
+    await this.deviceService.renameSwitchUnit(deviceId, itemId, body.name, body.unitCode);
+    return {
+      success: true,
+      message: `Switch unit renamed successfully`,
     };
   }
 }

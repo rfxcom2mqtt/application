@@ -82,7 +82,7 @@ export function useDevices() {
   // Initial load
   React.useEffect(() => {
     refresh();
-  }, [refresh]);
+  }, []); // Remove refresh from dependencies to prevent infinite loop
 
   return {
     devices,
