@@ -120,7 +120,7 @@ describe('MetricsService', () => {
   describe('Metrics Export', () => {
     it('should export metrics in Prometheus format', async () => {
       const metricsOutput = await metricsService.getMetrics();
-      
+
       expect(metricsOutput).toBeDefined();
       expect(typeof metricsOutput).toBe('string');
       // Metrics output should be a string (even if empty after clearing)

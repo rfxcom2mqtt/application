@@ -8,7 +8,7 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "pnpm run -r build",
+    "build": "pnpm format && pnpm run --filter \"./packages/*\" --filter \"./{apps,packages}/*\" build",
     "dev": "pnpm run --parallel -r dev",
     "start": "pnpm run --parallel -r start",
     "test": "pnpm run --filter \"./packages/*\" --filter \"./apps/*\" test",

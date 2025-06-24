@@ -2,7 +2,14 @@
  * DeviceStateStore class for managing device state operations
  */
 
-import { DeviceState, DeviceSensor, DeviceBinarySensor, DeviceSwitch, DeviceCover, DeviceSelect } from '../types/devices';
+import {
+  DeviceState,
+  DeviceSensor,
+  DeviceBinarySensor,
+  DeviceSwitch,
+  DeviceCover,
+  DeviceSelect,
+} from '../types/devices';
 import { SettingDevice } from '../types/settings';
 
 const RFXCOM2MQTT_PREFIX = 'rfxcom2mqtt_';
@@ -198,7 +205,7 @@ export class DeviceStateStore {
 
   overrideDeviceInfo(settingsService?: any) {
     if (!settingsService) return;
-    
+
     const deviceConf = settingsService.get().devices.find((dev: any) => dev.id === this.state.id);
 
     if (deviceConf?.name !== undefined) {

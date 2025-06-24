@@ -37,11 +37,11 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
     });
   };
 
-  const metricsUrl = settings.enabled 
+  const metricsUrl = settings.enabled
     ? `http://${settings.host === '0.0.0.0' ? 'localhost' : settings.host}:${settings.port}${settings.path}`
     : '';
 
-  const healthUrl = settings.enabled 
+  const healthUrl = settings.enabled
     ? `http://${settings.host === '0.0.0.0' ? 'localhost' : settings.host}:${settings.port}/health`
     : '';
 
@@ -49,7 +49,11 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
     <Box>
       {/* Header */}
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+        >
           <MetricsIcon color="primary" />
           {t('settings.prometheus.title')}
         </Typography>
@@ -68,7 +72,7 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
                 control={
                   <Switch
                     checked={settings.enabled}
-                    onChange={(e) => handleChange('enabled', e.target.checked)}
+                    onChange={e => handleChange('enabled', e.target.checked)}
                     color="primary"
                   />
                 }
@@ -94,7 +98,7 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
                       label={t('settings.prometheus.port.label')}
                       type="number"
                       value={settings.port}
-                      onChange={(e) => handleChange('port', parseInt(e.target.value) || 9090)}
+                      onChange={e => handleChange('port', parseInt(e.target.value) || 9090)}
                       helperText={t('settings.prometheus.port.description')}
                       inputProps={{ min: 1, max: 65535 }}
                     />
@@ -107,7 +111,7 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
                     <TextField
                       label={t('settings.prometheus.host.label')}
                       value={settings.host}
-                      onChange={(e) => handleChange('host', e.target.value)}
+                      onChange={e => handleChange('host', e.target.value)}
                       helperText={t('settings.prometheus.host.description')}
                       placeholder="0.0.0.0"
                     />
@@ -120,7 +124,7 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
                     <TextField
                       label={t('settings.prometheus.path.label')}
                       value={settings.path}
-                      onChange={(e) => handleChange('path', e.target.value)}
+                      onChange={e => handleChange('path', e.target.value)}
                       helperText={t('settings.prometheus.path.description')}
                       placeholder="/metrics"
                     />
@@ -136,11 +140,15 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
       {settings.enabled && (
         <Card elevation={1} sx={{ mb: 3 }}>
           <CardContent>
-            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <InfoIcon color="primary" />
               {t('settings.prometheus.endpoints.title')}
             </Typography>
-            
+
             <Stack spacing={2}>
               <Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -157,7 +165,7 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
                   sx={{ fontFamily: 'monospace' }}
                 />
               </Box>
-              
+
               <Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   {t('settings.prometheus.endpoints.health')}
@@ -179,14 +187,8 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
       )}
 
       {/* Security Notice */}
-      <Alert 
-        severity="info" 
-        icon={<SecurityIcon />}
-        sx={{ mb: 2 }}
-      >
-        <Typography variant="body2">
-          {t('settings.prometheus.security.title')}
-        </Typography>
+      <Alert severity="info" icon={<SecurityIcon />} sx={{ mb: 2 }}>
+        <Typography variant="body2">{t('settings.prometheus.security.title')}</Typography>
         <Typography variant="body2" sx={{ mt: 1 }}>
           {t('settings.prometheus.security.description')}
         </Typography>
@@ -202,49 +204,49 @@ const PrometheusSettings: React.FC<PrometheusSettingsProps> = ({ settings, onCha
             <Typography variant="body2" color="text.secondary" paragraph>
               {t('settings.prometheus.metrics.description')}
             </Typography>
-            
+
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" gutterBottom>
                   {t('settings.prometheus.metrics.categories.mqtt')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  • {t('settings.prometheus.metrics.mqtt.messages')}<br/>
-                  • {t('settings.prometheus.metrics.mqtt.connection')}<br/>
-                  • {t('settings.prometheus.metrics.mqtt.duration')}
+                  • {t('settings.prometheus.metrics.mqtt.messages')}
+                  <br />• {t('settings.prometheus.metrics.mqtt.connection')}
+                  <br />• {t('settings.prometheus.metrics.mqtt.duration')}
                 </Typography>
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" gutterBottom>
                   {t('settings.prometheus.metrics.categories.rfxcom')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  • {t('settings.prometheus.metrics.rfxcom.messages')}<br/>
-                  • {t('settings.prometheus.metrics.rfxcom.connection')}<br/>
-                  • {t('settings.prometheus.metrics.rfxcom.devices')}
+                  • {t('settings.prometheus.metrics.rfxcom.messages')}
+                  <br />• {t('settings.prometheus.metrics.rfxcom.connection')}
+                  <br />• {t('settings.prometheus.metrics.rfxcom.devices')}
                 </Typography>
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" gutterBottom>
                   {t('settings.prometheus.metrics.categories.application')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  • {t('settings.prometheus.metrics.application.http')}<br/>
-                  • {t('settings.prometheus.metrics.application.uptime')}<br/>
-                  • {t('settings.prometheus.metrics.application.devices')}
+                  • {t('settings.prometheus.metrics.application.http')}
+                  <br />• {t('settings.prometheus.metrics.application.uptime')}
+                  <br />• {t('settings.prometheus.metrics.application.devices')}
                 </Typography>
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" gutterBottom>
                   {t('settings.prometheus.metrics.categories.system')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  • {t('settings.prometheus.metrics.system.cpu')}<br/>
-                  • {t('settings.prometheus.metrics.system.memory')}<br/>
-                  • {t('settings.prometheus.metrics.system.gc')}
+                  • {t('settings.prometheus.metrics.system.cpu')}
+                  <br />• {t('settings.prometheus.metrics.system.memory')}
+                  <br />• {t('settings.prometheus.metrics.system.gc')}
                 </Typography>
               </Grid>
             </Grid>

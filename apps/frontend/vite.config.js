@@ -6,17 +6,17 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 3001,
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8891',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false
 
       },
       '/socket.io': {
-        target: 'http://localhost:8891',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false
       }

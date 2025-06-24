@@ -76,7 +76,7 @@ describe('API Index', () => {
   it('should create router and set up middleware', () => {
     // Assert
     expect(Router).toHaveBeenCalledTimes(1);
-    expect(mockRouter.use).toHaveBeenCalledWith('*', expect.any(Function));
+    expect(mockRouter.use).toHaveBeenCalledWith('/', expect.any(Function));
   });
 
   it('should initialize SettingApi and set up routes', () => {
@@ -115,7 +115,7 @@ describe('API Index', () => {
     const mockNext = vi.fn() as NextFunction;
 
     // Find the middleware callback
-    const middlewareCallback = mockUseCallback.mock.calls.find(call => call[0] === '*')[1];
+    const middlewareCallback = mockUseCallback.mock.calls.find(call => call[0] === '/')[1];
 
     // Act
     middlewareCallback(mockReq, mockRes, mockNext);

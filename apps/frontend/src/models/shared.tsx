@@ -2,12 +2,12 @@
 export * from '@rfxcom2mqtt/shared';
 
 // Import specific types for use in interfaces
-import type { 
-  DeviceSensor, 
-  DeviceBinarySensor, 
-  DeviceSelect, 
-  DeviceCover, 
-  DeviceSwitch 
+import type {
+  DeviceSensor,
+  DeviceBinarySensor,
+  DeviceSelect,
+  DeviceCover,
+  DeviceSwitch,
 } from '@rfxcom2mqtt/shared';
 
 // Keep any frontend-specific types here if needed

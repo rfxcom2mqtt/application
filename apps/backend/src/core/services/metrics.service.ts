@@ -3,7 +3,7 @@ import { logger } from '../../utils/logger';
 
 /**
  * Prometheus metrics service for collecting and exposing application metrics
- * 
+ *
  * This service provides:
  * - Default Node.js metrics (memory, CPU, event loop, etc.)
  * - Custom application metrics for RFXCOM and MQTT operations
@@ -12,23 +12,23 @@ import { logger } from '../../utils/logger';
  */
 export class MetricsService {
   private static instance: MetricsService;
-  
+
   // MQTT metrics
   public readonly mqttMessagesTotal: Counter<string>;
   public readonly mqttConnectionStatus: Gauge<string>;
   public readonly mqttPublishDuration: Histogram<string>;
-  
+
   // RFXCOM metrics
   public readonly rfxcomMessagesTotal: Counter<string>;
   public readonly rfxcomConnectionStatus: Gauge<string>;
   public readonly rfxcomDevicesTotal: Gauge<string>;
-  
+
   // Application metrics
   public readonly httpRequestsTotal: Counter<string>;
   public readonly httpRequestDuration: Histogram<string>;
   public readonly activeDevicesTotal: Gauge<string>;
   public readonly bridgeUptime: Gauge<string>;
-  
+
   // Discovery metrics
   public readonly discoveryMessagesTotal: Counter<string>;
   public readonly homeAssistantDevicesTotal: Gauge<string>;
@@ -147,7 +147,9 @@ export class MetricsService {
     try {
       return await register.metrics();
     } catch (error) {
-      logger.error(`Failed to get metrics: ${error instanceof Error ? error.message : String(error)}`);
+      logger.error(
+        `Failed to get metrics: ${error instanceof Error ? error.message : String(error)}`
+      );
       throw error;
     }
   }
@@ -170,7 +172,11 @@ export class MetricsService {
   /**
    * Record MQTT message
    */
-  public recordMqttMessage(direction: 'inbound' | 'outbound', topicType: string, status: 'success' | 'error' = 'success'): void {
+  public recordMqttMessage(
+    direction: 'inbound' | 'outbound',
+    topicType: string,
+    status: 'success' | 'error' = 'success'
+  ): void {
     this.mqttMessagesTotal.inc({ direction, topic_type: topicType, status });
   }
 
@@ -191,7 +197,11 @@ export class MetricsService {
   /**
    * Record RFXCOM message
    */
-  public recordRfxcomMessage(direction: 'inbound' | 'outbound', deviceType: string, status: 'success' | 'error' = 'success'): void {
+  public recordRfxcomMessage(
+    direction: 'inbound' | 'outbound',
+    deviceType: string,
+    status: 'success' | 'error' = 'success'
+  ): void {
     this.rfxcomMessagesTotal.inc({ direction, device_type: deviceType, status });
   }
 
@@ -212,7 +222,12 @@ export class MetricsService {
   /**
    * Record HTTP request
    */
-  public recordHttpRequest(method: string, route: string, statusCode: number, duration: number): void {
+  public recordHttpRequest(
+    method: string,
+    route: string,
+    statusCode: number,
+    duration: number
+  ): void {
     this.httpRequestsTotal.inc({ method, route, status_code: statusCode.toString() });
     this.httpRequestDuration.observe({ method, route }, duration);
   }

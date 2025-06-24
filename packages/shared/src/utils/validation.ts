@@ -104,7 +104,10 @@ export function validateMQTTMessage(data: unknown) {
 /**
  * Safe validation that returns a result object instead of throwing
  */
-export function safeValidate<T>(schema: z.ZodSchema<T>, data: unknown): {
+export function safeValidate<T>(
+  schema: z.ZodSchema<T>,
+  data: unknown
+): {
   success: boolean;
   data?: T;
   error?: z.ZodError;

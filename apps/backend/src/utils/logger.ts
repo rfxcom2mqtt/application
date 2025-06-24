@@ -1,5 +1,5 @@
 import winston, { createLogger, transports, format } from 'winston';
-import Transport = require('winston-transport');
+import Transport from 'winston-transport';
 
 /**
  * Interface for log event listeners

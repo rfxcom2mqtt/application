@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
+import { vi, test, expect } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
@@ -35,7 +35,9 @@ vi.mock('./pages/controller/ControllerInfo', () => ({
 }));
 
 test('renders app without crashing', () => {
-  render(<App />);
+  act(() => {
+    render(<App />);
+  });
   // Check if the app renders without throwing an error
   expect(document.body).toBeInTheDocument();
 });

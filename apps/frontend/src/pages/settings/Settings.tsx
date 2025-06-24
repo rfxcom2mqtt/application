@@ -321,7 +321,10 @@ function SettingsPage() {
               />
             </TabPanel>
             <TabPanel value={tabValue} index={4}>
-              <PrometheusSettings settings={settings.prometheus} onChange={handlePrometheusChange} />
+              <PrometheusSettings
+                settings={settings.prometheus}
+                onChange={handlePrometheusChange}
+              />
             </TabPanel>
             <TabPanel value={tabValue} index={5}>
               <AdvancedSettings logLevel={settings.loglevel} onChange={handleLogLevelChange} />

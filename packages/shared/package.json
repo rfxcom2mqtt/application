@@ -2,25 +2,32 @@
   "name": "@rfxcom2mqtt/shared",
   "version": "1.0.0",
   "description": "Shared types, models and validation schemas for RFXCOM2MQTT",
+  "author": "Sguernion<sguernion@github.com>",
+  "license": "Apache-2.0",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint \"src/**/*.{js,ts}\"",
     "pretty": "prettier --write \"src/**/*.{js,ts}\"",
-    "pretty:check": "prettier --check \"src/**/*.{js,ts}\"",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "pretty:check": "prettier --check \"src/**/*.{js,ts}\""
   },
   "dependencies": {
     "zod": "^3.24.1"
   },
   "devDependencies": {},
-  "engines": {
-    "node": ">=22",
-    "pnpm": ">=9"
-  },
-  "author": "Sguernion<sguernion@github.com>",
-  "license": "Apache-2.0"
+  "files": [
+    "dist",
+    "src",
+    "package.json"
+  ]
 }

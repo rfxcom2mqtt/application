@@ -6,7 +6,7 @@ import { metricsService } from '../core/services/metrics.service';
 
 /**
  * Prometheus metrics server
- * 
+ *
  * This server runs separately from the main application server and exposes
  * Prometheus metrics on a dedicated port. This separation allows for:
  * - Independent scaling and monitoring
@@ -57,7 +57,9 @@ export default class PrometheusServer {
         res.set('Content-Type', 'text/plain; version=0.0.4; charset=utf-8');
         res.status(200).send(metrics);
       } catch (error) {
-        logger.error(`Failed to serve metrics: ${error instanceof Error ? error.message : String(error)}`);
+        logger.error(
+          `Failed to serve metrics: ${error instanceof Error ? error.message : String(error)}`
+        );
         res.status(500).json({
           error: 'Failed to generate metrics',
           message: error instanceof Error ? error.message : String(error),
@@ -70,10 +72,7 @@ export default class PrometheusServer {
       res.status(404).json({
         error: 'Not Found',
         message: `Route ${req.method} ${req.path} not found`,
-        availableEndpoints: [
-          `GET ${config.path}`,
-          'GET /health',
-        ],
+        availableEndpoints: [`GET ${config.path}`, 'GET /health'],
       });
     });
 
@@ -133,7 +132,7 @@ export default class PrometheusServer {
 
     logger.info('Stopping Prometheus metrics server');
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this.server) {
         this.server.close(() => {
           logger.info('Prometheus metrics server stopped');
@@ -150,15 +149,17 @@ export default class PrometheusServer {
    */
   getStatus(): { running: boolean; uptime?: number; config?: any } {
     const config = settingsService.get().prometheus;
-    
+
     return {
       running: !!this.server && config.enabled,
       uptime: this.server ? Math.floor((Date.now() - this.startTime) / 1000) : undefined,
-      config: config.enabled ? {
-        host: config.host,
-        port: config.port,
-        path: config.path,
-      } : undefined,
+      config: config.enabled
+        ? {
+            host: config.host,
+            port: config.port,
+            path: config.path,
+          }
+        : undefined,
     };
   }
 }

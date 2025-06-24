@@ -8,16 +8,16 @@ import { MockMqtt } from '../adapters/mqtt/MockMqtt';
 import MockRfxcom from '../adapters/rfxcom/Mock';
 
 // Mock the adapter modules
-vi.mock('../../adapters/mqtt', () => ({
+vi.mock('../adapters/mqtt', () => ({
   getMqttInstance: vi.fn(),
 }));
 
-vi.mock('../../adapters/rfxcom', () => ({
+vi.mock('../adapters/rfxcom', () => ({
   getRfxcomInstance: vi.fn(),
 }));
 
 // Mock the settings service
-vi.mock('../../config/settings', () => ({
+vi.mock('../config/settings', () => ({
   settingsService: {
     read: vi.fn(),
     get: vi.fn(),
@@ -27,13 +27,17 @@ vi.mock('../../config/settings', () => ({
 // We're not mocking the logger to use the real implementation in e2e tests
 
 // Mock utils module
-vi.mock('../../utils/utils', () => ({
+vi.mock('../utils/utils', () => ({
+  __esModule: true,
+  default: {
+    getRfxcom2MQTTVersion: vi.fn().mockReturnValue('1.2.1'),
+  },
   getRfxcom2MQTTVersion: vi.fn().mockReturnValue('1.2.1'),
 }));
 
 // Only mock the external dependencies that we can't control in tests
 vi.mock('node-cron');
-vi.mock('../../application');
+vi.mock('../application');
 
 // Mock the frontend package to avoid ES module issues
 vi.mock('@rfxcom2mqtt/frontend', () => ({
@@ -56,18 +60,39 @@ describe('RFXCOM to MQTT End-to-End Flow', () => {
 
     // Setup test settings
     const testSettings = {
-      frontend: { enabled: true },
+      frontend: {
+        enabled: true,
+        authToken: '',
+        host: 'localhost',
+        port: 8080,
+        sslCert: '',
+        sslKey: '',
+      },
+      prometheus: {
+        enabled: false,
+        port: 9090,
+        host: 'localhost',
+        path: '/metrics',
+      },
       mqtt: {
         base_topic: 'rfxcom2mqtt',
         server: 'mock', // Use mock server to trigger MockMqtt
         port: 1883,
         retain: true,
-        qos: 0,
+        qos: 0 as const,
+        include_device_information: true,
       },
       rfxcom: {
         usbport: 'mock', // Use mock port to trigger MockRfxcom
         debug: true,
         receive: ['lighting2', 'tempHumBaro1'],
+        transmit: {
+          repeat: 1,
+          lighting1: [],
+          lighting2: ['lighting2'],
+          lighting3: [],
+          lighting4: [],
+        },
       },
       homeassistant: {
         discovery: true,
@@ -76,13 +101,13 @@ describe('RFXCOM to MQTT End-to-End Flow', () => {
       },
       healthcheck: { enabled: false, cron: '* * * * *' },
       cacheState: { enable: false, saveInterval: 1 },
-      loglevel: 'info',
+      loglevel: 'info' as const,
       devices: [],
     };
 
     // Configure the settings service mock
-    (settingsService.read as any).mockReturnValue(testSettings);
-    (settingsService.get as any).mockReturnValue(testSettings);
+    vi.mocked(settingsService.read).mockReturnValue(testSettings);
+    vi.mocked(settingsService.get).mockReturnValue(testSettings);
 
     // Create real instances of MockMqtt and MockRfxcom
     mqttClient = new MockMqtt();

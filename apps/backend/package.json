@@ -44,7 +44,7 @@
         "build": "pnpm exec tsc && node index.js writehash",
         "build-start": "node index.js --env-file=.env.dev",
         "start": "ts-node ./src/index.ts",
-        "dev": "ts-node ./src/index.ts --env-file=.env.dev",
+        "start:dev": "ts-node ./src/index.ts --env-file=.env.dev",
         "pretty": "prettier --write \"./**/*.{js,jsx,ts,tsx}\"",
         "lint": "eslint \"./**/*.{js,jsx,ts,tsx}\" --ignore-pattern 'dist/*' --ignore-pattern 'index.js'",
         "pretty:check": "prettier --check \"./**/*.{js,jsx,ts,tsx}\"",

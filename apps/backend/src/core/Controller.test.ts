@@ -84,17 +84,21 @@ vi.mock('../config/settings', () => ({
   settingsService: {
     read: vi.fn().mockReturnValue({
       frontend: { enabled: true },
+      prometheus: { enabled: false },
       mqtt: { base_topic: 'rfxcom2mqtt' },
       rfxcom: { usbport: '/dev/ttyUSB0' },
       homeassistant: { discovery: true },
       healthcheck: { enabled: false },
+      loglevel: 'info',
     }),
     get: vi.fn().mockReturnValue({
       frontend: { enabled: true },
+      prometheus: { enabled: false },
       mqtt: { base_topic: 'rfxcom2mqtt' },
       rfxcom: { usbport: '/dev/ttyUSB0' },
       homeassistant: { discovery: true },
       healthcheck: { enabled: false },
+      loglevel: 'info',
       devices: [],
     }),
   },

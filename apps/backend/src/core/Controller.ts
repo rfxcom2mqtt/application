@@ -8,7 +8,13 @@ import { SettingDevice, settingsService } from '../config/settings';
 import { BRIDGE_ACTIONS, DEVICE_TYPES } from '../constants';
 import { logger } from '../utils/logger';
 import utils from '../utils/utils';
-import { BridgeInfoClass, DeviceStateStore, Action, MQTTMessage, RfxcomInfo } from '@rfxcom2mqtt/shared';
+import {
+  BridgeInfoClass,
+  DeviceStateStore,
+  Action,
+  MQTTMessage,
+  RfxcomInfo,
+} from '@rfxcom2mqtt/shared';
 import { IMqtt, MqttEventListener } from './services/mqtt.service';
 import IRfxcom from './services/rfxcom.service';
 import { metricsService } from './services/metrics.service';
@@ -306,7 +312,7 @@ export default class Controller implements MqttEventListener {
         }
         await this.mqttClient.connect();
         logger.info('Successfully connected to MQTT broker');
-        
+
         // Update metrics
         metricsService.setMqttConnectionStatus(true);
       },
@@ -315,10 +321,10 @@ export default class Controller implements MqttEventListener {
     ).catch(async error => {
       logger.error(`MQTT connection failed: ${error.message}`);
       logger.info('Stopping RFXCOM bridge due to MQTT connection failure');
-      
+
       // Update metrics
       metricsService.setMqttConnectionStatus(false);
-      
+
       await this.rfxBridge?.stop();
       await this.exitCallback(1, false);
     });
@@ -441,10 +447,10 @@ export default class Controller implements MqttEventListener {
    */
   private handleRfxcomDisconnect(evt: any): void {
     logger.warn('RFXCOM disconnected');
-    
+
     // Update metrics
     metricsService.setRfxcomConnectionStatus(false);
-    
+
     this.mqttClient?.publish('disconnected', 'disconnected', (error: any) => {
       if (error) {
         logger.error(`Failed to publish disconnection status: ${error.message}`);
@@ -694,7 +700,7 @@ export default class Controller implements MqttEventListener {
 
     this.mqttClient.publish(fullTopic, payload, (error: any) => {
       const duration = (Date.now() - startTime) / 1000;
-      
+
       if (error) {
         logger.error(`Failed to publish to MQTT topic ${fullTopic}: ${error.message}`);
         metricsService.recordMqttMessage('outbound', 'device_data', 'error');
@@ -733,5 +739,3 @@ export default class Controller implements MqttEventListener {
     logger.debug(`Published discovery information for device: ${payload.id || 'unknown'}`);
   }
 }
-
-module.exports = Controller;
